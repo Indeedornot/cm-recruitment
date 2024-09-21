@@ -32,6 +32,9 @@ services:
       - ${DB_PORT}:3306
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
+    env_file:
+      - path: ./.env.local
+        required: true
 
 volumes:
   caddy_data:
