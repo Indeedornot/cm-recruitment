@@ -4,11 +4,8 @@
 <head>
     <meta charset="UTF-8"/>
     <title>{% block title %}Welcome!{% endblock %}</title>
-    <link
-        rel="stylesheet"
-        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-    />
     {% block stylesheets %}{% endblock %}
+    {{ encore_entry_link_tags('app') }}
 </head>
 <body>
 <nav
@@ -31,5 +28,6 @@
 </nav>
 {% block body %}{% endblock %}
 {% block javascripts %}{% endblock %}
+{{ encore_entry_script_tags('app') }}
 </body>
 </html>
