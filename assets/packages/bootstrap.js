@@ -1,3 +1,4 @@
-import 'bootstrap/scss/bootstrap.scss';
+import './bootstrap.scss'
 
-require('bootstrap');
+require('bootstrap/dist/js/bootstrap.bundle.min');
+
