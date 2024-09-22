@@ -7,24 +7,34 @@
     {% block stylesheets %}{% endblock %}
     {{ encore_entry_link_tags('app') }}
 </head>
-<body>
+<body class="vh-100">
 <nav
     class="navbar navbar-expand-lg navbar-light bg-light"
-    style="height: 70px;"
 >
-    <a class="navbar-brand" href="#">Symfony</a>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent"></div>
-    <ul class="nav navbar-nav navbar-right">
-        {% if app.user %}
-            <li><a class="nav-link" href="{{ path('app_list') }}">View List</a></li>
-            <li><a class="nav-link" href="{{ path('app_logout') }}">Logout</a></li>
-        {% else %}
-            <li><a class="nav-link" href="{{ path('app_login') }}">Login</a></li>
-            <li>
-                <a class="nav-link" href="{{ path('app_registration') }}">Register</a>
-            </li>
-        {% endif %}
-    </ul>
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Symfony</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
+                aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {# @var nav_links App\Services\Navigation\NavRoute[] #}
+                {% set nav_links = getNavLinks() %}
+                {% for nav_link in nav_links %}
+                    {% if nav_link.isEnabled() %}
+                        <li class="nav-item">
+                            <a class="nav-link {{ nav_link.isCurrent() ? 'active' : '' }}"
+                               href="{{ nav_link.getHref() }}"
+                            >
+                                {{ nav_link.getLabel() }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </nav>
 {% block body %}{% endblock %}
 {% block javascripts %}{% endblock %}
