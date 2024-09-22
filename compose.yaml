@@ -35,7 +35,10 @@ services:
     env_file:
       - path: ./.env.local
         required: true
+    volumes:
+      - db_data:/var/lib/mysql
 
 volumes:
   caddy_data:
   caddy_config:
+  db_data:
