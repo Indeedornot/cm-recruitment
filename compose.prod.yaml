@@ -1,0 +1,19 @@
+# Production environment override
+services:
+  php:
+    build:
+      context: .
+      target: frankenphp_prod
+    environment:
+      APP_SECRET: ${APP_SECRET}
+    env_file:
+      - path: ./.env.prod
+        required: false
+      - path: ./.env.prod.local
+        required: false
+  db:
+    env_file:
+      - path: ./.env.prod
+        required: false
+      - path: ./.env.prod.local
+        required: false
