@@ -2,6 +2,7 @@
 
 namespace App\Services\Navigation;
 
+use App\Entity\UserRoles;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
@@ -33,8 +34,8 @@ class NavigationExtension extends AbstractExtension
         $isLoggedIn = $this->security->getUser() !== null;
         $routes = [
             'list' => $this->routes->new(
-                key: 'app_list',
-                label: 'List',
+                key: $this->security->isGranted(UserRoles::ADMIN->value) ? 'app_admin_index' : 'app_user_index',
+                label: 'Home',
             ),
             'login' => $this->routes->new(
                 key: 'app_login',
