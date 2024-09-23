@@ -71,13 +71,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = UserRoles::BASE_USER->value;
 
         return array_unique($roles);
     }
 
     /**
      * @param list<string> $roles
+     * @return User
      */
     public function setRoles(array $roles): static
     {
