@@ -50,8 +50,8 @@ class AdminController extends AbstractController
                 return $this->render('pages/admin/accounts/create.html.twig');
             }
 
-            return $this->render('security/registration/index.html.twig', [
-                'form' => $form->createView(),
+            return $this->render('pages/admin/accounts/create.html.twig', [
+                'form' => $form->createView()
             ]);
         } catch (\Exception $e) {
             return $this->render('errors/index.html.twig', [
