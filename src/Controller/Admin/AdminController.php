@@ -2,12 +2,11 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\BaseController;
 use App\Entity\Admin;
-use App\Entity\User;
 use App\Entity\UserRoles;
 use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted(UserRoles::ADMIN->value)]
 #[Route("/admin", name: "app_admin_")]
-class AdminController extends AbstractController
+class AdminController extends BaseController
 {
     function __construct(private readonly UserPasswordHasherInterface $passwordEncoder, private EntityManagerInterface $manager, private Security $security)
     {

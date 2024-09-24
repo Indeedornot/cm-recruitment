@@ -2,8 +2,8 @@
 
 namespace App\Controller\User;
 
+use App\Controller\BaseController;
 use App\Entity\UserRoles;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -11,7 +11,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted(UserRoles::CLIENT->value)]
 #[Route('/user', name: 'app_user_')]
-class UserController extends AbstractController
+class UserController extends BaseController
 {
     #[Route("/", name: "index")]
     public function user(Request $request): Response
