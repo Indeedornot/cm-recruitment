@@ -2,6 +2,7 @@
 
 namespace App\Controller\User;
 
+use App\Entity\Client;
 use App\Entity\User;
 use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,19 +23,14 @@ class RegistrationController extends AbstractController
     {
         try {
 
-            $user = new User();
+            $user = new Client();
 
             $form = $this->createForm(UserType::class, $user);
 
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                // Encode the new users password
                 $user->setPassword($this->passwordEncoder->hashPassword($user, $user->getPassword()));
-
-                // Set their role
-                $user->setRoles(['ROLE_USER']);
-
                 $this->manager->persist($user);
                 $this->manager->flush();
 

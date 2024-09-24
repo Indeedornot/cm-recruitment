@@ -41,7 +41,6 @@ class AdminController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
                 // Encode the new users password
                 $user->setPassword($this->passwordEncoder->hashPassword($user, $user->getPassword()));
-                $user->setRoles([UserRoles::BASE_USER->value, UserRoles::ADMIN->value]);
                 $user->setCreatedBy($this->security->getUser());
 
                 $this->manager->persist($user);

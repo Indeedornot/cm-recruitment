@@ -5,10 +5,7 @@ namespace App\Entity;
 use App\Repository\AdminRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: AdminRepository::class)]
-#[ORM\Table(name: '`admin`')]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[ORM\HasLifecycleCallbacks]
+#[ORM\Entity]
 class Admin extends User
 {
     #[ORM\OneToOne(targetEntity: Admin::class)]
@@ -36,17 +33,5 @@ class Admin extends User
         $this->createdBy = $createdBy;
 
         return $this;
-    }
-
-    #[ORM\PrePersist]
-    public function prePersist(): void
-    {
-        parent::prePersist();
-    }
-
-    #[ORM\PreUpdate]
-    public function preUpdate(): void
-    {
-        parent::preUpdate();
     }
 }

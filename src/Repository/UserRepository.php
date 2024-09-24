@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Admin;
+use App\Entity\Client;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
