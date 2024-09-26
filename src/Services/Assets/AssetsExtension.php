@@ -2,12 +2,6 @@
 
 namespace App\Services\Assets;
 
-use App\Entity\UserRoles;
-use App\Services\Navigation\NavRoute;
-use App\Services\Navigation\NavRouteFactory;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\RouterInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
