@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Form;
+namespace App\Security\Form;
 
+use App\Form\Exception;
 use App\Security\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\{EmailType, PasswordType, RepeatedType, TextType};
