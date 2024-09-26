@@ -1,4 +1,4 @@
 import './bootstrap.scss'
+import * as bootstrap from 'bootstrap'
 
-require('bootstrap/dist/js/bootstrap.bundle.min');
-
+window.bootstrap = bootstrap
