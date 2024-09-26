@@ -2,10 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Admin;
-use App\Entity\Client;
+use App\Security\Entity\Admin;
+use App\Security\Entity\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class BaseController extends AbstractController
 {

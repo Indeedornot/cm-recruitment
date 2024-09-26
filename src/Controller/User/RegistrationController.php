@@ -3,8 +3,8 @@
 namespace App\Controller\User;
 
 use App\Controller\BaseController;
-use App\Entity\Client;
 use App\Form\UserType;
+use App\Security\Entity\Client;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

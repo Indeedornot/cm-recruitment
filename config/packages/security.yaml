@@ -2,7 +2,7 @@ security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         # auto hasher with default options for the User class (and children)
-        App\Entity\User: 'auto'
+        App\Security\Entity\User: 'auto'
 
         # auto hasher with custom options for all PasswordAuthenticatedUserInterface instances
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
@@ -13,7 +13,7 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
-                class: App\Entity\User
+                class: App\Security\Entity\User
                 property: email
     firewalls:
         dev:

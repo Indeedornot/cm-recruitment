@@ -3,9 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Controller\BaseController;
-use App\Entity\Admin;
-use App\Entity\UserRoles;
 use App\Form\UserType;
+use App\Security\Entity\Admin;
+use App\Security\Entity\UserRoles;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;

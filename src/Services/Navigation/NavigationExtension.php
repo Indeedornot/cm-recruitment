@@ -2,7 +2,7 @@
 
 namespace App\Services\Navigation;
 
-use App\Entity\UserRoles;
+use App\Security\Entity\UserRoles;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
