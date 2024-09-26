@@ -170,4 +170,10 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->updatedAt = new \DateTimeImmutable();
     }
+
+    public function getReadableRoles(): array
+    {
+        $roles = $this->getRoles();
+        return array_map(fn($role) => UserRoles::from($role)->getLabel(), $roles);
+    }
 }
