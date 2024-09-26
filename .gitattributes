@@ -1,4 +1,6 @@
 * text=auto eol=lf
+* md=auto eol=lf
+* .gitignore=auto eol=lf
 
 *.conf text eol=lf
 *.html text eol=lf
@@ -10,6 +12,7 @@
 *.sh text eol=lf
 *.yaml text eol=lf
 *.yml text eol=lf
+*.scss text eol=lf
 bin/console text eol=lf
 composer.lock text eol=lf merge=ours
 
