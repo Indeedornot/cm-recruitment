@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -56,5 +57,33 @@ class AdminController extends BaseController
                 'error' => $e
             ]);
         }
+    }
+
+    #[IsGranted(UserRoles::SUPER_ADMIN->value)]
+    #[Route("/admins", name: "admins")]
+    public function admins(
+        Request                  $request,
+        #[MapQueryParameter] int $page = 1,
+        #[MapQueryParameter] int $limit = 10
+    ): Response
+    {
+        $admins = $this->manager->getRepository(Admin::class)->createQueryBuilder('a')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+        return $this->render('pages/admin/accounts/admins.html.twig', [
+            'admins' => $admins,
+            'page' => $page,
+            'limit' => $limit
+        ]);
+    }
+
+    #[IsGranted(UserRoles::SUPER_ADMIN->value)]
+    #[Route("/delete-account", name: "delete_account")]
+    public function deleteAccount(Request $request): Response
+    {
+        $from = $request->headers->get('referer');
+        return $this->redirect($from);
     }
 }
