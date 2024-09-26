@@ -12,3 +12,4 @@ import './styles/app.scss';
 import './js/app';
 import './views/views.scss';
 import './views/views';
+import '@fortawesome/fontawesome-free/css/all.min.css'
