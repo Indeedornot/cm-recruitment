@@ -1,5 +1,7 @@
 @import 'bootstrap/scss/bootstrap.scss';
 
+$card-cap-padding-y: $card-spacer-y * .75;
+
 @each $breakpoint in map-keys($grid-breakpoints) {
     $properties: (
         width: w,
