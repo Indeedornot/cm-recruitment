@@ -33,7 +33,11 @@ class UserType extends AbstractType
                 'second_options' => ['label' => 'Confirm Password']
             ]);
         } else {
-            $builder->getData()->setPassword($this->random_str($this->minPasswordLength));
+            /** @var User $user */
+            $user = $builder->getData();
+            $pswd = $this->random_str($this->minPasswordLength);
+            $user->setPassword($pswd)
+                ->setPlainPassword($pswd);
         }
     }
 
@@ -46,10 +50,9 @@ class UserType extends AbstractType
      * @return string
      */
     function random_str(
-        int    $length,
+        int $length,
         string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    ): string
-    {
+    ): string {
         $str = '';
         $max = mb_strlen($keyspace, '8bit') - 1;
         if ($max < 1) {

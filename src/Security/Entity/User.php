@@ -2,8 +2,14 @@
 
 namespace App\Security\Entity;
 
+use App\Security\Event\PostUserChangedEvent;
+use App\Security\Event\PreUserChangedEvent;
+use App\Security\Event\UserEvent;
 use App\Security\Repository\UserRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -22,31 +28,36 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     #[ORM\Column]
     protected ?int $id = null;
-
     #[ORM\Column(length: 180)]
     protected ?string $email = null;
-
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
     protected array $roles = [];
-
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
     protected ?string $password = null;
 
+    protected ?string $plainPassword = null;
+
     #[ORM\Column]
     protected ?string $name = null;
-
     #[ORM\Column]
-    protected \DateTimeImmutable $createdAt;
-
+    protected DateTimeImmutable $createdAt;
     #[ORM\Column]
-    protected \DateTimeImmutable $updatedAt;
+    protected DateTimeImmutable $updatedAt;
 
+    #[ORM\Column(options: ['default' => true])]
+    protected bool $isEnabled = true;
+
+    public function __construct(
+        private EventDispatcherInterface $eventDispatcher,
+        private UserPasswordHasherInterface $passwordHasher
+    ) {
+    }
 
     public function getId(): ?int
     {
@@ -90,13 +101,31 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function setAndHashPassword(string $password): static
+    {
+        $this->password = $this->passwordHasher->hashPassword($this, $password);
+
+        return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): static
+    {
+        $this->plainPassword = $plainPassword;
+        return $this;
+    }
+
     /**
      * @see UserInterface
      */
     public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getName(): ?string
@@ -110,34 +139,23 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCreatedAt(): \DateTimeImmutable
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
-
-    public function getUpdatedAt(): \DateTimeImmutable
+    public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-        return $this;
     }
 
     #[ORM\PrePersist]
     public function prePersist(): void
     {
         $this->roles = $this->getRoles();
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
+        $this->eventDispatcher->dispatch(new UserEvent($this), UserEvent::PRE_USER_CREATED);
     }
 
     /**
@@ -150,7 +168,6 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
         $roles[] = UserRoles::BASE_USER->value;
-
         return array_unique($roles);
     }
 
@@ -165,15 +182,38 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    #[ORM\PostPersist]
+    public function postPersist(): void
+    {
+        $this->eventDispatcher->dispatch(new UserEvent($this), UserEvent::POST_USER_CREATED);
+    }
+
     #[ORM\PreUpdate]
     public function preUpdate(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->eventDispatcher->dispatch(new UserEvent($this), UserEvent::PRE_USER_CHANGED);
+        $this->updatedAt = new DateTimeImmutable();
+    }
+
+    #[ORM\PostUpdate]
+    public function postUpdate(): void
+    {
+        $this->eventDispatcher->dispatch(new UserEvent($this), UserEvent::POST_USER_CHANGED);
     }
 
     public function getReadableRoles(): array
     {
         $roles = $this->getRoles();
         return array_map(fn($role) => UserRoles::from($role)->getLabel(), $roles);
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->isEnabled;
+    }
+
+    public function setIsEnabled(bool $isEnabled): void
+    {
+        $this->isEnabled = $isEnabled;
     }
 }

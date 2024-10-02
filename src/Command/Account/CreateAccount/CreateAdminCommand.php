@@ -2,8 +2,8 @@
 
 namespace App\Command\Account\CreateAccount;
 
-use App\Security\Entity\Admin;
 use App\Security\Entity\UserRoles;
+use App\Security\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -11,7 +11,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsCommand(
     name: 'app:create-account:admin',
@@ -19,8 +18,10 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 )]
 class CreateAdminCommand extends Command
 {
-    function __construct(private readonly UserPasswordHasherInterface $passwordEncoder, private EntityManagerInterface $manager)
-    {
+    function __construct(
+        private EntityManagerInterface $manager,
+        private UserFactory $userFactory
+    ) {
         parent::__construct();
     }
 
@@ -36,11 +37,16 @@ class CreateAdminCommand extends Command
         $io = new SymfonyStyle($input, $output);
         [$email, $name, $password] = array_map(fn($arg) => $input->getArgument($arg), ['email', 'name', 'password']);
 
-        $user = new Admin();
-        $user->setEmail($email);
-        $user->setName($name);
-        $user->setPassword($this->passwordEncoder->hashPassword($user, $password));
-        $user->setRoles([UserRoles::BASE_USER->value, UserRoles::ADMIN->value]);
+        $user = $this->userFactory->createAdmin()
+            ->setEmail($email)
+            ->setName($name)
+            ->setAndHashPassword($password)
+            ->setPlainPassword($password)
+            ->setRoles([
+                UserRoles::BASE_USER->value,
+                UserRoles::ADMIN->value,
+                UserRoles::SUPER_ADMIN->value
+            ]);
         $user->setCreatedBy($user);
 
         $this->manager->persist($user);
