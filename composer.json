@@ -83,6 +83,7 @@
         }
     },
     "require-dev": {
+        "pestphp/pest": "*",
         "symfony/maker-bundle": "^1.61"
     }
 }
