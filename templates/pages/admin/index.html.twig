@@ -24,7 +24,7 @@
         <div class="card mx-auto" style="width: 800px">
             <div class="card-body">
                 <ul class="list-group">
-                    {% if constant('App\\Entity\\UserRoles::SUPER_ADMIN').value in app.user.roles %}
+                    {% if constant('App\\Security\\Entity\\UserRoles::SUPER_ADMIN').value in app.user.roles %}
                         {{ _self.nav_item('Create new Admin user here', 'a', 'fa-user-plus', url('app_admin_create_account')) }}
                         {{ _self.nav_item('Manage all Admin users here', 'a', 'fa-users', url('app_admin_admins')) }}
                     {% endif %}
