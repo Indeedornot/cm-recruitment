@@ -1,0 +1,38 @@
+{# templates/base.html.twig #}
+{% set navbarContent %}
+    {% block navbar %}
+        {% include 'layouts/navbar.html.twig' %}
+    {% endblock %}
+{% endset %}
+
+{% set bodyContent %}
+    {% block body %}
+    {% endblock %}
+{% endset %}
+
+{% set footerContent %}
+    {% block footer %}
+    {% endblock %}
+{% endset %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {% block stylesheets %}{% endblock %}
+    {{ encore_entry_link_tags('app') }}
+    {% block styles %}
+        {{ assets_styles().getHtmlStyles|raw }}
+    {% endblock %}
+</head>
+<body class="vh-100">
+{{ navbarContent }}
+{{ bodyContent }}
+{{ footerContent }}
+{{ encore_entry_script_tags('app') }}
+{% block javascripts %}
+    {{ assets_scripts().getHtmlScripts|raw }}
+{% endblock %}
+</body>
+</html>

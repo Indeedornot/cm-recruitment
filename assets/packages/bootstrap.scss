@@ -1,0 +1,46 @@
+@import 'bootstrap/scss/bootstrap.scss';
+
+@each $breakpoint in map-keys($grid-breakpoints) {
+    $properties: (
+        width: w,
+        height: h,
+        'min-width': 'min-w',
+        'max-width': 'max-w',
+        'min-height': 'min-h',
+        'max-height': 'max-h',
+        'padding-top': 'pt',
+        'padding-bottom': 'pb',
+        'padding-left': 'ps',
+        'padding-right': 'pe',
+        'margin-top': 'mt',
+        'margin-bottom': 'mb',
+        'margin-left': 'ms',
+        'margin-right': 'me'
+    );
+    $sizeKeys: (
+        '100': 100%,
+        '75': 75%,
+        '50': 50%,
+        '33': 33%,
+        '25': 25%,
+        'auto': auto
+    );
+
+    @each $propertyName in map-keys($properties) {
+        $propertyClass: map-get($properties, $propertyName);
+
+        @each $sizeKey in map-keys($sizeKeys) {
+            $sizeValue: map-get($sizeKeys, $sizeKey);
+
+            .#{$propertyClass}-#{$sizeKey} {
+                #{$propertyName}: $sizeValue;
+            }
+
+            @media (min-width: map-get($grid-breakpoints, $breakpoint)) {
+                .#{$propertyClass}-#{$breakpoint}-#{$sizeKey} {
+                    #{$propertyName}: $sizeValue;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,78 @@
+<div {{ attributes }}>
+    {% set btnAttrs = btnAttrs.addOrSet({
+        'data-bs-toggle': 'modal',
+        'data-bs-target': '#' ~ target,
+        'type': 'button',
+        'class': 'btn'
+    }) %}
+
+    {% block trigger %}
+        <button {{ btnAttrs.getHtmlAttributes()|raw }}>
+            {{ btnText }}
+        </button>
+    {% endblock %}
+
+    <div class="modal" tabindex="-1" id="{{ target }}" aria-labelledby="{{ target }}-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    {% block header %}
+                    {% block title %}
+                    <{{ titleTag }} class="modal-title" aria-labelledby="{{ target }}-label">
+                    {% if title is defined %}
+                        {{ title }}
+                    {% else %}
+                        Modal title
+                    {% endif %}
+                </{{ titleTag }}>
+                {% endblock %}
+                {% block close %}
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                {% endblock %}
+                {% endblock %}
+            </div>
+            <div class="modal-body modal-dialog-scrollable">
+                {% block body %}
+                    <p>Modal body text goes here.</p>
+                {% endblock %}
+            </div>
+            <div class="modal-footer">
+                {% block footer %}
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">{{ cancel }}</button>
+                    <button type="button" class="btn btn-primary"
+                            data-bs-success="modal"
+                    >{{ confirm }}</button>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% set script %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const element = document.getElementById('{{ target }}');
+            const modal = bootstrap.Modal.getOrCreateInstance(element);
+
+            let success = false;
+            element.addEventListener('hide.bs.modal', () => {
+                if (!success) {
+                    ({{ onCancel|raw }})();
+                }
+                success = false;
+            });
+            element.querySelector('[data-bs-success="modal"]')
+                .addEventListener('click', () => {
+                    success = true;
+                    ({{ onConfirm|raw }})();
+                    modal.hide()
+                });
+
+            element.setAttribute('data-bs-initialized', 'true');
+        });
+    </script>
+{% endset %}
+
+{{ assets_scripts().addScript(script) }}
