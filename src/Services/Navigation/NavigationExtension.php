@@ -2,6 +2,7 @@
 
 namespace App\Services\Navigation;
 
+use App\Security\Entity\Admin;
 use App\Security\Entity\UserRoles;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -12,12 +13,11 @@ use Twig\TwigFunction;
 class NavigationExtension extends AbstractExtension
 {
     public function __construct(
-        private Security        $security,
+        private Security $security,
         private RouterInterface $router,
-        private RequestStack    $stack,
+        private RequestStack $stack,
         private NavRouteFactory $routes
-    )
-    {
+    ) {
     }
 
     public function getFunctions(): array
@@ -55,5 +55,18 @@ class NavigationExtension extends AbstractExtension
     public function isCurrentRoute(string $routeName): bool
     {
         return $this->routes->isCurrentRoute($routeName);
+    }
+
+    public function getPostLoginRoute(): string
+    {
+        return $this->getIndexRoute() ?? $this->router->generate('app_index_index');
+    }
+
+    public function getIndexRoute(): ?string
+    {
+        $user = $this->security->getUser();
+        if ($user instanceof Admin) {
+            return $this->router->generate('app_admin_index');
+        }
     }
 }
