@@ -1,0 +1,40 @@
+{% extends 'layouts/base.html.twig' %}
+{% block body %}
+    <div class="container-fluid container-y">
+        <table class="admin-list-table table table-striped rounded overflow-hidden table-cells-vertical">
+            <thead>
+            <tr>
+                <th>No.</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ loop.index + (page - 1) * 10 }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.getReadableRoles|join(', ') }}</td>
+                    <td>
+                        <twig:Modal
+                            onConfirm="() => {
+                            window.location.href = '{{ path('app_admin_delete_account', {'id': user.id}) }}';
+                        }"
+                        >
+                            <twig:block name="trigger">
+                                <btn {{ btnAttrs.addOrSet({class: 'icon-link link-danger'})|raw }}>
+                                    <i class="fa-solid fa-user-xmark"></i>
+                                </btn>
+                            </twig:block>
+                        </twig:Modal>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+

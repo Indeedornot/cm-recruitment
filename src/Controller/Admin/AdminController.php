@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Controller\BaseController;
 use App\Security\Entity\Admin;
+use App\Security\Entity\Client;
 use App\Security\Entity\UserRoles;
 use App\Security\Factory\UserFactory;
 use App\Security\Form\UserType;
@@ -81,6 +82,25 @@ class AdminController extends BaseController
             'limit' => $limit
         ]);
     }
+
+    #[Route("/users", name: "users")]
+    public function users(
+        Request $request,
+        #[MapQueryParameter] int $page = 1,
+        #[MapQueryParameter] int $limit = 10
+    ): Response {
+        $users = $this->manager->getRepository(Client::class)->createQueryBuilder('a')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+        return $this->render('pages/admin/accounts/users.html.twig', [
+            'users' => $users,
+            'page' => $page,
+            'limit' => $limit
+        ]);
+    }
+
 
     #[IsGranted(UserRoles::SUPER_ADMIN->value)]
     #[Route("/delete-account", name: "delete_account")]

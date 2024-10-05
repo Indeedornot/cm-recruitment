@@ -9,6 +9,7 @@
                     {% if constant('App\\Security\\Entity\\UserRoles::SUPER_ADMIN').value in app.user.roles %}
                         {{ macros.nav_item('Create new Admin user here', 'fa-user-plus', url('app_admin_create_account'), 'a') }}
                         {{ macros.nav_item('Manage all Admin users here', 'fa-users', url('app_admin_admins'), 'a') }}
+                        {{ macros.nav_item('Manage all Client users here', 'fa-users', url('app_admin_users'), 'a') }}
                     {% endif %}
                 </ul>
             </div>
