@@ -40,8 +40,9 @@ class BaseController extends AbstractController
 
     public function setErrorHandler(ErrorHandlerType $handler, array $options = []): void
     {
-        /** @var SessionInterface $session */
-        $session = $this->container->get('session');
-        $session->set('error_handler', ['handler' => $handler->value, 'options' => $options]);
+        $this->container->get('request_stack')->getSession()->set(
+            'error_handler',
+            ['handler' => $handler->value, 'options' => $options]
+        );
     }
 }
