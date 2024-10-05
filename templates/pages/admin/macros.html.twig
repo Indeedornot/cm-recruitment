@@ -1,0 +1,18 @@
+{% macro nav_item(label, icon = null, href = null, tag = 'li') %}
+    {% set is_action = tag in ['a', 'button'] %}
+    <{{ tag }}
+    {% if href %}href="{{ href }}"{% endif %}
+    {{ '' }}class="list-group-item
+    {{ '    ' }}{% if is_action %}list-group-item-action{% endif %}
+    {{ '    ' }}{% if icon %}gap-2{% endif %}
+    {{ '    ' }}d-flex align-items-center
+    {{ '' }}"
+    >
+    {% if icon %}
+        <i class="fa-solid {{ icon }}"></i>
+    {% endif %}
+    {{ '' }}<span>
+    {{ '    ' }}{{ label }}
+    {{ '' }}</span>
+    </{{ tag }}>
+{% endmacro %}
