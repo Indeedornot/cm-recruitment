@@ -8,6 +8,7 @@ use App\Security\Event\UserEvent;
 use App\Security\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -21,6 +22,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
     'admin' => Admin::class
 ])]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[UniqueEntity(fields: ['email'], message: 'An account with that email already exists')]
 #[ORM\HasLifecycleCallbacks]
 abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
