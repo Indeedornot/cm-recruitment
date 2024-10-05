@@ -20,24 +20,26 @@ class UserType extends AbstractType
             ->add('email', EmailType::class)
             ->add('name', TextType::class);
 
-        if ($options['require_password'] ?? true) {
-            $builder->add('password', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'first_options' => [
-                    'label' => 'Password',
-                    'constraints' => [
-                        new Assert\NotBlank(),
-                        new Assert\Length(['min' => $this->minPasswordLength])
+        if ($options['mode'] !== 'edit') {
+            if ($options['require_password'] ?? true) {
+                $builder->add('password', RepeatedType::class, [
+                    'type' => PasswordType::class,
+                    'first_options' => [
+                        'label' => 'Password',
+                        'constraints' => [
+                            new Assert\NotBlank(),
+                            new Assert\Length(['min' => $this->minPasswordLength])
+                        ],
                     ],
-                ],
-                'second_options' => ['label' => 'Confirm Password']
-            ]);
-        } else {
-            /** @var User $user */
-            $user = $builder->getData();
-            $pswd = $this->random_str($this->minPasswordLength);
-            $user->setPassword($pswd)
-                ->setPlainPassword($pswd);
+                    'second_options' => ['label' => 'Confirm Password']
+                ]);
+            } else {
+                /** @var User $user */
+                $user = $builder->getData();
+                $pswd = $this->random_str($this->minPasswordLength);
+                $user->setPassword($pswd)
+                    ->setPlainPassword($pswd);
+            }
         }
     }
 
@@ -69,6 +71,7 @@ class UserType extends AbstractType
         $resolver->setDefaults([
             'data_class' => User::class,
             'require_password' => true,
+            'mode' => 'create',
         ]);
     }
 }

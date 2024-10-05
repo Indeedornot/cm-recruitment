@@ -19,17 +19,23 @@
                     <td>{{ admin.email }}</td>
                     <td>{{ admin.getReadableRoles|join(', ') }}</td>
                     <td>
-                        <twig:Modal
-                            onConfirm="() => {
-                            window.location.href = '{{ path('app_admin_delete_account', {'id': admin.id}) }}';
-                        }"
-                        >
-                            <twig:block name="trigger">
-                                <btn {{ btnAttrs.addOrSet({class: 'icon-link link-danger'})|raw }}>
-                                    <i class="fa-solid fa-user-xmark"></i>
-                                </btn>
-                            </twig:block>
-                        </twig:Modal>
+                        <div class="d-flex">
+                            <a class="btn icon-link link-primary"
+                               href="{{ path('app_admin_edit_account', {'id': admin.id}) }}">
+                                <i class="fa-solid fa-user-edit"></i>
+                            </a>
+                            <twig:Modal
+                                onConfirm="() => {
+                                    window.location.href = '{{ path('app_admin_delete_account', {'id': admin.id}) }}';
+                                }"
+                            >
+                                <twig:block name="trigger">
+                                    <btn {{ btnAttrs.addOrSet({class: 'btn icon-link link-danger'})|raw }}>
+                                        <i class="fa-solid fa-user-xmark"></i>
+                                    </btn>
+                                </twig:block>
+                            </twig:Modal>
+                        </div>
                     </td>
                 </tr>
             {% endfor %}
