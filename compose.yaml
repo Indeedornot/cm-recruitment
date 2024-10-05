@@ -13,6 +13,7 @@ services:
     volumes:
       - caddy_data:/data
       - caddy_config:/config
+      - ./.bashrc:/root/.bashrc
     ports:
       # HTTP
       - target: 80
