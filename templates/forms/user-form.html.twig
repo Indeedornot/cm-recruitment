@@ -1,0 +1,37 @@
+{{ form_start(form) }}
+<div class="form_group">
+    <div class="col-md-12 mb-3">
+        {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
+    </div>
+</div>
+<div class="form_group">
+    <div class="col-md-12 mb-3">
+        {{ form_row(form.email, {'attr': {'class': 'form-control'}}) }}
+    </div>
+</div>
+{% if form.password is defined %}
+    <div class="form_group">
+        <div class="col-md-12 mb-3">
+            {{ form_row(form.password.first, {'attr': {'class':
+                'form-control'
+            }}) }}
+        </div>
+    </div>
+    <div class="form_group">
+        <div class="col-md-12 mb-3">
+            {{ form_row(form.password.second, {'attr': {'class':
+                'form-control'}}) }}
+        </div>
+    </div>
+{% endif %}
+
+{% block buttons %}
+<div class="form-group">
+    <div class="col-md-8 col-md-offset-4" style="margin-top:5px;">
+        <button type="submit" class="btn btn-primary">
+            <i class="fa fa-btn fa-user"></i> Register
+        </button>
+    </div>
+</div>
+{% block %}
+{{ form_end(form) }}
