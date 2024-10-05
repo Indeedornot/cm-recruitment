@@ -2,7 +2,7 @@
 
 namespace App\Controller\User;
 
-use App\Controller\BaseController;
+use App\Controller\Base\BaseController;
 use App\Security\Entity\Client;
 use App\Security\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,15 +13,16 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class RegistrationController extends BaseController
 {
-    public function __construct(private readonly UserPasswordHasherInterface $passwordEncoder, private EntityManagerInterface $manager)
-    {
+    public function __construct(
+        private readonly UserPasswordHasherInterface $passwordEncoder,
+        private EntityManagerInterface $manager
+    ) {
     }
 
     #[Route("/registration", name: "app_registration")]
     public function index(Request $request): Response
     {
         try {
-
             $user = new Client();
 
             $form = $this->createForm(UserType::class, $user);

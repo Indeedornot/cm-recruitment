@@ -2,7 +2,7 @@
 
 namespace App\Controller\User;
 
-use App\Controller\BaseController;
+use App\Controller\Base\BaseController;
 use App\Security\Entity\UserRoles;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

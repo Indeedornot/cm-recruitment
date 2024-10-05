@@ -1,0 +1,11 @@
+{# @var error \Exception #}
+
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}Error during Form Manipulation{% endblock %}
+
+{% block body %}
+    <h1>{{ error.message }}</h1>
+    <p>{{ error.file }}:{{ error.line }}</p>
+    <pre>{{ error.trace|json_encode }}</pre>
+{% endblock %}

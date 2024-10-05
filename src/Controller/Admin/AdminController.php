@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Controller\BaseController;
+use App\Controller\Base\BaseController;
 use App\Security\Entity\Admin;
 use App\Security\Entity\Client;
 use App\Security\Entity\UserRoles;

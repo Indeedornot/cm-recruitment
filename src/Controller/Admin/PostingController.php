@@ -2,7 +2,8 @@
 
 namespace App\Controller\Admin;
 
-use App\Controller\BaseController;
+use App\Controller\Base\BaseController;
+use App\Controller\Base\ErrorHandlerType;
 use App\Entity\Posting;
 use App\Form\PostingType;
 use App\Repository\PostingRepository;
@@ -32,28 +33,35 @@ class PostingController extends BaseController
     #[Route("/create", name: "create")]
     public function create(Request $request): Response
     {
-        try {
-            $posting = new Posting();
-            $form = $this->createForm(PostingType::class, $posting);
-            $form->handleRequest($request);
+        $this->setErrorHandler(ErrorHandlerType::FORM);
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $this->em->persist($posting);
-                $this->em->flush();
+        $posting = new Posting();
+        return $this->handlePostingForm($posting, $request);
+    }
 
-                return $this->render('pages/admin/posting/create.html.twig', [
-                    'form' => $this->createForm(PostingType::class)->createView()
-                ]);
-            }
+    private function handlePostingForm(Posting $posting, Request $request): Response
+    {
+        $form = $this->createForm(PostingType::class, $posting);
+        $form->handleRequest($request);
 
-            return $this->render('pages/admin/posting/create.html.twig', [
-                'form' => $form->createView()
-            ]);
-        } catch (\Exception $e) {
-//            TODO: Advanced error handling for forms? Separate message?
-            return $this->render('errors/index.html.twig', [
-                'error' => $e
-            ]);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($posting);
+            $this->em->flush();
+            $form = $this->createForm(PostingType::class);
         }
+
+        return $this->render('pages/admin/posting/manage.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    #[Route("/edit", name: "edit")]
+    public function edit(Request $request): Response
+    {
+        $this->setErrorHandler(ErrorHandlerType::FORM);
+
+        $id = $request->query->get('id');
+        $posting = $this->postingRepository->find($id);
+        return $this->handlePostingForm($posting, $request);
     }
 }
