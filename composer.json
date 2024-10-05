@@ -14,6 +14,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.2",
         "runtime/frankenphp-symfony": "^0.2.0",
+        "shapecode/hidden-entity-type-bundle": "^6.0",
         "symfony/console": "7.1.*",
         "symfony/dotenv": "7.1.*",
         "symfony/flex": "^2",
@@ -84,6 +85,7 @@
         }
     },
     "require-dev": {
+        "mockery/mockery": "^1.6",
         "pestphp/pest": "^3.2",
         "symfony/maker-bundle": "^1.61"
     }

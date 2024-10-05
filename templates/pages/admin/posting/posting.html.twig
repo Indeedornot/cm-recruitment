@@ -1,0 +1,34 @@
+{# {% if loop.index % 2 == 1 %} #}
+{#    {% set buttonClasses = buttonClasses ~ ' bg-secondary' %} #}
+{# {% endif %} #}
+
+{% set actionRow %}
+    <div class="d-flex justify-content-end gap-1">
+        <a class="btn btn-primary"
+            {#               href="{{ path('app_admin_posting_edit', {'id': posting.id}) }}" #}
+        >
+            <i class="fa-solid fa-pen"></i>
+        </a>
+        <a class="btn btn-danger"
+            {#               href="{{ path('app_admin_posting_delete', {'id': posting.id}) }}" #}
+        >
+            <i class="fa-solid fa-trash"></i>
+        </a>
+    </div>
+{% endset %}
+
+{% set buttonClasses = 'px-2 fw-bold fs-5' %}
+{% embed 'common/accordion-item.html.twig' with {
+    parentId: accordionId,
+    index: loop.index0,
+    headerTag: 'h3',
+    buttonClasses: buttonClasses
+} %}
+    {% block buttonText %}
+        {{ loop.index }}. {{ posting.title }}
+    {% endblock %}
+    {% block body %}
+        <p>{{ posting.description }}</p>
+        {{ actionRow }}
+    {% endblock %}
+{% endembed %}

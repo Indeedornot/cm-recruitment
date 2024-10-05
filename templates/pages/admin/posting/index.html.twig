@@ -1,0 +1,35 @@
+{% extends 'layouts/base.html.twig' %}
+{% import 'common/accordion-item.html.twig' as accordion %}
+
+{% block body %}
+    <div class="container-y container-fluid">
+        <div class="gap-2 d-grid">
+            <a class="btn btn-primary w-100" href="{{ url('app_admin_posting_create') }}">
+                Create new posting
+            </a>
+
+            {% set accordionId = 'postings-' ~ random() %}
+            <div class="accordion" id="{{ accordionId }}">
+                {% if postings is not empty %}
+                    {% for posting in postings %}
+                        {% include 'pages/admin/posting/posting.html.twig' with {
+                            posting: posting
+                        } %}
+                    {% endfor %}
+                {% else %}
+                    {% embed 'common/accordion-item.html.twig' with {
+                        parentId: accordionId,
+                        index: 0,
+                    } %}
+                        {% block buttonText %}
+                            No postings found
+                        {% endblock %}
+                        {% block body %}
+                            <p>No Postings created yet. Create one to see it here.</p>
+                        {% endblock %}
+                    {% endembed %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

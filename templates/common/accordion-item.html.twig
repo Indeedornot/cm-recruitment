@@ -1,0 +1,40 @@
+{% if open is not defined %}
+    {% set open = false %}
+{% endif %}
+
+{% set itemId = parentId ~ '-' ~ index %}
+{% set header %}
+    {% set headerTag = headerTag|default('div') %}
+    <{{ headerTag }} class="accordion-header">
+    {% set attrs = 'data-bs-toggle="collapse" data-bs-target="#'~itemId~'" aria-controls="'~itemId~'"' %}
+    {% if open %}
+        {% set attrs = attrs ~ ' aria-expanded="true"' %}
+    {% else %}
+        {% set attrs = attrs ~ ' aria-expanded="false" ' %}
+    {% endif %}
+
+    {% block button %}
+        <button class="accordion-button {% if not open %}collapsed{% endif %} {{ buttonClasses|default('') }}"
+                type="button" {{ attrs|raw }}>
+            {% block buttonText %}
+                Button
+            {% endblock %}
+        </button>
+    {% endblock %}
+    </{{ headerTag }}>
+{% endset %}
+<div class="accordion-item">
+    {{ header }}
+    <div id="{{ itemId }}"
+         class="accordion-collapse collapse {% if open %}true{% endif %}"
+         data-bs-parent="#{{ parentId }}"
+    >
+        {% block collapse %}
+            <div class="accordion-body">
+                {% block body %}
+                    Body
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+</div>
