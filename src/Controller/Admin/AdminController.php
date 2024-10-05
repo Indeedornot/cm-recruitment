@@ -51,7 +51,9 @@ class AdminController extends BaseController
                 $this->manager->persist($user);
                 $this->manager->flush();
 
-                return $this->render('pages/admin/accounts/create.html.twig');
+                return $this->render('pages/admin/accounts/create.html.twig', [
+                    'form' => $this->createForm(UserType::class)->createView()
+                ]);
             }
 
             return $this->render('pages/admin/accounts/create.html.twig', [
