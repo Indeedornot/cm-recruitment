@@ -8,14 +8,19 @@
     {%- endif -%}
 {%- endblock form_errors -%}
 
-{%- block form_widget -%}
-    {%- set attr = attr|merge({'class': (attr.class|default('') ~ ' form-control')|trim}) -%}
-    {% if compound %}
-        {{- block('form_widget_compound') -}}
-    {% else %}
-        {{- block('form_widget_simple') -}}
-    {% endif %}
-{%- endblock form_widget -%}
+{%- block form_row -%}
+    {%- set widget_attr = {} -%}
+    {%- if help is not empty -%}
+        {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+    {%- endif -%}
+    <div{% with {attr: row_attr} %}{{ block('attributes') }}{% endwith %}>
+        {{- form_label(form) -}}
+        {{- form_errors(form) -}}
+        {%- set widget_attr = widget_attr|merge({attr: {'class': (widget_attr.class|default('') ~ ' form-control')|trim}}) -%}
+        {{- form_widget(form, widget_attr) -}}
+        {{- form_help(form) -}}
+    </div>
+{%- endblock form_row -%}
 
 {%- block form_start -%}
     {%- do form.setMethodRendered() -%}
@@ -34,3 +39,5 @@
         <input type="hidden" name="_method" value="{{ method }}"/>
     {%- endif -%}
     {%- endblock form_start -%}
+
+
