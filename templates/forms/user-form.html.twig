@@ -9,9 +9,9 @@
 {% endif %}
 
 {% block buttons %}
-<div class="col-md-12">
-    {{ form_button(form, {variant: 'primary', icon: 'user', label: 'Register'}) }}
-    {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'Back', href: path('app_admin_admins')}) }}
-</div>
-{% block %}
+    <div class="col-md-12">
+        {{ form_button(form, {variant: 'primary', icon: 'user', label: 'Save'}) }}
+        {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'Back', href: path('app_admin_admins')}) }}
+    </div>
+{% endblock %}
 {{ form_end(form) }}
