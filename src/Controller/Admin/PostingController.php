@@ -36,6 +36,7 @@ class PostingController extends BaseController
         $this->setErrorHandler(ErrorHandlerType::FORM);
 
         $posting = new Posting();
+        $posting->setCreatedBy($this->getAdmin());
         return $this->handlePostingForm($posting, $request);
     }
 

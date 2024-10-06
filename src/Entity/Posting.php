@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PostingRepository;
+use App\Security\Entity\Admin;
+use App\Security\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -28,6 +30,12 @@ class Posting
 
     #[ORM\OneToMany(targetEntity: PostingAnswer::class, mappedBy: 'posting')]
     private PersistentCollection $answers;
+
+    #[ORM\ManyToOne(targetEntity: Admin::class, inversedBy: 'postings')]
+    private Admin $createdBy;
+
+    #[ORM\ManyToOne(targetEntity: Admin::class, inversedBy: 'postings')]
+    private Admin $assignedTo;
 
     public function getId(): ?int
     {
@@ -75,6 +83,28 @@ class Posting
     public function setQuestions(array $questions): Posting
     {
         $this->questions = $questions;
+        return $this;
+    }
+
+    public function getCreatedBy(): User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(Admin $createdBy): Posting
+    {
+        $this->createdBy = $createdBy;
+        return $this;
+    }
+
+    public function getAssignedTo(): User
+    {
+        return $this->assignedTo;
+    }
+
+    public function setAssignedTo(Admin $assignedTo): Posting
+    {
+        $this->assignedTo = $assignedTo;
         return $this;
     }
 }
