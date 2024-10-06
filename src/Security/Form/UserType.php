@@ -3,6 +3,7 @@
 namespace App\Security\Form;
 
 use App\Form\Exception;
+use App\Security\Entity\Admin;
 use App\Security\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\{EmailType, PasswordType, RepeatedType, TextType};
@@ -20,6 +21,9 @@ class UserType extends AbstractType
             ->add('email', EmailType::class)
             ->add('name', TextType::class);
 
+        /** @var User $user */
+        $user = $builder->getData();
+
         if ($options['mode'] !== 'edit') {
             if ($options['require_password'] ?? true) {
                 $builder->add('password', RepeatedType::class, [
@@ -34,12 +38,14 @@ class UserType extends AbstractType
                     'second_options' => ['label' => 'Confirm Password']
                 ]);
             } else {
-                /** @var User $user */
-                $user = $builder->getData();
                 $pswd = $this->random_str($this->minPasswordLength);
                 $user->setPassword($pswd)
                     ->setPlainPassword($pswd);
             }
+        }
+
+        if ($user instanceof Admin) {
+            $user->setCreatedBy($this->security->getUser());
         }
     }
 

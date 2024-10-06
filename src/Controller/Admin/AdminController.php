@@ -47,9 +47,7 @@ class AdminController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user
-                ->setAndHashPassword($user->getPassword())
-                ->setCreatedBy($this->security->getUser());
+            $user->setAndHashPassword($user->getPassword());
 
             $this->manager->persist($user);
             $this->manager->flush();

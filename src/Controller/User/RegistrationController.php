@@ -4,19 +4,16 @@ namespace App\Controller\User;
 
 use App\Controller\Base\BaseController;
 use App\Controller\Base\ErrorHandlerType;
-use App\Security\Entity\Client;
 use App\Security\Factory\UserFactory;
 use App\Security\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 class RegistrationController extends BaseController
 {
     public function __construct(
-        private readonly UserPasswordHasherInterface $passwordEncoder,
         private EntityManagerInterface $manager,
         private UserFactory $userFactory
     ) {
@@ -33,7 +30,7 @@ class RegistrationController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword($this->passwordEncoder->hashPassword($user, $user->getPassword()));
+            $user->setAndHashPassword($user->getPassword());
             $this->manager->persist($user);
             $this->manager->flush();
             return $this->redirectToRoute('app_login');
