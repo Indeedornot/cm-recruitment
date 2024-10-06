@@ -55,10 +55,8 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(options: ['default' => true])]
     protected bool $isEnabled = true;
 
-    public function __construct(
-        private EventDispatcherInterface $eventDispatcher,
-        private UserPasswordHasherInterface $passwordHasher
-    ) {
+    public function __construct()
+    {
     }
 
     public function getId(): ?int
@@ -157,7 +155,6 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->roles = $this->getRoles();
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new DateTimeImmutable();
-        $this->eventDispatcher->dispatch(new UserEvent($this), UserEvent::PRE_USER_CREATED);
     }
 
     /**
@@ -187,20 +184,17 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\PostPersist]
     public function postPersist(): void
     {
-        $this->eventDispatcher->dispatch(new UserEvent($this), UserEvent::POST_USER_CREATED);
     }
 
     #[ORM\PreUpdate]
     public function preUpdate(): void
     {
-        $this->eventDispatcher->dispatch(new UserEvent($this), UserEvent::PRE_USER_CHANGED);
         $this->updatedAt = new DateTimeImmutable();
     }
 
     #[ORM\PostUpdate]
     public function postUpdate(): void
     {
-        $this->eventDispatcher->dispatch(new UserEvent($this), UserEvent::POST_USER_CHANGED);
     }
 
     public function getReadableRoles(): array
