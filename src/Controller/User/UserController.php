@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted(UserRoles::CLIENT->value)]
 #[Route('/user', name: 'app_user_')]
 class UserController extends BaseController
 {
