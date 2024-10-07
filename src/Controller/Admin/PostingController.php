@@ -72,7 +72,7 @@ class PostingController extends BaseController
 
 
         return $this->handlePostingForm($posting, $request, [
-            'form' => $this->createForm(PostingType::class, $posting)->createView(),
+            'form' => $this->createForm(PostingType::class, $this->postingRepository->find($id))->createView(),
         ]);
     }
 }

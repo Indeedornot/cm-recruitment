@@ -72,7 +72,7 @@ class AdminController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->persist($user);
             $this->manager->flush();
-            $form = $this->createForm(UserType::class, $user, ['mode' => 'edit']);
+            $form = $this->createForm(UserType::class, $this->userRepository->find($id), ['mode' => 'edit']);
         }
 
         return $this->render('pages/admin/accounts/manage.html.twig', [
