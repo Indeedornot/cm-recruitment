@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\PostingRepository;
 use App\Security\Entity\Admin;
 use App\Security\Entity\User;
+use DateTimeImmutable;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -25,11 +27,8 @@ class Posting
     #[ORM\Column]
     private string $description;
 
-    #[ORM\OneToMany(targetEntity: PostingQuestion::class, mappedBy: 'posting')]
+    #[ORM\OneToMany(targetEntity: PostingQuestion::class, mappedBy: 'posting', cascade: ['persist', 'remove'])]
     private PersistentCollection $questions;
-
-    #[ORM\OneToMany(targetEntity: PostingAnswer::class, mappedBy: 'posting')]
-    private PersistentCollection $answers;
 
     #[ORM\ManyToOne(targetEntity: Admin::class, inversedBy: 'postings')]
     private Admin $createdBy;
@@ -64,25 +63,35 @@ class Posting
         return $this;
     }
 
-    public function getAnswers(): PersistentCollection
+    public function getQuestions(): Collection
     {
-        return $this->answers;
+        return $this->questions->filter(fn(PostingQuestion $question) => $question->getDisabledAt() === null);
     }
 
-    public function setAnswers(array $answers): Posting
+    public function setQuestions(array|PersistentCollection $questions): Posting
     {
-        $this->answers = $answers;
+        $this->setPersistentCollection($this->questions, $questions);
         return $this;
     }
 
-    public function getQuestions(): PersistentCollection
+    private function setPersistentCollection(PersistentCollection $collection, array|PersistentCollection $items): void
     {
-        return $this->questions;
+        if ($items instanceof PersistentCollection) {
+            $items = $items->toArray();
+        }
+
+        $collection->clear();
+        foreach ($items as $item) {
+            $collection->add($item);
+        }
     }
 
-    public function setQuestions(array $questions): Posting
+    public function addQuestion(PostingQuestion $question): Posting
     {
-        $this->questions = $questions;
+        if (!$this->questions->contains($question)) {
+            $question->setPosting($this);
+            $this->questions->add($question);
+        }
         return $this;
     }
 
@@ -105,6 +114,13 @@ class Posting
     public function setAssignedTo(Admin $assignedTo): Posting
     {
         $this->assignedTo = $assignedTo;
+        return $this;
+    }
+
+    public function removeQuestion(PostingQuestion $question): Posting
+    {
+        $this->questions->removeElement($question);
+        $question->setDisabledAt(new DateTimeImmutable());
         return $this;
     }
 }

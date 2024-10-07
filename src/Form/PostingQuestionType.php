@@ -6,6 +6,7 @@ use App\Entity\Posting;
 use App\Entity\PostingQuestion;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,13 +16,7 @@ class PostingQuestionType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('description')
-            ->add('isEnabled')
-            ->add('posting', EntityType::class, [
-                'class' => Posting::class,
-                'choice_label' => 'id',
-            ])
-        ;
+            ->add('description');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

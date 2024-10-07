@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PostingQuestionRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -20,8 +21,8 @@ class PostingQuestion
     #[ORM\Column]
     private string $description;
 
-    #[ORM\Column]
-    private array $isEnabled;
+    #[ORM\Column(nullable: true)]
+    private ?DateTimeImmutable $disabledAt;
 
     #[ORM\ManyToOne(targetEntity: Posting::class, inversedBy: 'questions')]
     private Posting $posting;
@@ -55,17 +56,6 @@ class PostingQuestion
         return $this;
     }
 
-    public function getIsEnabled(): array
-    {
-        return $this->isEnabled;
-    }
-
-    public function setIsEnabled(array $isEnabled): static
-    {
-        $this->isEnabled = $isEnabled;
-        return $this;
-    }
-
     public function getPosting(): Posting
     {
         return $this->posting;
@@ -74,6 +64,17 @@ class PostingQuestion
     public function setPosting(Posting $posting): PostingQuestion
     {
         $this->posting = $posting;
+        return $this;
+    }
+
+    public function getDisabledAt(): ?DateTimeImmutable
+    {
+        return $this->disabledAt;
+    }
+
+    public function setDisabledAt(?DateTimeImmutable $disabledAt): static
+    {
+        $this->disabledAt = $disabledAt;
         return $this;
     }
 }
