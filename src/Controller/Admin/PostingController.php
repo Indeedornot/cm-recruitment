@@ -30,6 +30,15 @@ class PostingController extends BaseController
         ]);
     }
 
+    #[Route("/{id}", name: "show")]
+    public function show(Request $request, int $id): Response
+    {
+        $posting = $this->postingRepository->find($id);
+        return $this->render('pages/admin/posting/show.html.twig', [
+            'posting' => $posting,
+        ]);
+    }
+
     #[Route("/create", name: "create")]
     public function create(Request $request): Response
     {

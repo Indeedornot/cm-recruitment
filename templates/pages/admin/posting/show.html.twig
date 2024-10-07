@@ -1,0 +1,59 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block body %}
+    {% set accordionId = 'postings-' ~ random() %}
+<div class="accordion" id="{{ accordionId }}">
+    {% set actionRow %}
+        {% set canEdit = is_granted(constant('App\\Security\\Entity\\UserRoles::SUPER_ADMIN').value) or posting.assignedTo.id == app.user.id %}
+        <div class="d-flex justify-content-end gap-1">
+            <a class="btn btn-primary {% if not canEdit %}disabled{% endif %}"
+               href="{{ path('app_admin_posting_edit', {'id': posting.id}) }}"
+            >
+                <i class="fa-solid fa-pen"></i>
+            </a>
+            <a class="btn btn-danger"
+                {#            href="{{ path('app_admin_posting_delete', {'id': posting.id}) }}" #}
+            >
+                <i class="fa-solid fa-trash"></i>
+            </a>
+        </div>
+    {% endset %}
+
+
+    <div class="card">
+        <h4 class="card-header fw-bold">
+            {{ posting.title }}
+            <span class="text-secondary ps-2">- {{ posting.assignedTo.name }}</span>
+        </h4>
+        <div class="card-body">
+            <p>{{ posting.description }}</p>
+            <p class="fw-semibold">Questions:</p>
+            {% if posting.questions.empty %}
+                <p>No questions created yet. Create one to see it here.</p>
+            {% else %}
+                {% for question in posting.questions %}
+                    {% set accordionId = 'postings-' ~ random() ~ '-' ~ loop.index0 %}
+                    <div class="accordion" id="{{ accordionId }}">
+                        {% embed 'common/accordion-item.html.twig' with {
+                            parentId: accordionId,
+                            index: loop.index0,
+                            headerTag: 'p',
+                            buttonClasses: 'px-2 py-2',
+                        } %}
+                            {% block buttonText %}
+                                {{ loop.index }}. {{ question.title }}
+                            {% endblock %}
+                            {% block body %}
+                                <p>{{ question.description }}</p>
+                            {% endblock %}
+                        {% endembed %}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            {{ actionRow }}
+        </div>
+    </div>
+    {% endblock %}
+

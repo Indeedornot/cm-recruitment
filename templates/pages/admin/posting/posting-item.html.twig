@@ -10,6 +10,11 @@
         >
             <i class="fa-solid fa-pen"></i>
         </a>
+        <a class="btn btn-secondary"
+           href="{{ path('app_admin_posting_show', {'id': posting.id}) }}"
+        >
+            <i class="fa-solid fa-eye"></i>
+        </a>
         <a class="btn btn-danger"
             {#            href="{{ path('app_admin_posting_delete', {'id': posting.id}) }}" #}
         >
@@ -22,7 +27,7 @@
 {% embed 'common/accordion-item.html.twig' with {
     parentId: accordionId,
     index: loop.index0,
-    headerTag: 'h3',
+    headerTag: 'h5',
     buttonClasses: buttonClasses
 } %}
     {% block buttonText %}
