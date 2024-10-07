@@ -2,7 +2,14 @@
     {% set open = false %}
 {% endif %}
 
-{% set itemId = parentId ~ '-' ~ index %}
+{% set hasContent = block('body') is not empty %}
+
+{% set index = 0 %}
+{% if loop is defined %}
+    {% set index = loop.index %}
+{% endif %}
+{% set itemId = parentId ~ '-' ~ index|default(0) %}
+
 {% set header %}
     {% set headerTag = headerTag|default('div') %}
     <{{ headerTag }} class="accordion-header">
@@ -14,7 +21,12 @@
     {% endif %}
 
     {% block button %}
-        <button class="accordion-button {% if not open %}collapsed{% endif %} {{ buttonClasses|default('') }}"
+        <button class="
+                    accordion-button
+                    {% if not open %}collapsed{% endif %}
+                    {{ buttonClasses|default('') }}
+                    {% if not hasContent %}empty-accordion{% endif %}
+                "
                 type="button" {{ attrs|raw }}>
             {% block buttonText %}
                 Button
@@ -25,16 +37,25 @@
 {% endset %}
 <div class="accordion-item {{ itemClasses|default('') }}">
     {{ header }}
-    <div id="{{ itemId }}"
-         class="accordion-collapse collapse {% if open %}true{% endif %}"
-         data-bs-parent="#{{ parentId }}"
-    >
-        {% block collapse %}
-            <div class="accordion-body">
-                {% block body %}
-                    Body
-                {% endblock %}
-            </div>
-        {% endblock %}
-    </div>
+    {% if hasContent %}
+        <div id="{{ itemId }}"
+             class="accordion-collapse collapse {% if open %}true{% endif %}"
+             data-bs-parent="#{{ parentId }}"
+        >
+            {% block collapse %}
+                <div class="accordion-body">
+                    {% block body %}{% endblock %}
+                </div>
+            {% endblock %}
+        </div>
+    {% endif %}
 </div>
+
+{% set css %}
+    <style>
+        .empty-accordion::after {
+            background-image: unset;
+        }
+    </style>
+{% endset %}
+{{ assets_styles().addStyle(css, 'accordion-item.html.twig') }}

@@ -28,15 +28,25 @@
         <div class="card-body">
             <p>{{ posting.description }}</p>
             <p class="fw-semibold">Questions:</p>
+
+            {% set accordionId = 'postings-' ~ random() %}
             {% if posting.questions.empty %}
-                <p>No questions created yet. Create one to see it here.</p>
+                <div class="accordion" id="{{ accordionId }}">
+                    {% embed 'common/accordion-item.html.twig' with {
+                        headerTag: 'p',
+                        buttonClasses: 'px-2 py-2',
+                        parentId: accordionId
+                    } %}
+                        {% block buttonText %}
+                            No questions created yet. Create one to see it here.
+                        {% endblock %}
+                    {% endembed %}
+                </div>
             {% else %}
                 {% for question in posting.questions %}
-                    {% set accordionId = 'postings-' ~ random() ~ '-' ~ loop.index0 %}
                     <div class="accordion" id="{{ accordionId }}">
                         {% embed 'common/accordion-item.html.twig' with {
                             parentId: accordionId,
-                            index: loop.index0,
                             headerTag: 'p',
                             buttonClasses: 'px-2 py-2',
                         } %}
