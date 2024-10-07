@@ -23,7 +23,7 @@
     {% endblock %}
     </{{ headerTag }}>
 {% endset %}
-<div class="accordion-item">
+<div class="accordion-item {{ itemClasses|default('') }}">
     {{ header }}
     <div id="{{ itemId }}"
          class="accordion-collapse collapse {% if open %}true{% endif %}"
