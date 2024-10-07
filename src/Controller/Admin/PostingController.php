@@ -40,7 +40,7 @@ class PostingController extends BaseController
         return $this->handlePostingForm($posting, $request);
     }
 
-    private function handlePostingForm(Posting $posting, Request $request): Response
+    private function handlePostingForm(Posting $posting, Request $request, array $params = []): Response
     {
         $form = $this->createForm(PostingType::class, $posting);
         $form->handleRequest($request);
@@ -51,9 +51,9 @@ class PostingController extends BaseController
             $form = $this->createForm(PostingType::class);
         }
 
-        return $this->render('pages/admin/posting/manage.html.twig', [
-            'form' => $form->createView()
-        ]);
+        return $this->render('pages/admin/posting/manage.html.twig', array_merge([
+            'form' => $form->createView(),
+        ], $params));
     }
 
     #[Route("/edit", name: "edit")]
@@ -63,6 +63,9 @@ class PostingController extends BaseController
 
         $id = $request->query->get('id');
         $posting = $this->postingRepository->find($id);
-        return $this->handlePostingForm($posting, $request);
+
+        return $this->handlePostingForm($posting, $request, [
+            'form' => $this->createForm(PostingType::class, $posting)->createView(),
+        ]);
     }
 }

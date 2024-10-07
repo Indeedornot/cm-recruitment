@@ -48,10 +48,9 @@ class AdminController extends BaseController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setAndHashPassword($user->getPassword());
-
             $this->manager->persist($user);
             $this->manager->flush();
-            $form = $this->createForm(UserType::class);
+            $form = $this->createForm(UserType::class, $this->userFactory->createAdmin());
         }
 
         return $this->render('pages/admin/accounts/manage.html.twig', [
@@ -73,7 +72,7 @@ class AdminController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->persist($user);
             $this->manager->flush();
-            $form = $this->createForm(UserType::class);
+            $form = $this->createForm(UserType::class, $user, ['mode' => 'edit']);
         }
 
         return $this->render('pages/admin/accounts/manage.html.twig', [
