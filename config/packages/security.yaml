@@ -25,7 +25,7 @@ security:
             logout:
                 path: app_logout
                 # where to redirect after logout
-                target: app_list
+                target: app_index_index
             form_login:
                 login_path: app_login
                 check_path: app_login
