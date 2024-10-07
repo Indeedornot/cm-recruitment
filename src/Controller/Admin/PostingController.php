@@ -30,7 +30,7 @@ class PostingController extends BaseController
         ]);
     }
 
-    #[Route("/{id}", name: "show")]
+    #[Route("/{id}", name: "show", requirements: ['id' => '\d+'])]
     public function show(Request $request, int $id): Response
     {
         $posting = $this->postingRepository->find($id);
