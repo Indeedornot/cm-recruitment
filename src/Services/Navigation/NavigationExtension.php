@@ -59,7 +59,7 @@ class NavigationExtension extends AbstractExtension
 
     public function getPostLoginRoute(): string
     {
-        return $this->getIndexRoute() ?? $this->router->generate('app_index_index');
+        return $this->getIndexRoute() ?? $this->router->generate('app_user_index');
     }
 
     public function getIndexRoute(): ?string
@@ -68,5 +68,7 @@ class NavigationExtension extends AbstractExtension
         if ($user instanceof Admin) {
             return $this->router->generate('app_admin_index');
         }
+
+        return null;
     }
 }
