@@ -5,7 +5,14 @@
 {% block title %}Error during Form Manipulation{% endblock %}
 
 {% block body %}
-    <h1>{{ error.message }}</h1>
-    <p>{{ error.file }}:{{ error.line }}</p>
-    <pre>{{ error.trace|json_encode }}</pre>
+    <div class="card">
+        <div class="card-header">
+            <h1>{{ error.message }}</h1>
+        </div>
+        <div class="card-body">
+            <p>{{ error.file }}:{{ error.line }}</p>
+            <hr/>
+            <pre>{{ error.trace|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+        </div>
+    </div>
 {% endblock %}
