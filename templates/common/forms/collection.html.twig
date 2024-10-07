@@ -1,0 +1,119 @@
+{% set formKey = formKey|default('questions') %}
+
+{% set containerClass = containerClass|default('list-group') %}
+{% set itemClass = itemClass|default('list-group-item d-grid') %}
+
+{% set buttonLabel = 'Add new ' ~ formKey %}
+{% set attrs = attrs|default({}) %}
+{% set attrs = attrs|merge({
+    type: 'button',
+    class: ('add_item_link ' ~ attrs.class|default(''))|trim,
+    'data-collection-holder-class': formKey
+}) %}
+{% set addButtonHtml %}
+    {% block addButton %}
+        {{ form_button(form, {label: buttonLabel, icon: 'plus', attrs}) }}
+    {% endblock %}
+{% endset %}
+
+{% set removeButtonHtml %}
+    {% block removeButton %}
+        {{ form_button(form, {label: 'Remove', icon: 'trash', variant: 'danger'}) }}
+    {% endblock %}
+{% endset %}
+
+{% set item %}
+    {{ form_widget(form[formKey].vars.prototype)|e('html_attr') }}
+{% endset %}
+
+{% set itemContainer %}
+    {% block itemHtml %}
+        __item__
+    {% endblock %}
+{% endset %}
+
+<div class="mb-3">
+    {{ form_label(form[formKey]) }}
+    <ul class="{{ (formKey ~ ' ' ~ containerClass)|trim }} collection-item-list"
+        data-index="{{ form[formKey]|length > 0 ? form[formKey]|last.vars.name + 1 : 0 }}"
+        data-prototype="{{ itemContainer|replace({'__item__': item})|raw }}"
+    >
+        {% for i in form[formKey] %}
+            <li class="{{ itemClass }}">
+                {{ itemContainer|replace({'__item__': form_widget(i)})|raw }}
+            </li>
+        {% endfor %}
+    </ul>
+    {{ addButtonHtml|raw }}
+</div>
+
+{% do form[formKey].setRendered() %}
+
+{% set sharedJs %}
+    <script>
+        function addFormToCollection(e, params) {
+            const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+            const item = document.createElement('li');
+            item.className = params.itemClass;
+            item.innerHTML = collectionHolder
+                .dataset
+                .prototype
+                .replace(
+                    /__name__/g,
+                    collectionHolder.dataset.index
+                );
+
+            collectionHolder.appendChild(item);
+            collectionHolder.dataset.index++;
+            // add a delete link to the new form
+            addTagFormDeleteLink(item, params);
+        };
+
+        function addTagFormDeleteLink(item, params) {
+            const removeFormButton = document.createElement('div');
+            removeFormButton.innerHTML = params.removeButtonHtml;
+
+            item.append(removeFormButton);
+
+            removeFormButton.querySelector('button').addEventListener('click', (e) => {
+                e.preventDefault();
+                // remove the li for the tag form
+                item.remove();
+            });
+        }
+    </script>
+{% endset %}
+{{ assets_scripts().addScript(sharedJs, 'collection.html.twig:shared') }}
+
+{% set javascript %}
+    <script>
+        document
+            .querySelector('ul.{{ formKey }}')
+            .parentElement
+            .querySelectorAll('.add_item_link')
+            .forEach(btn => {
+                btn.addEventListener("click", (e) => addFormToCollection(e, {
+                    itemClass: `{{ itemClass }}`,
+                    removeButtonHtml: `{{ removeButtonHtml }}`
+                }));
+            });
+
+        document
+            .querySelectorAll('ul.{{ formKey }} li')
+            .forEach((tag) => {
+                addTagFormDeleteLink(tag, {
+                    removeButtonHtml: `{{ removeButtonHtml }}`
+                });
+            })
+    </script>
+{% endset %}
+{{ assets_scripts().addScript(javascript) }}
+
+{% set css %}
+    <style>
+        .collection-item-list li:last-child {
+            margin-bottom: 0.75rem;
+        }
+    </style>
+{% endset %}
+{{ assets_styles().addStyle(css, 'collection.html.twig:shared') }}
