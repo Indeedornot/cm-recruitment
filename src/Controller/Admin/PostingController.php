@@ -64,6 +64,13 @@ class PostingController extends BaseController
         $id = $request->query->get('id');
         $posting = $this->postingRepository->find($id);
 
+        if ($this->getAdmin()->getId() !== $posting->getAssignedTo()->getId() &&
+            !$this->isGranted(UserRoles::SUPER_ADMIN->value)
+        ) {
+            $this->createAccessDeniedException("You are not allowed to edit this posting");
+        }
+
+
         return $this->handlePostingForm($posting, $request, [
             'form' => $this->createForm(PostingType::class, $posting)->createView(),
         ]);
