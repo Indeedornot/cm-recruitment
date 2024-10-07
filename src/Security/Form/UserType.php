@@ -5,6 +5,8 @@ namespace App\Security\Form;
 use App\Form\Exception;
 use App\Security\Entity\Admin;
 use App\Security\Entity\User;
+use App\Security\Factory\UserFactory;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\{EmailType, PasswordType, RepeatedType, TextType};
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,14 +17,17 @@ class UserType extends AbstractType
 {
     private int $minPasswordLength = 12;
 
+    public function __construct(
+        private Security $security,
+        private UserFactory $userFactory
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('email', EmailType::class)
             ->add('name', TextType::class);
-
-        /** @var User $user */
-        $user = $builder->getData();
 
         if ($options['mode'] !== 'edit') {
             if ($options['require_password'] ?? true) {
@@ -39,13 +44,10 @@ class UserType extends AbstractType
                 ]);
             } else {
                 $pswd = $this->random_str($this->minPasswordLength);
-                $user->setPassword($pswd)
+                $builder->getData()
+                    ->setPassword($pswd)
                     ->setPlainPassword($pswd);
             }
-        }
-
-        if ($user instanceof Admin) {
-            $user->setCreatedBy($this->security->getUser());
         }
     }
 
@@ -78,6 +80,7 @@ class UserType extends AbstractType
             'data_class' => User::class,
             'require_password' => true,
             'mode' => 'create',
+            'createdBy' => $this->security->getUser()
         ]);
     }
 }
