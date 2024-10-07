@@ -12,7 +12,7 @@
             <div class="accordion" id="{{ accordionId }}">
                 {% if postings is not empty %}
                     {% for posting in postings %}
-                        {% include 'pages/admin/posting/posting.html.twig' with {
+                        {% include 'pages/admin/posting/posting-item.html.twig' with {
                             posting: posting
                         } %}
                     {% endfor %}
