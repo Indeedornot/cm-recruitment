@@ -50,7 +50,7 @@ class PostingType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Posting::class,
+            'createdBy' => $this->security->getUser()
         ]);
-        $resolver->setDefault('createdBy', $this->security->getUser());
     }
 }

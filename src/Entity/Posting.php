@@ -2,6 +2,11 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\CreatedByAdmin;
+use App\Entity\Trait\DaoHelpers;
+use App\Entity\Trait\Disableable;
+use App\Entity\Trait\Identified;
+use App\Entity\Trait\Timestampable;
 use App\Repository\PostingRepository;
 use App\Security\Entity\Admin;
 use App\Security\Entity\User;
@@ -16,10 +21,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Entity(repositoryClass: PostingRepository::class)]
 class Posting
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    use Timestampable;
+    use Disableable;
+    use Identified;
+    use DaoHelpers;
 
     #[ORM\Column]
     private string $title;
@@ -30,16 +35,11 @@ class Posting
     #[ORM\OneToMany(targetEntity: PostingQuestion::class, mappedBy: 'posting', cascade: ['persist', 'remove'])]
     private PersistentCollection $questions;
 
-    #[ORM\ManyToOne(targetEntity: Admin::class, inversedBy: 'postings')]
-    private Admin $createdBy;
+    #[ORM\OneToMany(targetEntity: ClientApplication::class, mappedBy: 'posting')]
+    private PersistentCollection $clientApplications;
 
-    #[ORM\ManyToOne(targetEntity: Admin::class, inversedBy: 'postings')]
+    #[ORM\ManyToOne(targetEntity: Admin::class)]
     private Admin $assignedTo;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getDescription(): string
     {
@@ -74,17 +74,6 @@ class Posting
         return $this;
     }
 
-    private function setPersistentCollection(PersistentCollection $collection, array|PersistentCollection $items): void
-    {
-        if ($items instanceof PersistentCollection) {
-            $items = $items->toArray();
-        }
-
-        $collection->clear();
-        foreach ($items as $item) {
-            $collection->add($item);
-        }
-    }
 
     public function addQuestion(PostingQuestion $question): Posting
     {
@@ -92,17 +81,6 @@ class Posting
             $question->setPosting($this);
             $this->questions->add($question);
         }
-        return $this;
-    }
-
-    public function getCreatedBy(): User
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(Admin $createdBy): Posting
-    {
-        $this->createdBy = $createdBy;
         return $this;
     }
 

@@ -14,14 +14,11 @@ class PostingAnswer
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: PostingQuestion::class)]
+    #[ORM\ManyToOne(targetEntity: PostingQuestion::class, inversedBy: 'id')]
     private PostingQuestion $question;
 
-    #[ORM\ManyToOne(targetEntity: Posting::class, inversedBy: 'answers')]
-    private Posting $posting;
-
-    #[ORM\ManyToOne(targetEntity: Client::class)]
-    private Client $user;
+    #[ORM\ManyToOne(targetEntity: ClientApplication::class, inversedBy: 'answers')]
+    private ClientApplication $user;
 
     #[ORM\Column]
     private string $answer;
@@ -53,23 +50,12 @@ class PostingAnswer
         return $this;
     }
 
-    public function getPosting(): Posting
-    {
-        return $this->posting;
-    }
-
-    public function setPosting(Posting $posting): PostingAnswer
-    {
-        $this->posting = $posting;
-        return $this;
-    }
-
-    public function getUser(): Client
+    public function getUser(): ClientApplication
     {
         return $this->user;
     }
 
-    public function setUser(Client $user): PostingAnswer
+    public function setUser(ClientApplication $user): static
     {
         $this->user = $user;
         return $this;

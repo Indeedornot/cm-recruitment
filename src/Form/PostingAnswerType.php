@@ -8,12 +8,18 @@ use App\Entity\PostingQuestion;
 use App\Security\Entity\Client;
 use Shapecode\Bundle\HiddenEntityTypeBundle\Form\Type\HiddenEntityType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PostingAnswerType extends AbstractType
 {
+    public function __construct(
+        private Security $security,
+    ) {
+    }
+    
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
