@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait CreatedByAdmin
 {
-    #[ORM\Column]
     #[ORM\ManyToOne(targetEntity: Admin::class)]
     public Admin $createdBy;
 
