@@ -2,7 +2,7 @@
 
 namespace App\Services\Assets;
 
-use App\Helpers\Singleton;
+use App\Contract\Patterns\Singleton\Singleton;
 
 /**
  * @extends Singleton<ScriptCollection>
