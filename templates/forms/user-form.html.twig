@@ -3,9 +3,9 @@
 {{ form_start(form) }}
 {{ form_row(form.name) }}
 {{ form_row(form.email) }}
-{% if form.password is defined %}
-    {{ form_row(form.password.first) }}
-    {{ form_row(form.password.second) }}
+{% if form.plainPassword is defined %}
+    {{ form_row(form.plainPassword.first) }}
+    {{ form_row(form.plainPassword.second) }}
 {% endif %}
 
 {% block buttons %}
