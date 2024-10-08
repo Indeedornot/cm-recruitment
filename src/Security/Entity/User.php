@@ -94,13 +94,6 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function setAndHashPassword(string $password): static
-    {
-        $this->password = $this->passwordHasher->hashPassword($this, $password);
-
-        return $this;
-    }
-
     public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
