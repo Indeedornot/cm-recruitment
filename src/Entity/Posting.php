@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Entity\Trait\CreatedByAdmin;
-use App\Entity\Trait\DaoHelpers;
 use App\Entity\Trait\Disableable;
 use App\Entity\Trait\Identified;
 use App\Entity\Trait\Timestampable;
@@ -11,9 +10,9 @@ use App\Repository\PostingRepository;
 use App\Security\Entity\Admin;
 use App\Security\Entity\User;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_TITLE', fields: ['title'])]
@@ -24,22 +23,25 @@ class Posting
     use Timestampable;
     use Disableable;
     use Identified;
-    use DaoHelpers;
+    use CreatedByAdmin;
 
     #[ORM\Column]
     private string $title;
 
     #[ORM\Column]
     private string $description;
-
     #[ORM\OneToMany(targetEntity: PostingQuestion::class, mappedBy: 'posting', cascade: ['persist', 'remove'])]
-    private PersistentCollection $questions;
-
+    private Collection $questions;
     #[ORM\OneToMany(targetEntity: ClientApplication::class, mappedBy: 'posting')]
-    private PersistentCollection $clientApplications;
-
+    private Collection $clientApplications;
     #[ORM\ManyToOne(targetEntity: Admin::class)]
     private Admin $assignedTo;
+
+    public function __construct()
+    {
+        $this->questions = new ArrayCollection();
+        $this->clientApplications = new ArrayCollection();
+    }
 
     public function getDescription(): string
     {
@@ -68,9 +70,9 @@ class Posting
         return $this->questions->filter(fn(PostingQuestion $question) => $question->getDisabledAt() === null);
     }
 
-    public function setQuestions(array|PersistentCollection $questions): Posting
+    public function setQuestions(Collection $questions): Posting
     {
-        $this->setPersistentCollection($this->questions, $questions);
+        $this->questions = $questions;
         return $this;
     }
 
