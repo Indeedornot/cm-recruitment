@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraint;
 /**
  * @see https://github.com/Junker/phone-number-validator
  */
+#[\Attribute]
 class PhoneNumber extends Constraint
 {
     public const string ANY = 'any';
