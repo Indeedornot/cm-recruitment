@@ -2,49 +2,63 @@
 
 namespace App\Entity;
 
-use App\Entity\Trait\CreatedByAdmin;
-use App\Entity\Trait\Disableable;
+use App\Contract\PhoneNumber\Doctrine\PhoneNumberType;
 use App\Entity\Trait\Identified;
 use App\Entity\Trait\Timestampable;
 use App\Repository\PostingRepository;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use App\Security\Entity\Client;
+use libphonenumber\PhoneNumber;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Contract\PhoneNumber\Validator\PhoneNumber as PhoneNumberConstraint;
 
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_TITLE', fields: ['title'])]
-#[UniqueEntity(fields: ['title'], message: 'A posting with that title already exists')]
 #[ORM\Entity(repositoryClass: PostingRepository::class)]
 class Questionnaire
 {
-    use CreatedByAdmin;
     use Timestampable;
     use Identified;
 
+    #[ORM\Column]
     #[ORM\OneToOne(targetEntity: ClientApplication::class, inversedBy: 'questionnaire')]
     private ClientApplication $client;
 
     #[Assert\Email]
     #[ORM\Column]
     private string $email;
-    #[Assert\Regex(pattern: '/^(\+\d{2} )?\d{3} \d{3} \d{3}$/')]
-    #[ORM\Column]
-    private string $phone;
+
+    #[PhoneNumberConstraint]
+    #[ORM\Column(type: PhoneNumberType::NAME)]
+    private PhoneNumber $phone;
+
+    #[Assert\Length(min: 2, max: 100)]
     #[ORM\Column]
     private string $firstName;
+
+    #[Assert\Range(min: 0, max: 100)]
     #[ORM\Column]
     private int $age;
+
+    #[Assert\Length(exactly: 11)]
     #[ORM\Column]
     private string $pesel;
     #[ORM\Column]
     private string $lastName;
+
+    #[Assert\Length(min: 1, max: 6)]
     #[ORM\Column]
     private string $houseNo;
+
+    #[Assert\AtLeastOneOf([
+        new Assert\IsNull(),
+        new Assert\Length(min: 1, max: 100),
+    ])]
     #[ORM\Column]
     private ?string $street;
+
+    #[Assert\Length(min: 2, max: 100)]
     #[ORM\Column]
     private string $city;
+
+    #[Assert\Regex(pattern: '/^\d{2}-\d{3}$/')]
     #[ORM\Column]
     private string $postalCode;
 
@@ -59,12 +73,12 @@ class Questionnaire
         return $this;
     }
 
-    public function getPhone(): string
+    public function getPhone(): PhoneNumber
     {
         return $this->phone;
     }
 
-    public function setPhone(string $phone): self
+    public function setPhone(PhoneNumber $phone): self
     {
         $this->phone = $phone;
         return $this;
@@ -133,6 +147,17 @@ class Questionnaire
     public function setPostalCode(string $postalCode): self
     {
         $this->postalCode = $postalCode;
+        return $this;
+    }
+
+    public function getClient(): ClientApplication
+    {
+        return $this->client;
+    }
+
+    public function setClient(ClientApplication $client): self
+    {
+        $this->client = $client;
         return $this;
     }
 }

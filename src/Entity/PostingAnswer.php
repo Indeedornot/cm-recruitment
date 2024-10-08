@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\Identified;
 use App\Repository\PostingAnswerRepository;
 use App\Security\Entity\Client;
 use Doctrine\ORM\Mapping as ORM;
@@ -9,24 +10,15 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: PostingAnswerRepository::class)]
 class PostingAnswer
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    use Identified;
 
     #[ORM\ManyToOne(targetEntity: PostingQuestion::class, inversedBy: 'id')]
     private PostingQuestion $question;
-
-    #[ORM\ManyToOne(targetEntity: ClientApplication::class, inversedBy: 'answers')]
-    private ClientApplication $user;
+    #[ORM\ManyToOne(targetEntity: Questionnaire::class, inversedBy: 'answers')]
+    private Questionnaire $questionnaire;
 
     #[ORM\Column]
     private string $answer;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getQuestion(): PostingQuestion
     {
@@ -50,14 +42,14 @@ class PostingAnswer
         return $this;
     }
 
-    public function getUser(): ClientApplication
+    public function getQuestionnaire(): Questionnaire
     {
-        return $this->user;
+        return $this->questionnaire;
     }
 
-    public function setUser(ClientApplication $user): static
+    public function setQuestionnaire(Questionnaire $questionnaire): self
     {
-        $this->user = $user;
+        $this->questionnaire = $questionnaire;
         return $this;
     }
 }
