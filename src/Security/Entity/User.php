@@ -2,6 +2,7 @@
 
 namespace App\Security\Entity;
 
+use App\Entity\Trait\Identified;
 use App\Security\Event\PostUserChangedEvent;
 use App\Security\Event\PreUserChangedEvent;
 use App\Security\Event\UserEvent;
@@ -26,10 +27,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\HasLifecycleCallbacks]
 abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    protected ?int $id = null;
+    use Identified;
+
     #[ORM\Column(length: 180)]
     protected ?string $email = null;
     /**
@@ -57,11 +56,6 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getEmail(): ?string

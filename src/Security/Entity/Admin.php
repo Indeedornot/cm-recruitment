@@ -2,14 +2,13 @@
 
 namespace App\Security\Entity;
 
-use App\Repository\AdminRepository;
+use App\Entity\Trait\CreatedByAdmin;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 class Admin extends User
 {
-    #[ORM\OneToOne(targetEntity: Admin::class)]
-    private Admin $createdBy;
+    use CreatedByAdmin;
 
     /**
      * @return list<string>
@@ -21,17 +20,5 @@ class Admin extends User
         $roles = parent::getRoles();
         $roles[] = UserRoles::ADMIN->value;
         return array_unique($roles);
-    }
-
-    public function getCreatedBy(): Admin
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(Admin $createdBy): self
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
     }
 }
