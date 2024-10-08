@@ -31,7 +31,7 @@ class UserType extends AbstractType
 
         if ($options['mode'] !== 'edit') {
             if ($options['require_password'] ?? true) {
-                $builder->add('password', RepeatedType::class, [
+                $builder->add('plainPassword', RepeatedType::class, [
                     'type' => PasswordType::class,
                     'first_options' => [
                         'label' => 'Password',
