@@ -2,19 +2,13 @@
 
 namespace App\Security\Entity;
 
-use App\Entity\Trait\DaoHelpers;
 use App\Entity\Trait\Disableable;
 use App\Entity\Trait\Identified;
 use App\Entity\Trait\Timestampable;
-use App\Security\Event\PostUserChangedEvent;
-use App\Security\Event\PreUserChangedEvent;
-use App\Security\Event\UserEvent;
 use App\Security\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -33,7 +27,6 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     use Identified;
     use Disableable;
     use Timestampable;
-    use DaoHelpers;
 
     #[ORM\Column(length: 180)]
     protected ?string $email = null;
