@@ -2,6 +2,7 @@
 
 namespace App\Security\Entity;
 
+use App\Entity\Trait\Disableable;
 use App\Entity\Trait\Identified;
 use App\Security\Event\PostUserChangedEvent;
 use App\Security\Event\PreUserChangedEvent;
@@ -28,6 +29,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use Identified;
+    use Disableable;
 
     #[ORM\Column(length: 180)]
     protected ?string $email = null;
@@ -50,9 +52,6 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     protected DateTimeImmutable $createdAt;
     #[ORM\Column]
     protected DateTimeImmutable $updatedAt;
-
-    #[ORM\Column(options: ['default' => true])]
-    protected bool $isEnabled = true;
 
     public function __construct()
     {
@@ -195,15 +194,5 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->getRoles();
         return array_map(fn($role) => UserRoles::from($role)->getLabel(), $roles);
-    }
-
-    public function isEnabled(): bool
-    {
-        return $this->isEnabled;
-    }
-
-    public function setIsEnabled(bool $isEnabled): void
-    {
-        $this->isEnabled = $isEnabled;
     }
 }
