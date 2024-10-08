@@ -18,8 +18,9 @@ class UserEntityHandlerListener
     {
     }
 
-    public function onPreUserCreated(User $user): void
+    public function onPreUserCreated(UserEvent $event): void
     {
+        $user = $event->getUser();
         if ($user->getPlainPassword() && empty($user->getPassword())) {
             $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPlainPassword()));
         }
