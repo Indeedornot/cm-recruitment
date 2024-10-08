@@ -2,8 +2,10 @@
 
 namespace App\Security\Entity;
 
+use App\Entity\Trait\DaoHelpers;
 use App\Entity\Trait\Disableable;
 use App\Entity\Trait\Identified;
+use App\Entity\Trait\Timestampable;
 use App\Security\Event\PostUserChangedEvent;
 use App\Security\Event\PreUserChangedEvent;
 use App\Security\Event\UserEvent;
@@ -30,6 +32,8 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use Identified;
     use Disableable;
+    use Timestampable;
+    use DaoHelpers;
 
     #[ORM\Column(length: 180)]
     protected ?string $email = null;
@@ -48,10 +52,6 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     protected ?string $name = null;
-    #[ORM\Column]
-    protected DateTimeImmutable $createdAt;
-    #[ORM\Column]
-    protected DateTimeImmutable $updatedAt;
 
     public function __construct()
     {
@@ -139,8 +139,6 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function prePersist(): void
     {
         $this->roles = $this->getRoles();
-        $this->createdAt = new DateTimeImmutable();
-        $this->updatedAt = new DateTimeImmutable();
     }
 
     /**
@@ -175,7 +173,6 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\PreUpdate]
     public function preUpdate(): void
     {
-        $this->updatedAt = new DateTimeImmutable();
     }
 
     #[ORM\PostUpdate]
