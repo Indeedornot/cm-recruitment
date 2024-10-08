@@ -30,7 +30,6 @@ class RegistrationController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setAndHashPassword($user->getPassword());
             $this->manager->persist($user);
             $this->manager->flush();
             return $this->redirectToRoute('app_login');
