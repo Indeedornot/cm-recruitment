@@ -3,10 +3,10 @@
 namespace App\Contract\PhoneNumber\Form\Type;
 
 
+use App\Contract\PhoneNumber\Form\DataTransformer\PhoneNumberToArrayTransformer;
+use App\Contract\PhoneNumber\Form\DataTransformer\PhoneNumberToStringTransformer;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
-use Misd\PhoneNumberBundle\Form\DataTransformer\PhoneNumberToArrayTransformer;
-use Misd\PhoneNumberBundle\Form\DataTransformer\PhoneNumberToStringTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -15,7 +15,6 @@ use Symfony\Component\Intl\Intl;
 use Symfony\Component\Intl\Languages;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Phone number form type.
@@ -117,21 +116,12 @@ class PhoneNumberType extends AbstractType
         $view->vars['widget'] = $options['widget'];
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @deprecated To be removed when the Symfony Form component compatibility
-     *             is bumped to at least 2.7.
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function setDefaultOptions(OptionsResolver $resolver): void
     {
         $this->configureOptions($resolver);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             array(
