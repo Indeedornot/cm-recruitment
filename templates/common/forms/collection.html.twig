@@ -3,7 +3,7 @@
 {% set containerClass = containerClass|default('list-group') %}
 {% set itemClass = itemClass|default('list-group-item d-grid') %}
 
-{% set buttonLabel = 'Add new ' ~ formKey %}
+{% set buttonLabel = buttonLabel|default('Add new ' ~ formKey) %}
 {% set attrs = attrs|default({}) %}
 {% set attrs = attrs|merge({
     type: 'button',
@@ -18,7 +18,7 @@
 
 {% set removeButtonHtml %}
     {% block removeButton %}
-        {{ form_button(form, {label: 'Remove', icon: 'trash', variant: 'danger'}) }}
+        {{ form_button(form, {label: 'Usuń', icon: 'trash', variant: 'danger'}) }}
     {% endblock %}
 {% endset %}
 
