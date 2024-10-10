@@ -5,7 +5,7 @@
     <div class="container-y container-fluid">
         <div class="gap-2 d-grid">
             <a class="btn btn-primary w-100" href="{{ url('app_admin_posting_create') }}">
-                Create new posting
+                Stwórz nowe ogłoszenie
             </a>
 
             {% set accordionId = 'postings-' ~ random() %}
@@ -22,7 +22,7 @@
                         index: 0,
                     } %}
                         {% block buttonText %}
-                            <p>No Postings created yet. Create one to see it here.</p>
+                            <p>Nie stworzono jeszcze żadnych ogłoszeń. Stwórz nowe żeby je tu zobaczyć</p>
                         {% endblock %}
                     {% endembed %}
                 {% endif %}

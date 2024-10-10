@@ -31,7 +31,9 @@
     buttonClasses: buttonClasses
 } %}
     {% block buttonText %}
-        {{ loop.index }}. {{ posting.title }} <span class="text-secondary ps-2">- {{ posting.assignedTo.name }}</span>
+        {{ loop.index }}. {{ posting.title }}
+        <span class="text-secondary ps-2">- {{ posting.assignedTo.name }}</span>
+        <span class="ps-2">- Kandydaci: {{ posting.applications|length }}</span>
     {% endblock %}
     {% block body %}
         <p>{{ posting.description }}</p>
