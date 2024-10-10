@@ -27,19 +27,22 @@ class PostingType extends AbstractType
         }
 
         $builder
-            ->add('title', TextType::class)
-            ->add('description')
+            ->add('title', TextType::class, [
+                'label' => 'Tytuł'
+            ])
+            ->add('description', TextType::class, [
+                'label' => 'Opis'
+            ])
             ->add('assignedTo', EntityType::class, [
                 'class' => Admin::class,
                 'choice_label' => 'name',
-                'placeholder' => 'Select an admin',
+                'placeholder' => 'Wybierz Admina',
+                'label' => 'Przypisane do',
                 'required' => false,
             ])
             ->add('questions', CollectionType::class, [
                 'entry_type' => PostingQuestionType::class,
-                'entry_options' => [
-                    'label' => false,
-                ],
+                'label' => 'Zestaw Pytań Dodatkowych',
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false

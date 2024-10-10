@@ -35,16 +35,16 @@ class NavigationExtension extends AbstractExtension
         $routes = [
             'list' => $this->routes->new(
                 key: $this->security->isGranted(UserRoles::ADMIN->value) ? 'app_admin_index' : 'app_user_index',
-                label: 'Home',
+                label: 'Strona Główna',
             ),
             'login' => $this->routes->new(
                 key: 'app_login',
-                label: 'Log In',
+                label: 'Zaloguj się',
                 enabled: !$isLoggedIn && !$this->isCurrentRoute('app_login')
             ),
             'logout' => $this->routes->new(
                 key: 'app_logout',
-                label: 'Log out',
+                label: 'Wyloguj się',
                 enabled: $isLoggedIn && !$this->isCurrentRoute('app_logout')
             )
         ];

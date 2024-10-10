@@ -25,21 +25,38 @@ class QuestionnaireType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        if (empty($builder->getData())) {
-            $builder->setData(new Questionnaire());
-        }
-
         $builder
-            ->add('firstName', TextType::class)
-            ->add('lastName', TextType::class)
-            ->add('age', NumberType::class)
-            ->add('pesel', TextType::class)
-            ->add('email', EmailType::class)
-            ->add('phone', PhoneNumberType::class)
-            ->add('houseNo', TextType::class)
-            ->add('street', TextType::class)
-            ->add('city', TextType::class)
-            ->add('postalCode', TextType::class);
+            ->add('firstName', TextType::class, [
+                'label' => 'Imię'
+            ])
+            ->add('lastName', TextType::class, [
+                'label' => 'Nazwisko'
+            ])
+            ->add('age', NumberType::class, [
+                'label' => 'Wiek'
+            ])
+            ->add('pesel', TextType::class, [
+                'label' => 'Pesel'
+            ])
+            ->add('email', EmailType::class, [
+                'label' => 'Email'
+            ])
+            ->add('phone', PhoneNumberType::class, [
+                'label' => 'Numer telefonu'
+            ])
+            ->add('houseNo', TextType::class, [
+                'label' => 'Numer domu'
+            ])
+            ->add('street', TextType::class, [
+                'label' => 'Ulica',
+                'required' => false
+            ])
+            ->add('city', TextType::class, [
+                'label' => 'Miasto'
+            ])
+            ->add('postalCode', TextType::class, [
+                'label' => 'Kod Pocztowy'
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
