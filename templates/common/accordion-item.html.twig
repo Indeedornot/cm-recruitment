@@ -1,0 +1,65 @@
+{% if open is not defined %}
+    {% set open = false %}
+{% endif %}
+
+{% set defaultCollapse %}
+    <div class="accordion-body">
+        {% block body %}{% endblock %}
+    </div>
+{% endset %}
+{% set hasContent = block('body') is not empty or block('collapse') is not same as (defaultCollapse) %}
+
+{% set index = 0 %}
+{% if loop is defined %}
+    {% set index = loop.index %}
+{% endif %}
+{% set itemId = parentId ~ '-' ~ index|default(0) %}
+
+{% set header %}
+    {% set headerTag = headerTag|default('div') %}
+    <{{ headerTag }} class="accordion-header">
+    {% set attrs = 'data-bs-toggle="collapse" data-bs-target="#'~itemId~'" aria-controls="'~itemId~'"' %}
+    {% if open %}
+        {% set attrs = attrs ~ ' aria-expanded="true"' %}
+    {% else %}
+        {% set attrs = attrs ~ ' aria-expanded="false" ' %}
+    {% endif %}
+
+    {% block button %}
+        <button class="
+                    accordion-button
+                    {% if not open %}collapsed{% endif %}
+                    {{ buttonClasses|default('') }}
+                    {% if not hasContent %}empty-accordion{% endif %}
+                "
+                type="button" {{ attrs|raw }}>
+            {% block buttonText %}
+                Button
+            {% endblock %}
+        </button>
+    {% endblock %}
+    </{{ headerTag }}>
+{% endset %}
+
+<div class="accordion-item {{ itemClasses|default('') }}">
+    {{ header }}
+    {% if hasContent %}
+        <div id="{{ itemId }}"
+             class="accordion-collapse collapse {% if open %}true{% endif %}"
+             data-bs-parent="#{{ parentId }}"
+        >
+            {% block collapse %}
+                {{ defaultCollapse }}
+            {% endblock %}
+        </div>
+    {% endif %}
+</div>
+
+{% set css %}
+    <style>
+        .empty-accordion::after {
+            background-image: unset;
+        }
+    </style>
+{% endset %}
+{{ assets_styles().addStyle(css, 'accordion-item.html.twig') }}

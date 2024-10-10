@@ -2,34 +2,33 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\CreatedByAdmin;
+use App\Entity\Trait\Disableable;
+use App\Entity\Trait\Identified;
+use App\Entity\Trait\Timestampable;
 use App\Repository\PostingQuestionRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PostingQuestionRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class PostingQuestion
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    use CreatedByAdmin;
+    use Timestampable;
+    use Disableable;
+    use Identified;
 
     #[ORM\Column]
     private string $title;
 
     #[ORM\Column]
     private string $description;
-
-    #[ORM\Column]
-    private array $isEnabled;
-
     #[ORM\ManyToOne(targetEntity: Posting::class, inversedBy: 'questions')]
     private Posting $posting;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    #[ORM\OneToMany(targetEntity: PostingAnswer::class, mappedBy: 'question', cascade: ['persist', 'remove'])]
+    private Collection $answers;
 
     public function getTitle(): string
     {
@@ -55,17 +54,6 @@ class PostingQuestion
         return $this;
     }
 
-    public function getIsEnabled(): array
-    {
-        return $this->isEnabled;
-    }
-
-    public function setIsEnabled(array $isEnabled): static
-    {
-        $this->isEnabled = $isEnabled;
-        return $this;
-    }
-
     public function getPosting(): Posting
     {
         return $this->posting;
@@ -74,6 +62,17 @@ class PostingQuestion
     public function setPosting(Posting $posting): PostingQuestion
     {
         $this->posting = $posting;
+        return $this;
+    }
+
+    public function getAnswers(): Collection
+    {
+        return $this->answers;
+    }
+
+    public function setAnswers(Collection $answers): self
+    {
+        $this->answers = $answers;
         return $this;
     }
 }

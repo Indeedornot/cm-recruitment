@@ -1,12 +1,25 @@
 {% set variant = variant|default('primary') %}
 {% if variant == 'primary' %}
-    {% set class = class|default('') ~ ' btn btn-primary' %}
+    {% set class = 'btn btn-primary' %}
 {% elseif variant == 'secondary' %}
-    {% set class = class|default('') ~ ' btn btn-secondary' %}
+    {% set class = 'btn btn-secondary' %}
+{% elseif variant == 'success' %}
+    {% set class = 'btn btn-success' %}
+{% elseif variant == 'danger' %}
+    {% set class = 'btn btn-danger' %}
 {% endif %}
-{% set class = class|trim %}
 
-{% set type = type|default('submit') %}
+{% set attrs = attrs|default({}) %}
+{% set attrs = attrs|merge({
+    type: attrs.type|default('submit'),
+    class: (class ~ ' ' ~ attrs.class|default(''))|trim,
+    href: href|default(attrs.href|default('')),
+}) %}
+{% if attrs.href is not defined %}
+    {% set attrs = attrs|merge({
+        type: 'button',
+    }) %}
+{% endif %}
 
 {% if icon is defined and not icon|split(' ')|filter((x) => x in ['fa', 'fa-solid', 'fa-btn']) %}
     {% if not (icon starts with 'fa-') %}
@@ -24,12 +37,17 @@
     {{ label }}
 {% endset %}
 
-{% if href is defined %}
-    <a href="{{ href }}" class="{{ class }}">
+{% set attributes = '' %}
+{% for key, value in attrs|filter(x => x is not empty) %}
+    {% set attributes = attributes ~ ' ' ~ key ~ '="' ~ value ~ '"' %}
+{% endfor %}
+
+{% if attrs.href is defined and attrs.href is not empty %}
+    <a {{ attributes|raw }}>
         {{ content }}
     </a>
 {% else %}
-    <button type="{{ type }}" class="{{ class }}">
+    <button {{ attributes|raw }}>
         {{ content }}
     </button>
 {% endif %}

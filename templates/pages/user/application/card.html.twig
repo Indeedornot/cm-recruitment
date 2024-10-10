@@ -1,0 +1,22 @@
+{# @var App\Entity\ClientApplication application #}
+<div class="card {% if flush|default(false) %}card-flush{% endif %}">
+    <h5 class="card-header">
+        {{ application.questionnaire.firstName }} {{ application.questionnaire.lastName }}
+    </h5>
+
+    <div class="card-body">
+        <p>Created at: {{ application.createdAt|date('Y-m-d') }}</p>
+        {#        <p>{{ application.posting.description }}</p> #}
+        <a href="{{ path('app_user_index', {id: application.id}) }}"
+           class="btn btn-primary"
+        >
+            Edytuj
+        </a>
+
+        <a href="{{ path('app_user_index', {id: application.id}) }}"
+           class="btn btn-danger"
+        >
+            Anuluj
+        </a>
+    </div>
+</div>

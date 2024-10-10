@@ -40,7 +40,6 @@ class CreateAdminCommand extends Command
         $user = $this->userFactory->createAdmin()
             ->setEmail($email)
             ->setName($name)
-            ->setAndHashPassword($password)
             ->setPlainPassword($password)
             ->setRoles([
                 UserRoles::BASE_USER->value,

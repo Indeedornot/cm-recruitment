@@ -2,12 +2,14 @@
 
 namespace App\Controller\Admin;
 
-use App\Controller\BaseController;
+use App\Controller\Base\BaseController;
+use App\Controller\Base\ErrorHandlerType;
 use App\Security\Entity\Admin;
 use App\Security\Entity\Client;
 use App\Security\Entity\UserRoles;
 use App\Security\Factory\UserFactory;
 use App\Security\Form\UserType;
+use App\Security\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,9 +23,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class AdminController extends BaseController
 {
     function __construct(
-        private EntityManagerInterface $manager,
-        private Security $security,
-        private UserFactory $userFactory
+        private readonly EntityManagerInterface $manager,
+        private readonly Security $security,
+        private readonly UserFactory $userFactory,
+        private readonly UserRepository $userRepository
     ) {
     }
 
@@ -37,33 +40,43 @@ class AdminController extends BaseController
     #[Route("/create-account", name: "create_account")]
     public function createAccount(Request $request): Response
     {
-        try {
-            $user = $this->userFactory->createAdmin();
-            $form = $this->createForm(UserType::class, $user, ['require_password' => false]);
-            $form->handleRequest($request);
+        $this->setErrorHandler(ErrorHandlerType::FORM);
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                // Encode the new users password
-                $user
-                    ->setAndHashPassword($user->getPassword())
-                    ->setCreatedBy($this->security->getUser());
+        $user = $this->userFactory->createAdmin();
+        $form = $this->createForm(UserType::class, $user, ['require_password' => false]);
+        $form->handleRequest($request);
 
-                $this->manager->persist($user);
-                $this->manager->flush();
-
-                return $this->render('pages/admin/accounts/create.html.twig', [
-                    'form' => $this->createForm(UserType::class)->createView()
-                ]);
-            }
-
-            return $this->render('pages/admin/accounts/create.html.twig', [
-                'form' => $form->createView()
-            ]);
-        } catch (\Exception $e) {
-            return $this->render('errors/index.html.twig', [
-                'error' => $e
-            ]);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->manager->persist($user);
+            $this->manager->flush();
+            $form = $this->createForm(UserType::class, $this->userFactory->createAdmin());
         }
+
+        return $this->render('pages/admin/accounts/manage.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    #[IsGranted(UserRoles::SUPER_ADMIN->value)]
+    #[Route("/edit-account", name: "edit_account")]
+    public function editAccount(Request $request): Response
+    {
+        $this->setErrorHandler(ErrorHandlerType::FORM);
+
+        $id = $request->query->get('id');
+        $user = $this->userRepository->find($id);
+        $form = $this->createForm(UserType::class, $user, ['mode' => 'edit']);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->manager->persist($user);
+            $this->manager->flush();
+            $form = $this->createForm(UserType::class, $this->userRepository->find($id), ['mode' => 'edit']);
+        }
+
+        return $this->render('pages/admin/accounts/manage.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 
     #[IsGranted(UserRoles::SUPER_ADMIN->value)]

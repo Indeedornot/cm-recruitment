@@ -1,0 +1,48 @@
+{% extends 'layouts/base.html.twig' %}
+{% form_theme form 'common/forms/bundle.html.twig' %}
+
+{% block body %}
+    <div class="card">
+        <div class="card-body">
+            <h2>{{ posting.title }}
+                <span class="text-secondary">
+                   Prowadzi: {{ posting.assignedTo.name }}
+                </span>
+            </h2>
+            <p>{{ posting.description }}</p>
+            {{ form_start(form) }}
+            <div class="mb-3">
+                {{ form_row(form.questionnaire, {
+                    'row_attr': {'class': 'card mb-3'},
+                    'label_attr': {'class': 'card-header'},
+                    'attr': {'class': 'card-body'}
+                }) }}
+
+                {% set answerFields = form|filter(child => child.vars.name starts with 'answers_') %}
+                {% if answerFields|length %}
+                    <div class="card">
+                        <div class="card-header">
+                            Odpowiedzi
+                        </div>
+                        <div class="card-body">
+                            {% for field in answerFields %}
+                                <div class="mb-3">
+                                    {{ form_label(field) }}
+                                    {{ form_widget(field) }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    {{ form_button(form, {variant: 'primary', icon: 'user', label: 'Save'}) }}
+                    {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'Back', href: path('app_user_index')}) }}
+                </div>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

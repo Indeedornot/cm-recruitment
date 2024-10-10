@@ -2,15 +2,13 @@
 
 namespace App\Security\Entity;
 
-use App\Security\Event\PostUserChangedEvent;
-use App\Security\Event\PreUserChangedEvent;
-use App\Security\Event\UserEvent;
+use App\Entity\Trait\Disableable;
+use App\Entity\Trait\Identified;
+use App\Entity\Trait\Timestampable;
 use App\Security\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -26,10 +24,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\HasLifecycleCallbacks]
 abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    protected ?int $id = null;
+    use Identified;
+    use Disableable;
+    use Timestampable;
+
     #[ORM\Column(length: 180)]
     protected ?string $email = null;
     /**
@@ -47,23 +45,9 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     protected ?string $name = null;
-    #[ORM\Column]
-    protected DateTimeImmutable $createdAt;
-    #[ORM\Column]
-    protected DateTimeImmutable $updatedAt;
 
-    #[ORM\Column(options: ['default' => true])]
-    protected bool $isEnabled = true;
-
-    public function __construct(
-        private EventDispatcherInterface $eventDispatcher,
-        private UserPasswordHasherInterface $passwordHasher
-    ) {
-    }
-
-    public function getId(): ?int
+    public function __construct()
     {
-        return $this->id;
     }
 
     public function getEmail(): ?string
@@ -99,13 +83,6 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
-        return $this;
-    }
-
-    public function setAndHashPassword(string $password): static
-    {
-        $this->password = $this->passwordHasher->hashPassword($this, $password);
 
         return $this;
     }
@@ -155,9 +132,6 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function prePersist(): void
     {
         $this->roles = $this->getRoles();
-        $this->createdAt = new DateTimeImmutable();
-        $this->updatedAt = new DateTimeImmutable();
-        $this->eventDispatcher->dispatch(new UserEvent($this), UserEvent::PRE_USER_CREATED);
     }
 
     /**
@@ -187,35 +161,21 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\PostPersist]
     public function postPersist(): void
     {
-        $this->eventDispatcher->dispatch(new UserEvent($this), UserEvent::POST_USER_CREATED);
     }
 
     #[ORM\PreUpdate]
     public function preUpdate(): void
     {
-        $this->eventDispatcher->dispatch(new UserEvent($this), UserEvent::PRE_USER_CHANGED);
-        $this->updatedAt = new DateTimeImmutable();
     }
 
     #[ORM\PostUpdate]
     public function postUpdate(): void
     {
-        $this->eventDispatcher->dispatch(new UserEvent($this), UserEvent::POST_USER_CHANGED);
     }
 
     public function getReadableRoles(): array
     {
         $roles = $this->getRoles();
         return array_map(fn($role) => UserRoles::from($role)->getLabel(), $roles);
-    }
-
-    public function isEnabled(): bool
-    {
-        return $this->isEnabled;
-    }
-
-    public function setIsEnabled(bool $isEnabled): void
-    {
-        $this->isEnabled = $isEnabled;
     }
 }

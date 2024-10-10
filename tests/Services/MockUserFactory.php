@@ -22,7 +22,6 @@ class MockUserFactory
     {
         $admin = $this->userFactory->createAdmin()
             ->setPlainPassword('password')
-            ->setAndHashPassword('password')
             ->setEmail('test@test.com')
             ->setName('Test Admin');
 
@@ -34,7 +33,6 @@ class MockUserFactory
     {
         $client = $this->userFactory->createClient()
             ->setPlainPassword('password')
-            ->setAndHashPassword('password')
             ->setEmail('test@test.com')
             ->setName('Test Client');
 

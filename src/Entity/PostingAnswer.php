@@ -2,45 +2,27 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\Identified;
 use App\Repository\PostingAnswerRepository;
 use App\Security\Entity\Client;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PostingAnswerRepository::class)]
 class PostingAnswer
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    use Identified;
 
-    #[ORM\ManyToOne(targetEntity: PostingQuestion::class)]
+    #[Assert\NotNull]
+    #[ORM\ManyToOne(targetEntity: PostingQuestion::class, inversedBy: 'id')]
     private PostingQuestion $question;
 
-    #[ORM\ManyToOne(targetEntity: Posting::class, inversedBy: 'answers')]
-    private Posting $posting;
-
-    #[ORM\ManyToOne(targetEntity: Client::class)]
-    private Client $user;
+    #[Assert\NotNull]
+    #[ORM\ManyToOne(targetEntity: ClientApplication::class, inversedBy: 'answers')]
+    private ClientApplication $application;
 
     #[ORM\Column]
     private string $answer;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getQuestion(): PostingQuestion
-    {
-        return $this->question;
-    }
-
-    public function setQuestion(PostingQuestion $question): PostingAnswer
-    {
-        $this->question = $question;
-        return $this;
-    }
 
     public function getAnswer(): string
     {
@@ -53,25 +35,25 @@ class PostingAnswer
         return $this;
     }
 
-    public function getPosting(): Posting
+    public function getApplication(): ClientApplication
     {
-        return $this->posting;
+        return $this->application;
     }
 
-    public function setPosting(Posting $posting): PostingAnswer
+    public function setApplication(ClientApplication $application): self
     {
-        $this->posting = $posting;
+        $this->application = $application;
         return $this;
     }
 
-    public function getUser(): Client
+    public function getQuestion(): PostingQuestion
     {
-        return $this->user;
+        return $this->question;
     }
 
-    public function setUser(Client $user): PostingAnswer
+    public function setQuestion(PostingQuestion $question): self
     {
-        $this->user = $user;
+        $this->question = $question;
         return $this;
     }
 }

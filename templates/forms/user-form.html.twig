@@ -3,15 +3,15 @@
 {{ form_start(form) }}
 {{ form_row(form.name) }}
 {{ form_row(form.email) }}
-{% if form.password is defined %}
-    {{ form_row(form.password.first) }}
-    {{ form_row(form.password.second) }}
+{% if form.plainPassword is defined %}
+    {{ form_row(form.plainPassword.first) }}
+    {{ form_row(form.plainPassword.second) }}
 {% endif %}
 
 {% block buttons %}
-<div class="col-md-12">
-    {{ form_button(form, {variant: 'primary', icon: 'user', label: 'Register'}) }}
-    {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'Back', href: path('app_admin_admins')}) }}
-</div>
-{% block %}
+    <div class="col-md-12">
+        {{ form_button(form, {variant: 'primary', icon: 'user', label: 'Save'}) }}
+        {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'Back', href: path('app_admin_admins')}) }}
+    </div>
+{% endblock %}
 {{ form_end(form) }}

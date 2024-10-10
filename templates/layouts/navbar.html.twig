@@ -3,12 +3,8 @@
 >
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Symfony</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarTogglerDemo02"
-                aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+
+        <div class="collapse navbar-collapse " id="navbarTogglerDemo02">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 {# @var nav_links App\Services\Navigation\NavRoute[] #}
                 {% set nav_links = getNavLinks() %}
@@ -25,10 +21,17 @@
                 {% endfor %}
             </ul>
         </div>
-        <div>
-            {% if app.user %}
-                Logged in as: <b>{{ app.user.name }}</b>
-            {% endif %}
+        <div class="d-flex align-items-center gap-2">
+            <div>
+                {% if app.user %}
+                    Logged in as: <b>{{ app.user.name }}</b>
+                {% endif %}
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarTogglerDemo02"
+                    aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
         </div>
     </div>
 </nav>

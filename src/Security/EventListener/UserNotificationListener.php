@@ -9,7 +9,7 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Mailer\MailerInterface;
 
 #[AsEventListener(event: UserEvent::PRE_USER_CREATED, method: 'onPreUserCreated')]
-class UserEventListener
+class UserNotificationListener
 {
     public function __construct(
         private readonly MailerInterface $mailer

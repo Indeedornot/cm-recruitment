@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Base;
 
 use App\Security\Entity\Admin;
 use App\Security\Entity\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class BaseController extends AbstractController
 {
@@ -35,5 +36,13 @@ class BaseController extends AbstractController
     public function getAdmin(): ?Admin
     {
         return $this->getUserSubClass(Admin::class);
+    }
+
+    public function setErrorHandler(ErrorHandlerType $handler, array $options = []): void
+    {
+        $this->container->get('request_stack')->getSession()->set(
+            'error_handler',
+            ['handler' => $handler->value, 'options' => $options]
+        );
     }
 }

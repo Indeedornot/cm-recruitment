@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Contract\Patterns\Singleton;
 
 use Exception;
 

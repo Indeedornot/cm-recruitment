@@ -13,13 +13,17 @@
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.2",
+        "giggsey/libphonenumber-for-php": "*",
         "runtime/frankenphp-symfony": "^0.2.0",
+        "shapecode/hidden-entity-type-bundle": "^6.0",
         "symfony/console": "7.1.*",
         "symfony/dotenv": "7.1.*",
         "symfony/flex": "^2",
         "symfony/form": "7.1.*",
         "symfony/framework-bundle": "7.1.*",
+        "symfony/intl": "7.1.*",
         "symfony/mailer": "7.1.*",
+        "symfony/options-resolver": "7.1.*",
         "symfony/password-hasher": "7.1.*",
         "symfony/runtime": "7.1.*",
         "symfony/security-bundle": "7.1.*",
@@ -84,6 +88,7 @@
         }
     },
     "require-dev": {
+        "mockery/mockery": "^1.6",
         "pestphp/pest": "^3.2",
         "symfony/maker-bundle": "^1.61"
     }

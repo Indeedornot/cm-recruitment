@@ -1,0 +1,113 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block body %}
+    {% set accordionId = 'postings-' ~ random() %}
+<div class="accordion" id="{{ accordionId }}">
+    {% set actionRow %}
+        {% set canEdit = is_granted(constant('App\\Security\\Entity\\UserRoles::SUPER_ADMIN').value) or posting.assignedTo.id == app.user.id %}
+        <div class="d-flex justify-content-end gap-1">
+            <a class="btn btn-primary {% if not canEdit %}disabled{% endif %}"
+               href="{{ path('app_admin_posting_edit', {'id': posting.id}) }}"
+            >
+                <i class="fa-solid fa-pen"></i>
+            </a>
+            <a class="btn btn-danger"
+                {#            href="{{ path('app_admin_posting_delete', {'id': posting.id}) }}" #}
+            >
+                <i class="fa-solid fa-trash"></i>
+            </a>
+        </div>
+    {% endset %}
+
+
+    <div class="card">
+        <h4 class="card-header fw-bold">
+            {{ posting.title }}
+            <span class="text-secondary ps-2">- {{ posting.assignedTo.name }}</span>
+        </h4>
+        <div class="card-body">
+            <p>{{ posting.description }}</p>
+            <div>
+                <p class="fw-semibold">Pytania specjalne:</p>
+
+                {% set accordionId = 'postings-' ~ random() %}
+                {% if posting.questions.empty %}
+                    <div class="accordion" id="{{ accordionId }}">
+                        {% embed 'common/accordion-item.html.twig' with {
+                            headerTag: 'p',
+                            buttonClasses: 'px-2 py-2',
+                            parentId: accordionId
+                        } %}
+                            {% block buttonText %}
+                                Brak jeszcze pytań specjalnych. Dodaj pytanie, aby zobaczyć je tutaj.
+                            {% endblock %}
+                        {% endembed %}
+                    </div>
+                {% else %}
+                    <div class="accordion" id="{{ accordionId }}">
+                        {% for question in posting.questions %}
+                            {% embed 'common/accordion-item.html.twig' with {
+                                parentId: accordionId,
+                                headerTag: 'p',
+                                buttonClasses: 'px-2 py-2',
+                            } %}
+                                {% block buttonText %}
+                                    {{ loop.index }}. {{ question.title }}
+                                {% endblock %}
+                                {% block body %}
+                                    <p>{{ question.description }}</p>
+                                {% endblock %}
+                            {% endembed %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="">
+                <p class="fw-semibold">Kandydaci:</p>
+                {% set accordionId = 'postings-' ~ random() %}
+                {% if posting.applications.empty %}
+                    <div class="accordion" id="{{ accordionId }}">
+                        {% embed 'common/accordion-item.html.twig' with {
+                            headerTag: 'p',
+                            buttonClasses: 'px-2 py-2',
+                            parentId: accordionId
+                        } %}
+                            {% block buttonText %}
+                                Jeszcze nie ma żadnych kandydatów. Jak tylko ktoś się zgłosi, zobaczysz ich tutaj.
+                            {% endblock %}
+                        {% endembed %}
+                    </div>
+                {% else %}
+                    <div class="accordion" id="{{ accordionId }}">
+                        {% for application in posting.applications %}
+                            {% embed 'common/accordion-item.html.twig' with {
+                                parentId: accordionId,
+                                headerTag: 'p',
+                                buttonClasses: 'px-2 py-2',
+                            } %}
+                                {% block buttonText %}
+                                    {{ loop.index }}. {{ application.questionnaire.firstName }} {{ application.questionnaire.lastName }}
+                                {% endblock %}
+                                {% block body %}
+                                    {% if posting.questions|length %}
+                                        <p class="fw-semibold">Odpowiedzi:</p>
+                                        <ul>
+                                            {% for answer in application.answers %}
+                                                <li>{{ answer.question.title }}: {{ answer.answer }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                {% endblock %}
+                            {% endembed %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-footer">
+            {{ actionRow }}
+        </div>
+    </div>
+    {% endblock %}
+

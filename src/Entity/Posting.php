@@ -2,36 +2,46 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\CreatedByAdmin;
+use App\Entity\Trait\Disableable;
+use App\Entity\Trait\Identified;
+use App\Entity\Trait\Timestampable;
 use App\Repository\PostingRepository;
+use App\Security\Entity\Admin;
+use App\Security\Entity\User;
+use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_TITLE', fields: ['title'])]
 #[UniqueEntity(fields: ['title'], message: 'A posting with that title already exists')]
 #[ORM\Entity(repositoryClass: PostingRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Posting
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    use Timestampable;
+    use Disableable;
+    use Identified;
+    use CreatedByAdmin;
 
     #[ORM\Column]
     private string $title;
 
     #[ORM\Column]
     private string $description;
+    #[ORM\OneToMany(targetEntity: PostingQuestion::class, mappedBy: 'posting', cascade: ['persist', 'remove'])]
+    private Collection $questions;
+    #[ORM\OneToMany(targetEntity: ClientApplication::class, mappedBy: 'posting')]
+    private Collection $applications;
+    #[ORM\ManyToOne(targetEntity: Admin::class)]
+    private Admin $assignedTo;
 
-    #[ORM\OneToMany(targetEntity: PostingQuestion::class, mappedBy: 'posting')]
-    private PersistentCollection $questions;
-
-    #[ORM\OneToMany(targetEntity: PostingAnswer::class, mappedBy: 'posting')]
-    private PersistentCollection $answers;
-
-    public function getId(): ?int
+    public function __construct()
     {
-        return $this->id;
+        $this->questions = new ArrayCollection();
+        $this->applications = new ArrayCollection();
     }
 
     public function getDescription(): string
@@ -56,25 +66,53 @@ class Posting
         return $this;
     }
 
-    public function getAnswers(): PersistentCollection
+    public function getQuestions(): Collection
     {
-        return $this->answers;
+        return $this->questions->filter(fn(PostingQuestion $question) => $question->getDisabledAt() === null);
     }
 
-    public function setAnswers(array $answers): Posting
+    public function setQuestions(Collection $questions): Posting
     {
-        $this->answers = $answers;
+        $this->questions = $questions;
         return $this;
     }
 
-    public function getQuestions(): PersistentCollection
+
+    public function addQuestion(PostingQuestion $question): Posting
     {
-        return $this->questions;
+        if (!$this->questions->contains($question)) {
+            $question->setPosting($this);
+            $this->questions->add($question);
+        }
+        return $this;
     }
 
-    public function setQuestions(array $questions): Posting
+    public function getAssignedTo(): User
     {
-        $this->questions = $questions;
+        return $this->assignedTo;
+    }
+
+    public function setAssignedTo(Admin $assignedTo): Posting
+    {
+        $this->assignedTo = $assignedTo;
+        return $this;
+    }
+
+    public function removeQuestion(PostingQuestion $question): Posting
+    {
+        $this->questions->removeElement($question);
+        $question->setDisabledAt(new DateTimeImmutable());
+        return $this;
+    }
+
+    public function getApplications(): Collection
+    {
+        return $this->applications;
+    }
+
+    public function setApplications(Collection $applications): self
+    {
+        $this->applications = $applications;
         return $this;
     }
 }

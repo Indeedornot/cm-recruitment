@@ -8,6 +8,8 @@ doctrine:
 
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: false
+        types:
+            phone_number: App\Contract\PhoneNumber\Doctrine\PhoneNumberType
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true

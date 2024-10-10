@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
+use App\Controller\Base\BaseController;
 use App\Services\Navigation\NavigationExtension;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
