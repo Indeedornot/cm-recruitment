@@ -2,7 +2,12 @@
     {% set open = false %}
 {% endif %}
 
-{% set hasContent = block('body') is not empty %}
+{% set defaultCollapse %}
+    <div class="accordion-body">
+        {% block body %}{% endblock %}
+    </div>
+{% endset %}
+{% set hasContent = block('body') is not empty or block('collapse') is not same as (defaultCollapse) %}
 
 {% set index = 0 %}
 {% if loop is defined %}
@@ -35,6 +40,7 @@
     {% endblock %}
     </{{ headerTag }}>
 {% endset %}
+
 <div class="accordion-item {{ itemClasses|default('') }}">
     {{ header }}
     {% if hasContent %}
@@ -43,9 +49,7 @@
              data-bs-parent="#{{ parentId }}"
         >
             {% block collapse %}
-                <div class="accordion-body">
-                    {% block body %}{% endblock %}
-                </div>
+                {{ defaultCollapse }}
             {% endblock %}
         </div>
     {% endif %}
