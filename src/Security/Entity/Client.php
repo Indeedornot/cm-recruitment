@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity]
 class Client extends User
 {
@@ -31,12 +32,12 @@ class Client extends User
         return array_unique($roles);
     }
 
-    public function getApplications(): ArrayCollection
+    public function getApplications(): Collection
     {
         return $this->applications;
     }
 
-    public function setApplications(ArrayCollection $applications): Client
+    public function setApplications(Collection $applications): Client
     {
         $this->applications = $applications;
         return $this;
