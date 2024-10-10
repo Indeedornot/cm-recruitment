@@ -25,5 +25,10 @@
                 {% endfor %}
             </ul>
         </div>
+        <div>
+            {% if app.user %}
+                Logged in as: <b>{{ app.user.name }}</b>
+            {% endif %}
+        </div>
     </div>
 </nav>

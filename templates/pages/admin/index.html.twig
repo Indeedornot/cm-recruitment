@@ -1,32 +1,15 @@
 {% extends 'layouts/base.html.twig' %}
+{% import 'pages/admin/macros.html.twig' as macros %}
 {% block body %}
-    {% macro nav_item(label, tag = 'li', icon = null, href = null) %}
-        {% set is_action = tag in ['a', 'button'] %}
-        <{{ tag }}
-        {% if href %}href="{{ href }}"{% endif %}
-        {{ '' }}class="list-group-item
-        {{ '    ' }}{% if is_action %}list-group-item-action{% endif %}
-        {{ '    ' }}{% if icon %}gap-2{% endif %}
-        {{ '    ' }}d-flex align-items-center
-        {{ '' }}"
-        >
-        {% if icon %}
-            <i class="fa-solid {{ icon }}"></i>
-        {% endif %}
-        {{ '' }}<span>
-        {{ '    ' }}{{ label }}
-        {{ '' }}</span>
-        </{{ tag }}>
-    {% endmacro %}
-
     <div class="pt-4">
 
         <div class="card mx-auto" style="width: 800px">
             <div class="card-body">
                 <ul class="list-group">
-                    {% if constant('App\\Entity\\UserRoles::SUPER_ADMIN').value in app.user.roles %}
-                        {{ _self.nav_item('Create new Admin user here', 'a', 'fa-user-plus', url('app_admin_create_account')) }}
-                        {{ _self.nav_item('Manage all Admin users here', 'a', 'fa-users', url('app_admin_admins')) }}
+                    {% if constant('App\\Security\\Entity\\UserRoles::SUPER_ADMIN').value in app.user.roles %}
+                        {{ macros.nav_item('Create new Admin user here', 'fa-user-plus', url('app_admin_create_account'), 'a') }}
+                        {{ macros.nav_item('Manage all Admin users here', 'fa-users', url('app_admin_admins'), 'a') }}
+                        {{ macros.nav_item('Manage all Client users here', 'fa-users', url('app_admin_users'), 'a') }}
                     {% endif %}
                 </ul>
             </div>

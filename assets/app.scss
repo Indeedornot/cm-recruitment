@@ -1,0 +1,8 @@
+@import './packages/packages.scss';
+@import './styles/app.scss';
+@import './views/views.scss';
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
+.table-cells-vertical td {
+    vertical-align: center;
+}

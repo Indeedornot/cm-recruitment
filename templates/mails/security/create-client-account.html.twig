@@ -1,0 +1,42 @@
+{% extends 'mails/base.html.twig' %}
+{# @var user App\Security\Entity\User #}
+
+{% block header %}
+    <h1>
+        New Account has been created for you
+    </h1>
+{% endblock %}
+
+{% block body %}
+    <h2>
+        Your account details are as follows:
+    </h2>
+
+    <div>
+        <div>
+            <ul>
+                <li>
+                    Username: {{ user.name }}
+                </li>
+                {% if user.plainPassword is defined %}
+                    <li>
+                        Password: {{ user.plainPassword }}
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    {% if user.plainPassword is defined %}
+        <div>
+            Please login to the system and change your password.
+        </div>
+        <br/>
+    {% endif %}
+
+    <div>
+        Thank you.
+    </div>
+
+{% endblock %}
+

@@ -1,39 +1,43 @@
 {% extends 'layouts/base.html.twig' %}
 {% block body %}
-    <table class="admin-list-table table table-striped">
-        <thead>
-        <tr>
-            <th>No.</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Roles</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for admin in admins %}
+    <div class="container-fluid container-y ">
+        <table class="admin-list-table table table-striped rounded overflow-hidden">
+            <thead>
             <tr>
-                <td>{{ loop.index + (page - 1) * 10 }}</td>
-                <td>{{ admin.name }}</td>
-                <td>{{ admin.email }}</td>
-                <td>{{ admin.getReadableRoles|join(', ') }}</td>
-                <td>
-                    <twig:Modal
-                        onConfirm="() => {
+                <th>No.</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for admin in admins %}
+                <tr>
+                    <td>{{ loop.index + (page - 1) * 10 }}</td>
+                    <td>{{ admin.name }}</td>
+                    <td>{{ admin.email }}</td>
+                    <td>{{ admin.getReadableRoles|join(', ') }}</td>
+                    <td>
+                        <twig:Modal
+                            onConfirm="() => {
                             window.location.href = '{{ path('app_admin_delete_account', {'id': admin.id}) }}';
                         }"
-                    >
-                        <twig:block name="trigger">
-                            <btn {{ btnAttrs.addOrSet({class: 'icon-link link-danger'})|raw }}>
-                                <i class="fa-solid fa-user-xmark"></i>
-                            </btn>
-                        </twig:block>
-                    </twig:Modal>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                        >
+                            <twig:block name="trigger">
+                                <btn {{ btnAttrs.addOrSet({class: 'icon-link link-danger'})|raw }}>
+                                    <i class="fa-solid fa-user-xmark"></i>
+                                </btn>
+                            </twig:block>
+                        </twig:Modal>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
     {% set styles %}
         <style>
             .admin-list-table td {

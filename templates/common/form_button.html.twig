@@ -1,0 +1,35 @@
+{% set variant = variant|default('primary') %}
+{% if variant == 'primary' %}
+    {% set class = class|default('') ~ ' btn btn-primary' %}
+{% elseif variant == 'secondary' %}
+    {% set class = class|default('') ~ ' btn btn-secondary' %}
+{% endif %}
+{% set class = class|trim %}
+
+{% set type = type|default('submit') %}
+
+{% if icon is defined and not icon|split(' ')|filter((x) => x in ['fa', 'fa-solid', 'fa-btn']) %}
+    {% if not (icon starts with 'fa-') %}
+        {% set icon = 'fa-' ~ icon %}
+    {% endif %}
+    {% set icon = 'fa-solid fa-btn ' ~ icon %}
+{% endif %}
+
+{% set label = label|default('') %}
+
+{% set content %}
+    {% if icon %}
+        <i class="{{ icon }}"></i>
+    {% endif %}
+    {{ label }}
+{% endset %}
+
+{% if href is defined %}
+    <a href="{{ href }}" class="{{ class }}">
+        {{ content }}
+    </a>
+{% else %}
+    <button type="{{ type }}" class="{{ class }}">
+        {{ content }}
+    </button>
+{% endif %}

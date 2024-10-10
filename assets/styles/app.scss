@@ -1,3 +1,9 @@
+@import '../packages/packages';
+
 body {
     background-color: lightgray;
+}
+
+.container-y {
+    @extend .py-2;
 }
