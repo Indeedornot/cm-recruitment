@@ -1,0 +1,51 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block body %}
+    <div class="p-4">
+
+        <div class="card">
+            <div class="card-body">
+                <h2>{{ posting.title }}
+                    <span class="text-secondary">
+                   Prowadzi: {{ posting.assignedTo.name }}
+                </span>
+                </h2>
+                <p>{{ posting.description }}</p>
+                {% set applications = app.user.applications|filter(x => x.posting.id == posting.id) %}
+                <a href="{{ path('app_user_posting_apply', {id: posting.id}) }}"
+                   class="btn btn-primary"
+                >
+                    Zapisz się {% if applications|length %}ponownie{% endif %}
+                </a>
+
+                {% if applications|length %}
+                    {% set parentId = 'accordion-' ~ random() %}
+                    <div class="accordion mt-3" id="{{ parentId }}">
+                        {% embed 'common/accordion-item.html.twig' with {
+                            parentId: parentId,
+                            headerTag: 'h3',
+                            buttonClasses: 'fs-3 fw-semibold bg-light border-1',
+                        } %}
+                            {% block buttonText %}
+                                Zajęcia na które jesteś zapisany
+                            {% endblock %}
+
+                            {% block collapse %}
+                                <div class="accordion-body p-0">
+                                    <div class="card-group-vertical">
+                                        {% for application in applications %}
+                                            {% include 'pages/user/application/card.html.twig' with {
+                                                application: application,
+                                                flush: true,
+                                            } %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endblock %}
+                        {% endembed %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
