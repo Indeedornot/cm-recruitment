@@ -8,24 +8,25 @@ use App\Entity\Trait\Timestampable;
 use App\Repository\PostingRepository;
 use libphonenumber\PhoneNumber;
 use Doctrine\ORM\Mapping as ORM;
+use libphonenumber\RegionCode;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Contract\PhoneNumber\Validator\PhoneNumber as PhoneNumberConstraint;
 
 #[ORM\Entity(repositoryClass: PostingRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Questionnaire
 {
     use Timestampable;
     use Identified;
 
-    #[ORM\Column]
     #[ORM\OneToOne(targetEntity: ClientApplication::class, inversedBy: 'questionnaire')]
-    private ClientApplication $client;
+    private ClientApplication $application;
 
     #[Assert\Email]
     #[ORM\Column]
     private string $email;
 
-    #[PhoneNumberConstraint]
+    #[PhoneNumberConstraint(['defaultRegion' => RegionCode::PL])]
     #[ORM\Column(type: PhoneNumberType::NAME)]
     private PhoneNumber $phone;
 
@@ -150,14 +151,36 @@ class Questionnaire
         return $this;
     }
 
-    public function getClient(): ClientApplication
+    public function getAge(): int
     {
-        return $this->client;
+        return $this->age;
     }
 
-    public function setClient(ClientApplication $client): self
+    public function setAge(int $age): self
     {
-        $this->client = $client;
+        $this->age = $age;
+        return $this;
+    }
+
+    public function getPesel(): string
+    {
+        return $this->pesel;
+    }
+
+    public function setPesel(string $pesel): self
+    {
+        $this->pesel = $pesel;
+        return $this;
+    }
+
+    public function getApplication(): ClientApplication
+    {
+        return $this->application;
+    }
+
+    public function setApplication(ClientApplication $application): self
+    {
+        $this->application = $application;
         return $this;
     }
 }

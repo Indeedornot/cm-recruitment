@@ -12,6 +12,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ClientApplicationRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class ClientApplication
 {
     use Timestampable;
@@ -21,11 +22,11 @@ class ClientApplication
     #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'applications')]
     private Client $client;
 
-    #[ORM\OneToOne(targetEntity: Questionnaire::class, inversedBy: 'client')]
+    #[ORM\OneToOne(targetEntity: Questionnaire::class, inversedBy: 'application', cascade: ['persist', 'remove'])]
     private Questionnaire $questionnaire;
-    #[ORM\ManyToOne(targetEntity: Posting::class, inversedBy: 'clientApplications')]
+    #[ORM\ManyToOne(targetEntity: Posting::class, inversedBy: 'applications')]
     private Posting $posting;
-    #[ORM\OneToMany(targetEntity: PostingAnswer::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: PostingAnswer::class, mappedBy: 'application', cascade: ['persist', 'remove'])]
     private Collection $answers;
 
     public function __construct()
@@ -44,6 +45,22 @@ class ClientApplication
         return $this;
     }
 
+    public function addAnswer(PostingAnswer $answer): self
+    {
+        if (!$this->answers->contains($answer)) {
+            $answer->setApplication($this);
+            $this->answers[] = $answer;
+        }
+        return $this;
+    }
+
+    public function removeAnswer(PostingAnswer $answer): self
+    {
+//        TODO: ??
+        $this->answers->removeElement($answer);
+        return $this;
+    }
+
     public function getPosting(): Posting
     {
         return $this->posting;
@@ -55,17 +72,6 @@ class ClientApplication
         return $this;
     }
 
-    public function getQuestionnaire(): Questionnaire
-    {
-        return $this->questionnaire;
-    }
-
-    public function setQuestionnaire(Questionnaire $questionnaire): self
-    {
-        $this->questionnaire = $questionnaire;
-        return $this;
-    }
-
     public function getClient(): Client
     {
         return $this->client;
@@ -74,6 +80,17 @@ class ClientApplication
     public function setClient(Client $client): self
     {
         $this->client = $client;
+        return $this;
+    }
+
+    public function getQuestionnaire(): Questionnaire
+    {
+        return $this->questionnaire;
+    }
+
+    public function setQuestionnaire(Questionnaire $questionnaire): self
+    {
+        $this->questionnaire = $questionnaire;
         return $this;
     }
 }

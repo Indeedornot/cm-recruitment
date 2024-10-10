@@ -6,30 +6,23 @@ use App\Entity\Trait\Identified;
 use App\Repository\PostingAnswerRepository;
 use App\Security\Entity\Client;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PostingAnswerRepository::class)]
 class PostingAnswer
 {
     use Identified;
 
+    #[Assert\NotNull]
     #[ORM\ManyToOne(targetEntity: PostingQuestion::class, inversedBy: 'id')]
     private PostingQuestion $question;
-    #[ORM\ManyToOne(targetEntity: Questionnaire::class, inversedBy: 'answers')]
-    private Questionnaire $questionnaire;
+
+    #[Assert\NotNull]
+    #[ORM\ManyToOne(targetEntity: ClientApplication::class, inversedBy: 'answers')]
+    private ClientApplication $application;
 
     #[ORM\Column]
     private string $answer;
-
-    public function getQuestion(): PostingQuestion
-    {
-        return $this->question;
-    }
-
-    public function setQuestion(PostingQuestion $question): PostingAnswer
-    {
-        $this->question = $question;
-        return $this;
-    }
 
     public function getAnswer(): string
     {
@@ -42,14 +35,25 @@ class PostingAnswer
         return $this;
     }
 
-    public function getQuestionnaire(): Questionnaire
+    public function getApplication(): ClientApplication
     {
-        return $this->questionnaire;
+        return $this->application;
     }
 
-    public function setQuestionnaire(Questionnaire $questionnaire): self
+    public function setApplication(ClientApplication $application): self
     {
-        $this->questionnaire = $questionnaire;
+        $this->application = $application;
+        return $this;
+    }
+
+    public function getQuestion(): PostingQuestion
+    {
+        return $this->question;
+    }
+
+    public function setQuestion(PostingQuestion $question): self
+    {
+        $this->question = $question;
         return $this;
     }
 }

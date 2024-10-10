@@ -18,6 +18,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_TITLE', fields: ['title'])]
 #[UniqueEntity(fields: ['title'], message: 'A posting with that title already exists')]
 #[ORM\Entity(repositoryClass: PostingRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Posting
 {
     use Timestampable;
@@ -33,14 +34,14 @@ class Posting
     #[ORM\OneToMany(targetEntity: PostingQuestion::class, mappedBy: 'posting', cascade: ['persist', 'remove'])]
     private Collection $questions;
     #[ORM\OneToMany(targetEntity: ClientApplication::class, mappedBy: 'posting')]
-    private Collection $clientApplications;
+    private Collection $applications;
     #[ORM\ManyToOne(targetEntity: Admin::class)]
     private Admin $assignedTo;
 
     public function __construct()
     {
         $this->questions = new ArrayCollection();
-        $this->clientApplications = new ArrayCollection();
+        $this->applications = new ArrayCollection();
     }
 
     public function getDescription(): string
@@ -101,6 +102,17 @@ class Posting
     {
         $this->questions->removeElement($question);
         $question->setDisabledAt(new DateTimeImmutable());
+        return $this;
+    }
+
+    public function getApplications(): Collection
+    {
+        return $this->applications;
+    }
+
+    public function setApplications(Collection $applications): self
+    {
+        $this->applications = $applications;
         return $this;
     }
 }
