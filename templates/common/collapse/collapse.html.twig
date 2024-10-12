@@ -1,0 +1,31 @@
+{% set collapseId = collapseId|default(random()) %}
+
+{% set attrs = attrs_object({
+    'data-bs-toggle': "collapse",
+    'aria-controls': collapseId,
+    'aria-expanded': false
+}) %}
+{% block triggerAttr %}
+    {% set type = type|default('a') %}
+    {% if type == 'a' %}
+        {% do attrs.addOrSet({
+            href: "#" ~ collapseId,
+            role: "button",
+        }) %}
+    {% else %}
+        {% do attrs.addOrSet({
+            type: "button",
+            'data-bs-target': "#" ~ collapseId
+        }) %}
+    {% endif %}
+
+    {% block trigger %}
+        {% block default %}
+        {% endblock %}
+    {% endblock %}
+{% endblock %}
+
+<div class="collapse" id="{{ collapseId }}">
+    {% block body %}
+    {% endblock %}
+</div>

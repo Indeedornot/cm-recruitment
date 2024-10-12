@@ -4,8 +4,56 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "980bb9ab983590804668e273d8634d98",
+    "content-hash": "14837e38a90970f9cedbeb03cb4c9ec3",
     "packages": [
+        {
+            "name": "acalvino4/twig-embed-implicit-default",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/acalvino4/twig-embed-implicit-default.git",
+                "reference": "650892708e3ffef5594b98ba906b8fe63a40c5cd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/acalvino4/twig-embed-implicit-default/zipball/650892708e3ffef5594b98ba906b8fe63a40c5cd",
+                "reference": "650892708e3ffef5594b98ba906b8fe63a40c5cd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.2",
+                "twig/twig": "^3.3"
+            },
+            "require-dev": {
+                "craftcms/ecs": "dev-main",
+                "craftcms/phpstan": "dev-main",
+                "phpunit/phpunit": "^10"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "acalvino4\\embed\\": "src/",
+                    "acalvino4\\embed\\test\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "mit"
+            ],
+            "authors": [
+                {
+                    "name": "Augustine Calvino",
+                    "homepage": "https://github.com/acalvino4"
+                }
+            ],
+            "description": "Extends the twig embed tag to allow an implicit default block",
+            "homepage": "https://github.com/acalvino4/twig-embed-with-default-block",
+            "support": {
+                "issues": "https://github.com/acalvino4/twig-embed-implicit-default/issues",
+                "source": "https://github.com/acalvino4/twig-embed-implicit-default/tree/1.0.1"
+            },
+            "time": "2023-05-04T19:29:12+00:00"
+        },
         {
             "name": "doctrine/cache",
             "version": "2.2.0",

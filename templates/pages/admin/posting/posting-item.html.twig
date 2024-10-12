@@ -23,12 +23,9 @@
     </div>
 {% endset %}
 
-{% set buttonClasses = 'px-2 fw-bold fs-5' %}
 {% embed 'common/accordion-item.html.twig' with {
-    parentId: accordionId,
-    index: loop.index0,
     headerTag: 'h5',
-    buttonClasses: buttonClasses
+    buttonClasses: 'px-2 fw-bold fs-5'
 } %}
     {% block buttonText %}
         {{ loop.index }}. {{ posting.title }}

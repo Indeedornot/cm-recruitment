@@ -9,12 +9,16 @@ class ElementAttributes
 {
     public function __construct(
         public array $attributes = [],
-        public bool  $merge = true
-    )
-    {
+        public bool $merge = true
+    ) {
     }
 
     public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    public function all(): array
     {
         return $this->attributes;
     }
@@ -28,6 +32,29 @@ class ElementAttributes
         }
 
         return $this;
+    }
+
+    public function add(string $key, mixed $value): static
+    {
+        $this->attributes[$key] = $value;
+        return $this;
+    }
+
+    public function remove(string $key): static
+    {
+        unset($this->attributes[$key]);
+        return $this;
+    }
+
+    public function set(string $key, mixed $value): static
+    {
+        $this->attributes[$key] = $value;
+        return $this;
+    }
+
+    public function get(string $key, mixed $default = null): mixed
+    {
+        return $this->attributes[$key] ?? $default;
     }
 
     public function __toString(): string

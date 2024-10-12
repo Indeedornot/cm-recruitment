@@ -13,7 +13,7 @@
 {% if loop is defined %}
     {% set index = loop.index %}
 {% endif %}
-{% set itemId = parentId ~ '-' ~ index|default(0) %}
+{% set itemId = accordionId ~ '-' ~ index|default(0) %}
 
 {% set header %}
     {% set headerTag = headerTag|default('div') %}
@@ -34,7 +34,9 @@
                 "
                 type="button" {{ attrs|raw }}>
             {% block buttonText %}
-                Button
+                {% block default %}
+                    Button
+                {% endblock %}
             {% endblock %}
         </button>
     {% endblock %}
@@ -46,7 +48,7 @@
     {% if hasContent %}
         <div id="{{ itemId }}"
              class="accordion-collapse collapse {% if open %}true{% endif %}"
-             data-bs-parent="#{{ parentId }}"
+             data-bs-parent="#{{ accordionId }}"
         >
             {% block collapse %}
                 {{ defaultCollapse }}

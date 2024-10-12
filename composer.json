@@ -9,6 +9,7 @@
         "php": ">=8.3.8",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "acalvino4/twig-embed-implicit-default": "^1.0",
         "doctrine/dbal": "^3",
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.3",

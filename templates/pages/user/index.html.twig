@@ -7,10 +7,8 @@
         </h1>
 
         <div class="card-body px-0">
-            {% if app.user.applications|length %}
-                {#            <div class="py-2 px-2 bg-light"> #}
-                {% set accordionId = 'accordion-' ~ random() %}
-                <div class="accordion accordion-flush mb-3 border-top border-bottom" id="{{ accordionId }}">
+            {% if app.user is not empty and app.user.applications|length %}
+                {% embed 'common/accordion.html.twig' with {classes: 'mb-3 border-top border-bottom', flush: true} %}
                     {% embed 'common/accordion-item.html.twig' with {
                         parentId: accordionId,
                         headerTag: 'h3',
@@ -39,8 +37,7 @@
                             </div>
                         {% endblock %}
                     {% endembed %}
-                </div>
-                {#            </div> #}
+                {% endembed %}
             {% endif %}
 
             <div class="card-group-vertical px-4">
@@ -56,8 +53,10 @@
                             <a href="{{ path('app_user_posting', {id: posting.id}) }}"
                                class="btn btn-primary"
                             >
-                                {% set alreadyApplied = app.user.applications|filter(x => x.posting.id == posting.id)|length %}
-                                Zapisz się {% if alreadyApplied %}ponownie{% endif %}
+                                {% if app.user is not empty %}
+                                    {% set alreadyApplied = app.user.applications|filter(x => x.posting.id == posting.id)|length %}
+                                {% endif %}
+                                Zapisz się {% if alreadyApplied|default(false) %}ponownie{% endif %}
                             </a>
                         </div>
                     </div>

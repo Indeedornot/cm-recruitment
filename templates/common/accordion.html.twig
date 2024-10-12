@@ -1,0 +1,8 @@
+{% set accordionId = id|default('accordion-' ~ random()) %}
+{% set flush = flush|default(false) %}
+<div class="accordion {% if flush %}accordion-flush{% endif %} {{ classes|default('') }}" id="{{ accordionId }}">
+    {% if classes is defined %}
+        {% set classes = null %}
+    {% endif %}
+    {% block default %}{% endblock %}
+</div>

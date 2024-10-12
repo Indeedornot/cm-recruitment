@@ -1,5 +1,4 @@
 {% extends 'layouts/base.html.twig' %}
-{% import 'common/accordion-item.html.twig' as accordion %}
 
 {% block body %}
     <div class="container-y container-fluid">
@@ -8,8 +7,7 @@
                 Stwórz nowe ogłoszenie
             </a>
 
-            {% set accordionId = 'postings-' ~ random() %}
-            <div class="accordion" id="{{ accordionId }}">
+            {% embed 'common/accordion.html.twig' %}
                 {% if postings is not empty %}
                     {% for posting in postings %}
                         {% include 'pages/admin/posting/posting-item.html.twig' with {
@@ -17,16 +15,11 @@
                         } %}
                     {% endfor %}
                 {% else %}
-                    {% embed 'common/accordion-item.html.twig' with {
-                        parentId: accordionId,
-                        index: 0,
-                    } %}
-                        {% block buttonText %}
-                            <p>Nie stworzono jeszcze żadnych ogłoszeń. Stwórz nowe żeby je tu zobaczyć</p>
-                        {% endblock %}
+                    {% embed 'common/accordion-item.html.twig' %}
+                        <p>Nie stworzono jeszcze żadnych ogłoszeń. Stwórz nowe żeby je tu zobaczyć</p>
                     {% endembed %}
                 {% endif %}
-            </div>
+            {% endembed %}
         </div>
     </div>
 {% endblock %}
