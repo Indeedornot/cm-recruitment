@@ -34,6 +34,16 @@ class ElementAttributes
         return $this;
     }
 
+    public function append(string $key, mixed $value, bool $trim): static
+    {
+        $this->attributes[$key] ??= '';
+        $this->attributes[$key] .= $value;
+        if ($trim) {
+            $this->attributes[$key] = trim($this->attributes[$key]);
+        }
+        return $this;
+    }
+
     public function add(string $key, mixed $value): static
     {
         $this->attributes[$key] = $value;

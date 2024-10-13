@@ -17,8 +17,14 @@ class AttributesExtension extends AbstractExtension
         return [
             new TwigFunction(
                 'attrs_object',
-                fn($attributes = [], $merge = true) => new ElementAttributes($attributes, $merge)
+                [$this, 'getAttributes'],
+                ['is_safe' => ['html']]
             ),
         ];
+    }
+
+    public function getAttributes(array $attributes = [], bool $merge = true): ElementAttributes
+    {
+        return new ElementAttributes($attributes, $merge);
     }
 }

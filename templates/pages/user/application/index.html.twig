@@ -11,6 +11,11 @@
             </h2>
             <p>{{ posting.description }}</p>
             {{ form_start(form) }}
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger">
+                    {{ message|raw }}
+                </div>
+            {% endfor %}
             <div class="mb-3">
                 {{ form_row(form.questionnaire, {
                     'row_attr': {'class': 'card mb-3'},

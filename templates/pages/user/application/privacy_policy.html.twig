@@ -1,0 +1,69 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block body %}
+    <div class="card card-flush">
+        <h1 class="card-header bg-transparent">
+            &bull; Polityka prywatności
+        </h1>
+
+        <div class="card-body">
+            {% embed 'common/accordion.html.twig' %}
+                {% embed 'common/accordion-item.html.twig' with { index: 0 } %}
+                    {% block buttonText %}
+                        {% do attrs.append('class', 'test', true) %}
+                        Aplikuj bez konta
+                    {% endblock %}
+                    {% block body %}
+                        <p>
+                            <span>
+                            Wypełnij formularz aplikacyjny bez zakładania konta.
+                            Stworzymy dla Ciebie konto automatycznie korzystając z danych z formularza.
+                            </span>
+
+                            <br/><br/>
+                            
+                            {#                            TODO: Privacy policy #}
+                            <span>
+                            &bull; Kontynuując, zgadzasz się na nasze
+                                <a href="{{ url('app_user_index') }}">warunki korzystania</a> i
+                                <a href="{{ url('app_user_index') }}">politykę prywatności</a>.
+                            </span>
+
+                        <div>
+                            <form method="post">
+                                <input type="hidden" name="ACCEPT_PRIVACY_POLICY" value="1"/>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-user-plus"></i>
+                                    Aplikuj bez konta
+                                </button>
+                            </form>
+                        </div>
+                        </p>
+                    {% endblock %}
+                {% endembed %}
+                {% embed 'common/accordion-item.html.twig' with { index: 1 } %}
+                    {% block buttonText %}
+                        Masz już konto?
+                    {% endblock %}
+                    {% block body %}
+                        <p>
+                            Zaloguj się, aby kontynuować aplikację i korzystać z innych funkcji.
+
+                            <br/>
+                            <br/>
+                            &bull; M.in. zapisywać swoje aplikacje, edytować swoje dane, przeglądać historię aplikacji.
+
+                            <br/>
+                            &bull; Oraz możliwości auto-uzupełniania na podstawie danych z poprzednich lat.
+                        </p>
+
+                        <a href="{{ path('app_login') }}" class="btn btn-primary">
+                            <i class="fa-solid fa-door-open"></i>
+                            Zaloguj się
+                        </a>
+                    {% endblock %}
+                {% endembed %}
+            {% endembed %}
+        </div>
+    </div>
+{% endblock %}

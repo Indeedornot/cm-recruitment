@@ -30,26 +30,21 @@
             <div>
                 <p class="fw-semibold">Pytania specjalne:</p>
 
-                {% set accordionId = 'postings-' ~ random() %}
-                {% if posting.questions.empty %}
-                    <div class="accordion" id="{{ accordionId }}">
+                {% embed 'common/accordion.html.twig' %}
+                    {% if posting.questions.empty %}
                         {% embed 'common/accordion-item.html.twig' with {
-                            headerTag: 'p',
-                            buttonClasses: 'px-2 py-2',
-                            parentId: accordionId
+                            headerTag: 'p'
                         } %}
+                            {% do attrs.append('class', 'px-2 py-2') %}
                             Brak jeszcze pytań specjalnych. Dodaj pytanie, aby zobaczyć je tutaj.
                         {% endembed %}
-                    </div>
-                {% else %}
-                    <div class="accordion" id="{{ accordionId }}">
+                    {% else %}
                         {% for question in posting.questions %}
                             {% embed 'common/accordion-item.html.twig' with {
-                                parentId: accordionId,
                                 headerTag: 'p',
-                                buttonClasses: 'px-2 py-2',
                             } %}
                                 {% block buttonText %}
+                                    {% do attrs.append('class', 'px-2 py-2') %}
                                     {{ loop.index }}. {{ question.title }}
                                 {% endblock %}
                                 {% block body %}
@@ -57,8 +52,8 @@
                                 {% endblock %}
                             {% endembed %}
                         {% endfor %}
-                    </div>
-                {% endif %}
+                    {% endif %}
+                {% endembed %}
             </div>
 
             <div class="">

@@ -24,10 +24,10 @@
 {% endset %}
 
 {% embed 'common/accordion-item.html.twig' with {
-    headerTag: 'h5',
-    buttonClasses: 'px-2 fw-bold fs-5'
+    headerTag: 'h5'
 } %}
     {% block buttonText %}
+        {% do attrs.append('class', 'px-2 fw-bold fs-5') %}
         {{ loop.index }}. {{ posting.title }}
         <span class="text-secondary ps-2">- {{ posting.assignedTo.name }}</span>
         <span class="ps-2">- Kandydaci: {{ posting.applications|length }}</span>
