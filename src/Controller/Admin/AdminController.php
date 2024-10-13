@@ -10,6 +10,7 @@ use App\Security\Entity\UserRoles;
 use App\Security\Factory\UserFactory;
 use App\Security\Form\UserType;
 use App\Security\Repository\UserRepository;
+use App\Security\Services\ExtendedSecurity;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +25,7 @@ class AdminController extends BaseController
 {
     function __construct(
         private readonly EntityManagerInterface $manager,
-        private readonly Security $security,
+        private readonly ExtendedSecurity $security,
         private readonly UserFactory $userFactory,
         private readonly UserRepository $userRepository
     ) {
@@ -42,14 +43,14 @@ class AdminController extends BaseController
     {
         $this->setErrorHandler(ErrorHandlerType::FORM);
 
-        $user = $this->userFactory->createAdmin();
+        $user = $this->userFactory->createEmptyAdmin();
         $form = $this->createForm(UserType::class, $user, ['require_password' => false]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->persist($user);
             $this->manager->flush();
-            $form = $this->createForm(UserType::class, $this->userFactory->createAdmin());
+            $form = $this->createForm(UserType::class, $this->userFactory->createEmptyAdmin());
         }
 
         return $this->render('pages/admin/accounts/manage.html.twig', [

@@ -33,6 +33,11 @@ class BaseController extends AbstractController
         return $user;
     }
 
+    public function isLoggedIn(): bool
+    {
+        return $this->getUser() !== null;
+    }
+
     public function getAdmin(): ?Admin
     {
         return $this->getUserSubClass(Admin::class);

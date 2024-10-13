@@ -178,4 +178,13 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
         $roles = $this->getRoles();
         return array_map(fn($role) => UserRoles::from($role)->getLabel(), $roles);
     }
+
+    public function hasRole(string|UserRoles $role): bool
+    {
+        if ($role instanceof UserRoles) {
+            $role = $role->value;
+        }
+
+        return in_array($role, $this->getRoles());
+    }
 }

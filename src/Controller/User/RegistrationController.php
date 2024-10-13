@@ -24,19 +24,24 @@ class RegistrationController extends BaseController
     {
         $this->setErrorHandler(ErrorHandlerType::FORM);
 
-        $user = $this->userFactory->createClient();
+        $user = $this->userFactory->createEmptyClient();
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->manager->persist($user);
-            $this->manager->flush();
-            return $this->redirectToRoute('app_login');
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return $this->render('pages/user/registration/index.html.twig', [
+                'form' => $form->createView(),
+            ]);
         }
 
-        return $this->render('pages/user/registration/index.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        $this->manager->persist($user);
+        $this->manager->flush();
+
+        $redirect_after = $request->get('redirect_after');
+        if ($redirect_after) {
+            return $this->redirectToRoute($redirect_after);
+        }
+
+        return $this->redirectToRoute('app_login');
     }
 }

@@ -20,7 +20,7 @@ class MockUserFactory
 
     public function createAdmin(): Admin
     {
-        $admin = $this->userFactory->createAdmin()
+        $admin = $this->userFactory->createEmptyAdmin()
             ->setPlainPassword('password')
             ->setEmail('test@test.com')
             ->setName('Test Admin');
@@ -31,7 +31,7 @@ class MockUserFactory
 
     public function createClient(): Client
     {
-        $client = $this->userFactory->createClient()
+        $client = $this->userFactory->createEmptyClient()
             ->setPlainPassword('password')
             ->setEmail('test@test.com')
             ->setName('Test Client');

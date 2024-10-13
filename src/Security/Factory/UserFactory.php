@@ -2,26 +2,34 @@
 
 namespace App\Security\Factory;
 
+use App\Contract\Exception\InvalidFieldException;
+use App\Entity\ClientApplication;
 use App\Security\Entity\Admin;
 use App\Security\Entity\Client;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\ORM\EntityManagerInterface;
+use Exception;
+use InvalidArgumentException;
+use LogicException;
 
 class UserFactory
 {
-    public function __construct(
-        private readonly EventDispatcherInterface $eventDispatcher,
-        private UserPasswordHasherInterface $passwordHasher
-    ) {
+    public function __construct(private EntityManagerInterface $em)
+    {
     }
 
-    public function createAdmin(): Admin
+    public function createEmptyAdmin(): Admin
     {
-        return new Admin($this->eventDispatcher, $this->passwordHasher);
+        return new Admin();
     }
 
-    public function createClient(): Client
+    public function createEmptyClient(): Client
     {
-        return new Client($this->eventDispatcher, $this->passwordHasher);
+        return new Client();
+    }
+
+    /**
+     * @throws LogicException
+     * @throws InvalidFieldException If email is already taken
     }
 }

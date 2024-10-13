@@ -8,6 +8,7 @@ use App\Entity\Posting;
 use App\Form\PostingType;
 use App\Repository\PostingRepository;
 use App\Security\Entity\UserRoles;
+use App\Security\Services\ExtendedSecurity;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,8 +19,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/admin/posting", name: "app_admin_posting_")]
 class PostingController extends BaseController
 {
-    function __construct(private PostingRepository $postingRepository, private EntityManagerInterface $em)
-    {
+    function __construct(
+        private PostingRepository $postingRepository,
+        private EntityManagerInterface $em,
+        private readonly ExtendedSecurity $extendedSecurity
+    ) {
     }
 
     #[Route("/", name: "index")]
@@ -44,8 +48,7 @@ class PostingController extends BaseController
     {
         $this->setErrorHandler(ErrorHandlerType::FORM);
 
-        $posting = new Posting();
-        $posting->setCreatedBy($this->getAdmin());
+        $posting = (new Posting())->setCreatedBy($this->getAdmin());
         return $this->handlePostingForm($posting, $request);
     }
 
@@ -65,20 +68,15 @@ class PostingController extends BaseController
         ], $params));
     }
 
-    #[Route("/edit", name: "edit")]
-    public function edit(Request $request): Response
+    #[Route("/edit/{id}", name: "edit", requirements: ['id' => '\d+'])]
+    public function edit(Request $request, int $id): Response
     {
         $this->setErrorHandler(ErrorHandlerType::FORM);
-
-        $id = $request->query->get('id');
         $posting = $this->postingRepository->find($id);
 
-        if ($this->getAdmin()->getId() !== $posting->getAssignedTo()->getId() &&
-            !$this->isGranted(UserRoles::SUPER_ADMIN->value)
-        ) {
-            $this->createAccessDeniedException("You are not allowed to edit this posting");
+        if (!$posting->canEdit($this->getAdmin())) {
+            throw $this->createAccessDeniedException("You are not allowed to edit this posting");
         }
-
 
         return $this->handlePostingForm($posting, $request, [
             'form' => $this->createForm(PostingType::class, $this->postingRepository->find($id))->createView(),

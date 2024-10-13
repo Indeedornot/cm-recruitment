@@ -9,6 +9,7 @@ use App\Entity\Trait\Timestampable;
 use App\Repository\PostingRepository;
 use App\Security\Entity\Admin;
 use App\Security\Entity\User;
+use App\Security\Entity\UserRoles;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -113,6 +114,34 @@ class Posting
     public function setApplications(Collection $applications): self
     {
         $this->applications = $applications;
+        return $this;
+    }
+
+    public function canEdit(User $user): bool
+    {
+        return $user->getId() === $this->getCreatedBy()->getId() || $user->getId() === $this->getAssignedTo()->getId()
+            || $user->hasRole(UserRoles::SUPER_ADMIN);
+    }
+
+    public function getAssignedTo(): User
+    {
+        return $this->assignedTo;
+    }
+
+    public function getAssignedTo(): User
+    {
+        return $this->assignedTo;
+    }
+
+    public function setAssignedTo(Admin $assignedTo): Posting
+    {
+        $this->assignedTo = $assignedTo;
+        return $this;
+    }
+
+    public function setAssignedTo(Admin $assignedTo): Posting
+    {
+        $this->assignedTo = $assignedTo;
         return $this;
     }
 }
