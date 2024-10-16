@@ -88,17 +88,6 @@ class Posting
         return $this;
     }
 
-    public function getAssignedTo(): User
-    {
-        return $this->assignedTo;
-    }
-
-    public function setAssignedTo(Admin $assignedTo): Posting
-    {
-        $this->assignedTo = $assignedTo;
-        return $this;
-    }
-
     public function removeQuestion(PostingQuestion $question): Posting
     {
         $this->questions->removeElement($question);
@@ -128,20 +117,10 @@ class Posting
         return $this->assignedTo;
     }
 
-    public function getAssignedTo(): User
-    {
-        return $this->assignedTo;
-    }
-
     public function setAssignedTo(Admin $assignedTo): Posting
     {
         $this->assignedTo = $assignedTo;
         return $this;
     }
 
-    public function setAssignedTo(Admin $assignedTo): Posting
-    {
-        $this->assignedTo = $assignedTo;
-        return $this;
-    }
 }
