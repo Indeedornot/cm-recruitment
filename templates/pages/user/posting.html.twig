@@ -11,18 +11,18 @@
                 {% else %}
                     {% set hasApplied = false %}
                 {% endif %}
-                
+
                 <div {% if hasApplied %}class="mb-3"{% endif %}>
                     <h2>{{ posting.title }}
                         <span class="text-secondary">
-                           Prowadzi: {{ posting.assignedTo.name }}
+                            {{ 'components.posting.assigned_to'|trans({'name': application.posting.assignedTo.name}) }}
                         </span>
                     </h2>
                     <p>{{ posting.description }}</p>
                     <a href="{{ path('app_user_posting_apply', {id: posting.id}) }}"
                        class="btn btn-primary"
                     >
-                        Zapisz się {% if hasApplied %}ponownie{% endif %}
+                        {{ 'components.posting.sign_up'|trans({again: hasApplied|default(false)}) }}
                     </a>
                 </div>
                 {% if hasApplied %}

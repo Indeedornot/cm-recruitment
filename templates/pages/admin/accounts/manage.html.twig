@@ -2,11 +2,16 @@
 {% block body %}
     <div class="d-flex justify-content-center w-100 pt-4">
         <div class="card bg-light mb-3 mt-5" style="width: 800px">
-            <div class="card-header">Registration Form</div>
+            <div class="card-header">{{ 'admin.accounts.form.header'|trans }}</div>
             <div class="card-body">
-                {% include 'forms/user-form.html.twig' with {
+                {% embed 'forms/user-form.html.twig' with {
                     form: form
                 } %}
+                    <div class="col-md-12">
+                        {{ form_button(form, {variant: 'primary', icon: 'user', label: 'admin.accounts.form.submit'|trans}) }}
+                        {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'common.cancel'|trans, href: url('app_user_index')}) }}
+                    </div>
+                {% endembed %}
             </div>
         </div>
     </div>

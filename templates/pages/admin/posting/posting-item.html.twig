@@ -30,7 +30,9 @@
         {% do attrs.append('class', 'px-2 fw-bold fs-5') %}
         {{ loop.index }}. {{ posting.title }}
         <span class="text-secondary ps-2">- {{ posting.assignedTo.name }}</span>
-        <span class="ps-2">- Kandydaci: {{ posting.applications|length }}</span>
+        <span class="ps-2">
+            - {{ 'components.posting.candidates_count'|trans({count: posting.applications|length}) }}
+        </span>
     {% endblock %}
     {% block body %}
         <p>{{ posting.description }}</p>

@@ -4,7 +4,7 @@
 {% block body %}
     <div class="d-flex justify-content-center w-100 pt-4">
         <div class="card bg-light mb-3 mt-5" style="width: 800px">
-            <div class="card-header">Formularz Ogłoszenia</div>
+            <div class="card-header">{{ 'components.posting.create.header'|trans }}</div>
             <div class="card-body">
                 {{ form_start(form) }}
                 {{ form_row(form.title) }}
@@ -15,7 +15,7 @@
                     buttonLabel: 'Dodaj pytanie',
                 } %}
                 <div class="col-md-12 mb-3">
-                    {{ form_button(form, {variant: 'primary', icon: 'user', label: 'Save'}) }}
+                    {{ form_button(form, {variant: 'primary', icon: 'user', label: 'common.save'|trans}) }}
                     {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'Back', href: path('app_admin_posting_index')}) }}
                 </div>
                 {{ form_end(form) }}

@@ -28,7 +28,7 @@
         <div class="card-body">
             <p>{{ posting.description }}</p>
             <div>
-                <p class="fw-semibold">Pytania specjalne:</p>
+                <p class="fw-semibold">{{ 'components.posting.question.admin.list_header'|trans }}</p>
 
                 {% embed 'common/accordion.html.twig' %}
                     {% if posting.questions.empty %}
@@ -36,7 +36,7 @@
                             headerTag: 'p'
                         } %}
                             {% do attrs.append('class', 'px-2 py-2') %}
-                            Brak jeszcze pytań specjalnych. Dodaj pytanie, aby zobaczyć je tutaj.
+                            {{ 'components.posting.question.admin.list_empty'|trans }}
                         {% endembed %}
                     {% else %}
                         {% for question in posting.questions %}
@@ -57,7 +57,7 @@
             </div>
 
             <div class="">
-                <p class="fw-semibold">Kandydaci:</p>
+                <p class="fw-semibold">{{ 'components.posting.candidate.admin.list_header'|trans }}</p>
                 {% set accordionId = 'postings-' ~ random() %}
                 {% if posting.applications.empty %}
                     <div class="accordion" id="{{ accordionId }}">
@@ -66,9 +66,7 @@
                             buttonClasses: 'px-2 py-2',
                             parentId: accordionId
                         } %}
-                            {% block buttonText %}
-                                Jeszcze nie ma żadnych kandydatów. Jak tylko ktoś się zgłosi, zobaczysz ich tutaj.
-                            {% endblock %}
+                            {{ 'components.posting.candidate.admin.list_empty'|trans }}
                         {% endembed %}
                     </div>
                 {% else %}

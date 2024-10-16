@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/user', name: 'app_user_')]
 class UserController extends BaseController
@@ -27,7 +28,8 @@ class UserController extends BaseController
         private PostingRepository $postingRepository,
         private EntityManagerInterface $em,
         private UserFactory $userFactory,
-        private readonly ExtendedSecurity $security
+        private readonly ExtendedSecurity $security,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -75,22 +77,12 @@ class UserController extends BaseController
                     if ($e instanceof InvalidFieldException) {
                         $this->addFlash(
                             'error',
-                            message: <<<'EOF'
-Podany adres email jest już zajęty.
-<br/>
-<br/>
-&bull; Spróbuj zalogować się na swoje konto lub skorzystać z opcji "Zapomniałem hasła".
-EOF //TODO: Forgot password
+                            message: $this->translator->trans('privacy_policy.email_taken') //TODO: Forgot password
                         );
                     } else {
                         $this->addFlash(
                             'error',
-                            message: <<<'EOF'
-Nie udało się stworzyć konta na podstawie podanych danych.
-Proszę spróbować ponownie.
-
-Jeśli problem będzie się powtarzał, proszę skontaktować się z administratorem.
-EOF
+                            message: $this->translator->trans('errors.generic')
                         );
                     }
                     return $this->render('pages/user/application/index.html.twig', [
@@ -104,14 +96,7 @@ EOF
                 } catch (Exception $e) {
                     $this->addFlash(
                         'error',
-                        message: <<<'EOF'
-Nie udało się zalogować na nowo utworzone konto.
-<br/>
-<br/>
-
-&bull; Na podany adres email zostało wysłane nowe hasło.
-Proszę zalogować się na swoje konto przy użyciu nowego hasła i ponownie spróbować aplikować na ogłoszenie.
-EOF
+                        message: $this->translator->trans('privacy_policy.failed_auto_login')
                     );
 
                     return $this->render('pages/user/application/index.html.twig', [

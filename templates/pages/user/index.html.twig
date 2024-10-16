@@ -3,19 +3,18 @@
 {% block body %}
     <div class="card card-flush">
         <h1 class="card-header bg-transparent">
-            &bull; Zapisz się na zajęcia
+            {{ 'index.header'|trans }}
         </h1>
 
         <div class="card-body px-0">
             {% if app.user is not empty and app.user.applications|length %}
                 {% embed 'common/accordion.html.twig' with {classes: 'mb-3 border-top border-bottom', flush: true} %}
                     {% embed 'common/accordion-item.html.twig' with {
-                        parentId: accordionId,
                         headerTag: 'h3',
-                        buttonClasses: 'fs-3 fw-semibold bg-light border-1',
                     } %}
                         {% block buttonText %}
-                            Zajęcia na które jesteś zapisany
+                            {% do attrs.append('class', ' fs-3 fw-semibold bg-light border-1') %}
+                            {{ 'index.signed_up_list'|trans }}
                         {% endblock %}
 
                         {% block body %}
@@ -25,12 +24,12 @@
                                         <div class="card-body">
                                             <h2>{{ application.posting.title }}
                                                 <span class="text-secondary">
-                                                    Prowadzi: {{ application.posting.assignedTo.name }}
+                                                    {{ 'components.posting.assigned_to'|trans({'name': application.posting.assignedTo.name}) }}
                                                 </span>
                                             </h2>
                                             <p>{{ application.posting.description }}</p>
                                             <a href="{{ path('app_user_index', {id: application.id}) }}"
-                                               class="btn btn-primary">Edit</a>
+                                               class="btn btn-primary">{{ 'common.edit'|trans }}</a>
                                         </div>
                                     </div>
                                 {% endfor %}
@@ -46,7 +45,7 @@
                         <div class="card-body">
                             <h2>{{ posting.title }}
                                 <span class="text-secondary">
-                                    Prowadzi: {{ posting.assignedTo.name }}
+                                    {{ 'components.posting.assigned_to'|trans({'name': posting.assignedTo.name}) }}
                                 </span>
                             </h2>
                             <p>{{ posting.description }}</p>
@@ -56,7 +55,7 @@
                                 {% if app.user is not empty %}
                                     {% set alreadyApplied = app.user.applications|filter(x => x.posting.id == posting.id)|length %}
                                 {% endif %}
-                                Zapisz się {% if alreadyApplied|default(false) %}ponownie{% endif %}
+                                {{ 'components.posting.sign_up'|trans({again: alreadyApplied|default(false)}) }}
                             </a>
                         </div>
                     </div>

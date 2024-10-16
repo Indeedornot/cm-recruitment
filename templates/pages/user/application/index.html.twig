@@ -6,7 +6,7 @@
         <div class="card-body">
             <h2>{{ posting.title }}
                 <span class="text-secondary">
-                   Prowadzi: {{ posting.assignedTo.name }}
+                    {{ 'components.posting.assigned_to'|trans({'name': posting.assignedTo.name}) }}
                 </span>
             </h2>
             <p>{{ posting.description }}</p>

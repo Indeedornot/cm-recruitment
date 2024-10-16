@@ -3,7 +3,7 @@
 {% block body %}
     <div class="card card-flush">
         <h1 class="card-header bg-transparent">
-            &bull; Polityka prywatności
+            {{ 'privacy_policy.header'|trans }}
         </h1>
 
         <div class="card-body">
@@ -11,17 +11,16 @@
                 {% embed 'common/accordion-item.html.twig' with { index: 0 } %}
                     {% block buttonText %}
                         {% do attrs.append('class', 'test', true) %}
-                        Aplikuj bez konta
+                        {{ 'privacy_policy.apply_without_account.header'|trans }}
                     {% endblock %}
                     {% block body %}
                         <p>
                             <span>
-                            Wypełnij formularz aplikacyjny bez zakładania konta.
-                            Stworzymy dla Ciebie konto automatycznie korzystając z danych z formularza.
+                                {{ 'privacy_policy.apply_without_account.text'|trans }}
                             </span>
 
                             <br/><br/>
-                            
+
                             {#                            TODO: Privacy policy #}
                             <span>
                             &bull; Kontynuując, zgadzasz się na nasze
@@ -34,7 +33,7 @@
                                 <input type="hidden" name="ACCEPT_PRIVACY_POLICY" value="1"/>
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa-solid fa-user-plus"></i>
-                                    Aplikuj bez konta
+                                    {{ 'privacy_policy.apply_without_account.submit'|trans }}
                                 </button>
                             </form>
                         </div>
@@ -47,19 +46,12 @@
                     {% endblock %}
                     {% block body %}
                         <p>
-                            Zaloguj się, aby kontynuować aplikację i korzystać z innych funkcji.
-
-                            <br/>
-                            <br/>
-                            &bull; M.in. zapisywać swoje aplikacje, edytować swoje dane, przeglądać historię aplikacji.
-
-                            <br/>
-                            &bull; Oraz możliwości auto-uzupełniania na podstawie danych z poprzednich lat.
+                            {{ 'privacy_policy.apply_without_account.text'|trans }}
                         </p>
 
                         <a href="{{ path('app_login') }}" class="btn btn-primary">
                             <i class="fa-solid fa-door-open"></i>
-                            Zaloguj się
+                            {{ 'privacy_policy.apply_with_account.submit'|trans }}
                         </a>
                     {% endblock %}
                 {% endembed %}

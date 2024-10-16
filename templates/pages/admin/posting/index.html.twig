@@ -4,7 +4,7 @@
     <div class="container-y container-fluid">
         <div class="gap-2 d-grid">
             <a class="btn btn-primary w-100" href="{{ url('app_admin_posting_create') }}">
-                Stwórz nowe ogłoszenie
+                {{ 'components.posting.create.create_new'|trans }}
             </a>
 
             {% embed 'common/accordion.html.twig' %}
@@ -16,7 +16,7 @@
                     {% endfor %}
                 {% else %}
                     {% embed 'common/accordion-item.html.twig' %}
-                        <p>Nie stworzono jeszcze żadnych ogłoszeń. Stwórz nowe żeby je tu zobaczyć</p>
+                        <p>{{ 'components.posting.create.no_postings_created'|trans }}</p>
                     {% endembed %}
                 {% endif %}
             {% endembed %}
