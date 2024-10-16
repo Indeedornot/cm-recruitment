@@ -3,19 +3,20 @@
 {# {% endif %} #}
 
 {% set actionRow %}
-    {% set canEdit = is_granted(constant('App\\Security\\Entity\\UserRoles::SUPER_ADMIN').value) or posting.assignedTo.id == app.user.id %}
+    {% set canEdit = posting.canEdit(app.user) %}
     <div class="d-flex justify-content-end gap-1">
-        <a class="btn btn-primary {% if not canEdit %}disabled{% endif %}"
-           href="{{ path('app_admin_posting_edit', {'id': posting.id}) }}"
-        >
-            <i class="fa-solid fa-pen"></i>
-        </a>
         <a class="btn btn-secondary"
            href="{{ path('app_admin_posting_show', {'id': posting.id}) }}"
         >
             <i class="fa-solid fa-eye"></i>
         </a>
-        <a class="btn btn-danger"
+        <a class="btn btn-primary {% if canEdit %}disabled{% endif %}"
+           href="{{ path('app_admin_posting_edit', {'id': posting.id}) }}"
+        >
+            <i class="fa-solid fa-pen"></i>
+        </a>
+        <a class="btn btn-danger {% if canEdit %}disabled{% endif %}"
+            {#           TODO: #}
             {#            href="{{ path('app_admin_posting_delete', {'id': posting.id}) }}" #}
         >
             <i class="fa-solid fa-trash"></i>
