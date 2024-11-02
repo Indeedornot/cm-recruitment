@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html.twig' %}
+
 {% block body %}
     <div class="d-flex justify-content-center w-100 pt-4">
-
         <div class="card bg-light mb-3 mt-5" style="width: 800px">
             <div class="card-header">{{ 'security.form.register.header'|trans }}</div>
             <div class="card-body">
@@ -10,7 +10,7 @@
                 } %}
                     <div class="col-md-12">
                         {{ form_button(form, {variant: 'primary', icon: 'user', label: 'security.form.register.submit'|trans}) }}
-                        {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'common.cancel'|trans, href: url('app_user_index')) }}
+                        {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'common.cancel'|trans, href: url('app_user_index')}) }}
                     </div>
                 {% endembed %}
             </div>

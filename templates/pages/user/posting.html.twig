@@ -15,7 +15,7 @@
                 <div {% if hasApplied %}class="mb-3"{% endif %}>
                     <h2>{{ posting.title }}
                         <span class="text-secondary">
-                            {{ 'components.posting.assigned_to'|trans({'name': application.posting.assignedTo.name}) }}
+                            {{ 'components.posting.assigned_to'|trans({'name': posting.assignedTo.name}) }}
                         </span>
                     </h2>
                     <p>{{ posting.description }}</p>
