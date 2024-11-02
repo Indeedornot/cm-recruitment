@@ -8,17 +8,8 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\LogicException;
-use Symfony\Component\Security\Core\Exception\LogoutException;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Csrf\CsrfToken;
-use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
-use Symfony\Component\Security\Http\Authenticator\Passport\Badge\BadgeInterface;
-use Symfony\Component\Security\Http\Event\LogoutEvent;
-use Symfony\Component\Security\Http\ParameterBagUtils;
-use Symfony\Contracts\Service\ServiceProviderInterface;
 
 /**
  * @extends Security
