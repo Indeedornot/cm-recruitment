@@ -6,15 +6,17 @@ use App\Contract\Exception\InvalidFieldException;
 use App\Entity\ClientApplication;
 use App\Security\Entity\Admin;
 use App\Security\Entity\Client;
+use App\Security\Entity\User;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use InvalidArgumentException;
 use LogicException;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFactory
 {
-    public function __construct(private EntityManagerInterface $em)
+    public function __construct(private EntityManagerInterface $em, private UserPasswordHasherInterface $passwordHasher)
     {
     }
 
@@ -74,5 +76,15 @@ class UserFactory
             $str .= $keyspace[random_int(0, $max)];
         }
         return $str;
+    }
+
+    public function hashPassword(User $user, string $password): string
+    {
+        return $this->passwordHasher->hashPassword($user, $password);
+    }
+
+    public function checkPassword(User $user, string $password): bool
+    {
+        return $this->passwordHasher->isPasswordValid($user, $password);
     }
 }
