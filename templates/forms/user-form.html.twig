@@ -3,6 +3,10 @@
 {{ form_start(form) }}
 {{ form_row(form.name) }}
 {{ form_row(form.email) }}
+{% if form.currentPassword is defined %}
+    {{ form_row(form.currentPassword) }}
+{% endif %}
+
 {% if form.plainPassword is defined %}
     {{ form_row(form.plainPassword.first) }}
     {{ form_row(form.plainPassword.second) }}

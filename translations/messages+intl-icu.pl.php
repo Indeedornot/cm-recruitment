@@ -75,6 +75,10 @@ return [
             'error' => [
                 'already_logged_in' => 'Jesteś już zalogowany jako {name}.',
             ],
+            'reset_password' => [
+                'header' => 'Zresetuj hasło',
+                'submit' => 'Zresetuj hasło',
+            ],
             'email' => 'Adres email',
             'password' => 'Hasło',
             'password_confirmation' => 'Powtórz hasło',

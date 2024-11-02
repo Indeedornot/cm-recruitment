@@ -8,6 +8,7 @@ use App\Security\Entity\Admin;
 use App\Security\Entity\Client;
 use App\Security\Entity\UserRoles;
 use App\Security\Factory\UserFactory;
+use App\Security\Form\UserFormMode;
 use App\Security\Form\UserType;
 use App\Security\Repository\UserRepository;
 use App\Security\Services\ExtendedSecurity;
@@ -66,13 +67,14 @@ class AdminController extends BaseController
 
         $id = $request->query->get('id');
         $user = $this->userRepository->find($id);
-        $form = $this->createForm(UserType::class, $user, ['mode' => 'edit']);
+        $form = $this->createForm(UserType::class, $user, ['mode' => UserFormMode::EDIT]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->persist($user);
             $this->manager->flush();
-            $form = $this->createForm(UserType::class, $this->userRepository->find($id), ['mode' => 'edit']);
+            $form = $this->createForm(UserType::class, $this->userRepository->find($id), ['mode' => UserFormMode::EDIT]
+            );
         }
 
         return $this->render('pages/admin/accounts/manage.html.twig', [
