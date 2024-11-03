@@ -132,7 +132,7 @@ return [
                 ROLE_ADMIN {Administrator}
                 ROLE_CLIENT {Użytkownik}
                 ROLE_SUPER_ADMIN {Super Administrator}
-                other
+                other {Nieznana Rola}
             }',
         ],
     ],
