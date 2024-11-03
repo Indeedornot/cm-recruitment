@@ -14,7 +14,10 @@ return [
                 'create_admin' => 'Create new Admin user here',
                 'admin' => 'Manage all Admin users here',
                 'client' => 'Manage all Client users here',
-                'posting' => 'Manage all Postings here',
+                'posting' => [
+                    'super_admin' => 'Manage all Postings here',
+                    'admin' => 'Manage your Postings here',
+                ],
                 'questionaire' => 'Manage questionaire'
             ]
         ],
