@@ -5,7 +5,9 @@ namespace App\Controller\Base;
 use App\Security\Entity\Admin;
 use App\Security\Entity\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Throwable;
 
 class BaseController extends AbstractController
 {
@@ -49,5 +51,10 @@ class BaseController extends AbstractController
             'error_handler',
             ['handler' => $handler->value, 'options' => $options]
         );
+    }
+
+    public function renderErrorPage(string|Throwable $error, string $title = 'Error'): Response
+    {
+        return $this->render('errors/index.html.twig', ['error' => $error, 'title' => $title]);
     }
 }
