@@ -17,7 +17,7 @@
                     <td>{{ loop.index + (page - 1) * 10 }}</td>
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
-                    <td>{{ admin.roles|map(fn($role) => 'components.user.user_role'|trans({role: $role}))|join(', ') }}</td>
+                    <td>{{ user.readableRoles|map((role) => role|trans)|join(', ') }}</td>
                     <td>
                         {#                        TODO: Add editting? #}
                         <twig:Modal

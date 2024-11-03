@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Translation\TranslatableMessage;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\InheritanceType('JOINED')]
@@ -184,7 +185,8 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getReadableRoles(): array
     {
         $roles = $this->getRoles();
-        return array_map(fn($role) => UserRoles::from($role)->getLabel(), $roles);
+        $roles = array_diff($roles, [UserRoles::BASE_USER->value]);
+        return array_map(fn($role) => new TranslatableMessage('components.user.user_role', ['role' => $role]), $roles);
     }
 
     public function hasRole(string|UserRoles $role): bool

@@ -17,7 +17,7 @@
                     <td>{{ loop.index + (page - 1) * 10 }}</td>
                     <td>{{ admin.name }}</td>
                     <td>{{ admin.email }}</td>
-                    <td>{{ admin.roles|map(fn($role) => 'components.user.user_role'|trans({role: $role}))|join(', ') }}</td>
+                    <td>{{ admin.roles|map((role) => role|trans)|join(', ') }}</td>
                     <td>
                         <div class="d-flex">
                             <a class="btn icon-link link-primary"
