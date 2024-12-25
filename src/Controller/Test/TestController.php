@@ -49,16 +49,18 @@ class TestController extends BaseController
 
     private function getTestAccount(string $type)
     {
-        $user = $this->userRepository->findOneBy(['email' => $type . '@example.com']);
+        $name = explode('\\', $type);
+        $name = end($name);
+        $email = $name . '@example.com';
+
+        $user = $this->userRepository->findOneBy(['email' => $email]);
         if ($user === null) {
             $user = match ($type) {
                 Admin::class => $this->userFactory->createEmptyAdmin(),
                 Client::class => $this->userFactory->createEmptyClient(),
             };
 
-            $name = explode('\\', $type);
-            $name = end($name);
-            $user->setEmail($name . '@example.com')->setName('Test ' . $name);
+            $user->setEmail($email)->setName($name);
             if ($user instanceof Admin) {
                 $user->setCreatedBy($user);
             }
