@@ -29,6 +29,6 @@ var/
 vendor/
 .editorconfig
 .env.*.local
-.env.local
+.env
 .env.local.php
 .env.test
