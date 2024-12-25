@@ -159,5 +159,9 @@ return [
         'actions' => 'Akcje',
         'undo' => 'Cofnij',
         'row_number' => 'Lp.',
+        'success' => 'Sukces',
+        'are_you_sure' => 'Czy na pewno chcesz to zrobić?',
+        'confirm_your_action' => 'Potwierdź swoją akcję',
+        'number_of_items' => 'Liczba elementów',
     ]
 ];
