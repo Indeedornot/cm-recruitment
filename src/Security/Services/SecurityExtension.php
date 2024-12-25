@@ -19,12 +19,18 @@ class SecurityExtension extends AbstractExtension
             new TwigFunction('is_admin', [$this, 'isAdmin']),
             new TwigFunction('is_client', [$this, 'isClient']),
             new TwigFunction('is_loggedin', [$this, 'isLoggedIn']),
+            new TwigFunction('is_super_admin', [$this, 'isSuperAdmin']),
         ];
     }
 
     public function isAdmin(): bool
     {
         return $this->security->isGranted(UserRoles::ADMIN->value);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->security->isGranted(UserRoles::SUPER_ADMIN->value);
     }
 
     public function isClient(): bool

@@ -20,11 +20,21 @@ class AttributesExtension extends AbstractExtension
                 [$this, 'getAttributes'],
                 ['is_safe' => ['html']]
             ),
+            new TwigFunction(
+                'get_id',
+                [$this, 'getId'],
+                ['is_safe' => ['html']]
+            )
         ];
     }
 
     public function getAttributes(array $attributes = [], bool $merge = true): ElementAttributes
     {
         return new ElementAttributes($attributes, $merge);
+    }
+
+    public function getId(?string $prefix = null): string
+    {
+        return ($prefix ?? 'id') . uniqid();
     }
 }

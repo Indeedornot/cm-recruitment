@@ -13,7 +13,6 @@ use App\Security\Form\UserType;
 use App\Security\Repository\UserRepository;
 use App\Security\Services\ExtendedSecurity;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -94,10 +93,17 @@ class AdminController extends BaseController
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+
+        $total = $this->manager->getRepository(Admin::class)->createQueryBuilder('a')
+            ->select('count(a.id)')
+            ->getQuery()
+            ->setResultCacheLifetime(60 * 3)
+            ->getSingleScalarResult();
         return $this->render('pages/admin/accounts/admins.html.twig', [
             'admins' => $admins,
             'page' => $page,
-            'limit' => $limit
+            'limit' => $limit,
+            'total' => $total
         ]);
     }
 
@@ -112,10 +118,18 @@ class AdminController extends BaseController
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+
+        $total = $this->manager->getRepository(Client::class)->createQueryBuilder('a')
+            ->select('count(a.id)')
+            ->getQuery()
+            ->setResultCacheLifetime(60 * 3)
+            ->getSingleScalarResult();
+
         return $this->render('pages/admin/accounts/users.html.twig', [
             'users' => $users,
             'page' => $page,
-            'limit' => $limit
+            'limit' => $limit,
+            'total' => $total
         ]);
     }
 

@@ -1,7 +1,10 @@
 {% extends 'layouts/base.html.twig' %}
 {% block body %}
-    <div class="container-fluid container-y ">
-        <table class="admin-list-table table table-striped rounded overflow-hidden">
+    {% import 'pages/admin/accounts/macros.html.twig' as common %}
+
+    {% set tableId = get_id() %}
+    <div class="container-fluid container-y" id="{{ tableId }}">
+        <table class="table table-striped rounded overflow-hidden table-cells-vertical">
             <thead>
             <tr>
                 <th>{{ 'common.row_number'|trans }}</th>
@@ -19,42 +22,39 @@
                     <td>{{ admin.email }}</td>
                     <td>{{ admin.roles|map((role) => role|trans)|join(', ') }}</td>
                     <td>
-                        <div class="d-flex">
-                            <a class="btn icon-link link-primary"
-                               href="{{ path('app_admin_edit_account', {'id': admin.id}) }}"
-                               data-bs-toggle="tooltip"
-                               title="{{ 'common.edit'|trans }}"
+                        {% if is_super_admin() %}
+                            <button type="button"
+                                    class="btn icon-link link-danger delete-user-btn"
+                                    data-user-id="{{ user.id }}"
+                                    title="{{ 'common.delete'|trans }}"
+                            >
+                                <i class="fa-solid fa-user-xmark"></i>
+                            </button>
+                            <a
+                                class="btn icon-link link-primary"
+                                title="{{ 'common.edit'|trans }}"
+                                href="{{ path('app_admin_edit_account', {'id': user.id}) }}"
                             >
                                 <i class="fa-solid fa-user-edit"></i>
                             </a>
-                            <twig:Modal
-                                onConfirm="() => {
-                                    window.location.href = '{{ path('app_admin_delete_account', {'id': admin.id}) }}';
-                                }"
-                            >
-                                <twig:block name="trigger">
-                                    <btn {{ btnAttrs.addOrSet({class: 'btn icon-link link-danger'})|raw }}>
-                                        <i class="fa-solid fa-user-xmark"></i>
-                                    </btn>
-                                </twig:block>
-                            </twig:Modal>
-                        </div>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="5">
+                    {{ common.pagination('app_admin_admins', page, total, limit) }}
+                </td>
+            </tr>
+            </tfoot>
         </table>
     </div>
 
-
-    {% set styles %}
-        <style>
-            .admin-list-table td {
-                vertical-align: middle;
-            }
-        </style>
+    {% set javascript %}
+        {{ common.delete_user_script(tableId) }}
     {% endset %}
-
-    {{ assets_styles().addStyle(styles) }}
+    {{ assets_scripts().addScript(javascript) }}
 {% endblock %}
 
