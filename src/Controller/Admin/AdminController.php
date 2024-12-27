@@ -12,6 +12,8 @@ use App\Security\Form\UserFormMode;
 use App\Security\Form\UserType;
 use App\Security\Repository\UserRepository;
 use App\Security\Services\ExtendedSecurity;
+use App\Services\Form\PaginationService;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,7 +29,8 @@ class AdminController extends BaseController
         private readonly EntityManagerInterface $manager,
         private readonly ExtendedSecurity $security,
         private readonly UserFactory $userFactory,
-        private readonly UserRepository $userRepository
+        private readonly UserRepository $userRepository,
+        private readonly PaginationService $pagination
     ) {
     }
 
@@ -85,52 +88,25 @@ class AdminController extends BaseController
     #[Route("/admins", name: "admins")]
     public function admins(
         Request $request,
-        #[MapQueryParameter] int $page = 1,
-        #[MapQueryParameter] int $limit = 10
     ): Response {
-        $admins = $this->manager->getRepository(Admin::class)->createQueryBuilder('a')
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
+        $pagination = $this->pagination->handleRequest($request);
+        $pagination = $this->pagination->getPagination(Admin::class, $pagination);
+        $pagination['users'] = $pagination['items'];
+        unset($pagination['items']);
 
-        $total = $this->manager->getRepository(Admin::class)->createQueryBuilder('a')
-            ->select('count(a.id)')
-            ->getQuery()
-            ->setResultCacheLifetime(60 * 3)
-            ->getSingleScalarResult();
-        return $this->render('pages/admin/accounts/admins.html.twig', [
-            'admins' => $admins,
-            'page' => $page,
-            'limit' => $limit,
-            'total' => $total
-        ]);
+        return $this->render('pages/admin/accounts/admins.html.twig', $pagination);
     }
 
     #[Route("/users", name: "users")]
     public function users(
         Request $request,
-        #[MapQueryParameter] int $page = 1,
-        #[MapQueryParameter] int $limit = 10
     ): Response {
-        $users = $this->manager->getRepository(Client::class)->createQueryBuilder('a')
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
+        $pagination = $this->pagination->handleRequest($request);
+        $pagination = $this->pagination->getPagination(Client::class, $pagination);
+        $pagination['users'] = $pagination['items'];
+        unset($pagination['items']);
 
-        $total = $this->manager->getRepository(Client::class)->createQueryBuilder('a')
-            ->select('count(a.id)')
-            ->getQuery()
-            ->setResultCacheLifetime(60 * 3)
-            ->getSingleScalarResult();
-
-        return $this->render('pages/admin/accounts/users.html.twig', [
-            'users' => $users,
-            'page' => $page,
-            'limit' => $limit,
-            'total' => $total
-        ]);
+        return $this->render('pages/admin/accounts/users.html.twig', $pagination);
     }
 
 

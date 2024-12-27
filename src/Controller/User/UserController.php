@@ -30,6 +30,7 @@ class UserController extends BaseController
         private UserFactory $userFactory,
         private readonly ExtendedSecurity $security,
         private readonly TranslatorInterface $translator,
+        private readonly PaginationService $pagination
     ) {
     }
 
@@ -37,7 +38,31 @@ class UserController extends BaseController
     public function user(Request $request): Response
     {
         return $this->render('pages/user/index.html.twig', [
-            'postings' => $this->postingRepository->findBy(['disabledAt' => null], ['createdAt' => 'DESC']),
+            'form' => $this->createForm(PostingDisplayType::class)->createView(),
+        ]);
+    }
+
+    #[Route("/_search", name: "search")]
+    public function search(Request $request): Response
+    {
+        $pagination = $this->pagination->handleRequest($request);
+
+        $form = $this->createForm(PostingDisplayType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+        }
+
+        $qb = $this->postingRepository->getDisplayedPostingsQb($data ?? []);
+        $totalItems = (clone $qb)->select('COUNT(p)')->getQuery()->getSingleScalarResult();
+
+        $qb = $this->pagination->attachPagination($qb, $pagination);
+        $postings = $qb->getQuery()->getResult();
+
+        return $this->render('pages/user/postings.html.twig', [
+            'postings' => $postings,
+            ...$pagination,
+            'total' => $totalItems,
         ]);
     }
 

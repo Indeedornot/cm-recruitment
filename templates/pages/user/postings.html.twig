@@ -1,0 +1,32 @@
+{% import 'common/tables/pagination.html.twig' as pagination %}
+
+<div class="px-4 pb-3">
+    {{ pagination.pagination('app_admin_posting_index', page, total, limit) }}
+    <div class="py-2">
+        <div class="list-group list-group-flush border">
+            {% for posting in postings %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="h5 mb-1">
+                            {{ posting.title }}
+                        </h3>
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-user me-1"></i>
+                            {{ 'components.posting.assigned_to'|trans({'name': posting.assignedTo.name}) }}
+                        </p>
+                    </div>
+                    <a href="{{ path('app_user_posting', {id: posting.id}) }}"
+                       class="btn btn-primary btn-sm">
+                        {% set alreadyApplied = false %}
+                        {% if app.user is not empty %}
+                            {% set alreadyApplied = (app.user.applications|filter(x => x.posting.id == posting.id)|length) %}
+                        {% endif %}
+                        <i class="fas fa-plus-circle me-1"></i>
+                        {{ alreadyApplied ? 'components.posting.sign_up_again'|trans : 'components.posting.sign_up'|trans }}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {{ pagination.pagination('app_admin_posting_index', page, total, limit) }}
+</div>
