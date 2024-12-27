@@ -25,6 +25,7 @@
     {% block styles %}
         {{ assets_styles().getHtmlStyles|raw }}
     {% endblock %}
+    <script src="{{ path('app_internal_translations_js') }}"></script>
 </head>
 <body class="vh-100">
 {{ navbarContent }}

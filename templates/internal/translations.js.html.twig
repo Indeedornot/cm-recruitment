@@ -1,0 +1,5 @@
+const translations = {
+{% for key, translation in translations %}
+    '{{ key }}': '{{ translation|e('js') }}',
+{% endfor %}
+};
