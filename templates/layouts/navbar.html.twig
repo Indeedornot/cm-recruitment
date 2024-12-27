@@ -30,6 +30,14 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a class="dropdown-item gap-2 d-flex align-items-center"
+                                   href="{{ url('app_test_account', {type: 'Client'}) }}"
+                                >
+                                    <i class="fa-solid fa-user"></i>
+                                    Client
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item gap-2 d-flex align-items-center"
                                    href="{{ url('app_test_account', {type: 'Admin'}) }}"
                                 >
                                     <i class="fa-solid fa-user"></i>
@@ -38,11 +46,12 @@
                             </li>
                             <li>
                                 <a class="dropdown-item gap-2 d-flex align-items-center"
-                                   href="{{ url('app_test_account', {type: 'Client'}) }}"
+                                   href="{{ url('app_test_account', {type: 'SuperAdmin'}) }}"
                                 >
                                     <i class="fa-solid fa-user"></i>
-                                    Client
+                                    Super Admin
                                 </a>
+                            </li>
                         </ul>
                     </li>
                 {% endif %}
