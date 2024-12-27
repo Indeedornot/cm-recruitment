@@ -131,3 +131,13 @@ $card-cap-padding-y: $card-spacer-y * .75;
 .card-group-vertical > .card:not(:first-child) .card-footer {
     border-top-right-radius: 0;
 }
+
+
+[data-bs-toggle="collapse"] {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.accordion-button {
+    font-size: inherit !important;
+}
