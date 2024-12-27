@@ -2,16 +2,14 @@
 
 namespace App\Security\EventListener;
 
-use App\Security\Event\UserEvent;
+use App\Security\Entity\User;
 use App\Security\Services\ExtendedSecurity;
 use LogicException;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Throwable;
 
 #[AsEventListener(event: KernelEvents::REQUEST, method: 'onKernelRequest')]
 class LoginListener
@@ -31,19 +29,30 @@ class LoginListener
             return;
         }
 
-        // if we are visiting the password change route, no need to redirect
-        // otherwise we'd create an infinite redirection loop
-        if ($event->getRequest()->get('_route') === self::RESET_PASSWORD_ROUTE) {
-            return;
-        }
-
         if (!$this->security->isLoggedIn()) {
             return;
         }
 
-        // if it's not their first login, and they do not need to change their password, move on
         $user = $this->security->getUser();
+        if (!$user instanceof User) {
+            throw new LogicException('User must be an instance of User');
+        }
+
+        if ($user->isDisabled()) {
+            $this->security->logout();
+            $event->getRequest()->getSession()->getFlashBag()->add('error', 'security.disabled_account');
+            $event->setResponse(new RedirectResponse($this->urlGenerator->generate('app_login')));
+            return;
+        }
+
+        // if it's not their first login, and they do not need to change their password, move on
         if (!$user->isPasswordChangeRequired()) {
+            return;
+        }
+
+        // if we are visiting the password change route, no need to redirect
+        // otherwise we'd create an infinite redirection loop
+        if ($event->getRequest()->get('_route') === self::RESET_PASSWORD_ROUTE) {
             return;
         }
 
