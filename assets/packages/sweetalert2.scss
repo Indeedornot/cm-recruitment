@@ -1,0 +1,11 @@
+@import "./sweetalert2/bootstrap5";
+@import "./sweetalert2/overrides";
+@import "~sweetalert2/src/scss/toasts";
+@import "~sweetalert2/src/scss/body";
+@import "~sweetalert2/src/scss/core";
+@import '~sweetalert2/src/scss/animations';
+
+body {
+    @include sweetalert2-body();
+    @include sweetalert2-toasts-body();
+}
