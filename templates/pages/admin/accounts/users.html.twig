@@ -1,11 +1,8 @@
 {% extends 'layouts/base.html.twig' %}
 {% block body %}
-    {% import 'pages/admin/accounts/macros.html.twig' as common %}
     {% import 'common/tables/pagination.html.twig' as pagination %}
 
-    {% set tableId = get_id() %}
-
-    <div class="container container-y" id="{{ tableId }}">
+    <div class="container container-y" data-hook="userTable">
         {% for type, messages in app.flashes %}
             {% if type == 'error' %}
                 {% set type = 'danger' %}
@@ -51,6 +48,7 @@
                                                 class="btn icon-link link-danger disable-user-btn toggle-user-btn"
                                                 data-user-id="{{ user.id }}"
                                                 data-user-name="{{ user.name }}"
+                                                data-path="{{ path('app_admin_disable_account', {'id': user.id}) }}"
                                                 data-type="client"
                                                 title="{{ 'common.delete'|trans }}"
                                         >
@@ -62,6 +60,7 @@
                                                 data-user-id="{{ user.id }}"
                                                 data-user-name="{{ user.name }}"
                                                 data-type="client"
+                                                data-path="{{ path('app_admin_restore_account', {'id': user.id}) }}"
                                                 title="{{ 'common.restore'|trans }}"
                                         >
                                             <i class="fa-solid fa-user-slash"></i>
@@ -86,10 +85,5 @@
             </div>
         </div>
     </div>
-
-    {% set javascript %}
-        {{ common.delete_user_script(tableId) }}
-    {% endset %}
-    {{ assets_scripts().addScript(javascript) }}
 {% endblock %}
 

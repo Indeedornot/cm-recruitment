@@ -45,3 +45,38 @@ document.addEventListener('DOMContentLoaded', () => {
       input.name = ''; // Remove name to prevent submission
     });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const tables = document.querySelectorAll('[data-hook="userTable"]');
+  tables.forEach((e) => e.addEventListener('click', async (event) => {
+    /** @type {HTMLElement} */
+    const target = event.target;
+    if (!target.matches('.toggle-user-btn')) {
+      return;
+    }
+
+    const name = target.getAttribute('data-user-name');
+    const type = target.getAttribute('data-type');
+    const path = target.getAttribute('data-path');
+
+    const el = document.createElement('div');
+    let text;
+    if (target.classList.contains('disable-user-btn')) {
+      text = translations[`admin.accounts.manage.${type}.disable_text`];
+    } else {
+      text = translations[`admin.accounts.manage.${type}.restore_text`];
+    }
+    el.innerHTML = text.replace('{name}', name);
+
+    const response = await Swal.fire({
+      title: translations['common.confirm_your_action'],
+      html: el,
+      icon: 'warning',
+      confirmButtonText: translations['common.confirm']
+    });
+
+    if (response.isConfirmed) {
+      window.location.href = path;
+    }
+  }));
+});
