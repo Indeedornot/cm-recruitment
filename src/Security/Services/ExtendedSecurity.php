@@ -21,6 +21,11 @@ class ExtendedSecurity
     ) {
     }
 
+    public function isSuperAdmin(): bool
+    {
+        return $this->isGranted(UserRoles::SUPER_ADMIN->value);
+    }
+
     public function isAdmin(): bool
     {
         return $this->isGranted(UserRoles::ADMIN->value);
