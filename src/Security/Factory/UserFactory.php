@@ -87,4 +87,15 @@ class UserFactory
     {
         return $this->passwordHasher->isPasswordValid($user, $password);
     }
+
+    public function resetPassword(User $user): void
+    {
+        $pswd = $this->generatePassword();
+        $user
+            ->setPlainPassword($pswd)
+            ->forcePasswordChange();
+        $this->em->flush();
+
+        $this->emailService->sendToUserPasswordResetMail($user);
+    }
 }
