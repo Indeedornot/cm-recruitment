@@ -17,28 +17,18 @@
                 </div>
             {% endfor %}
             <div class="mb-3">
-                {{ form_row(form.questionnaire, {
-                    'row_attr': {'class': 'card mb-3'},
-                    'label_attr': {'class': 'card-header'},
-                    'attr': {'class': 'card-body'}
-                }) }}
-
-                {% set answerFields = form|filter(child => child.vars.name starts with 'answers_') %}
-                {% if answerFields|length %}
-                    <div class="card">
-                        <div class="card-header">
-                            Odpowiedzi
-                        </div>
-                        <div class="card-body">
-                            {% for field in answerFields %}
-                                <div class="mb-3">
-                                    {{ form_label(field) }}
-                                    {{ form_widget(field) }}
-                                </div>
-                            {% endfor %}
-                        </div>
+                <div class="card">
+                    <div class="card-header">
+                        Odpowiedzi
                     </div>
-                {% endif %}
+                    <div class="card-body">
+                        {% for field in form.children|filter(field => field.vars.name starts with 'answer_') %}
+                            <div class="mb-3">
+                                {{ form_row(field) }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-12 mb-3">

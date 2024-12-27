@@ -5,11 +5,15 @@ namespace App\Controller\User;
 use App\Contract\Exception\InvalidFieldException;
 use App\Controller\Base\BaseController;
 use App\Entity\ClientApplication;
+use App\Entity\Questionnaire;
 use App\Form\ClientApplicationType;
+use App\Form\CreateQuestionnaireType;
+use App\Form\PostingDisplayType;
 use App\Repository\PostingRepository;
 use App\Security\Entity\UserRoles;
 use App\Security\Factory\UserFactory;
 use App\Security\Services\ExtendedSecurity;
+use App\Services\Form\PaginationService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -87,9 +91,7 @@ class UserController extends BaseController
         }
 
         if (!$this->security->isAcceptedPrivacyPolicy()) {
-            return $this->redirectToRoute('app_user_posting_privacy_policy', [
-                'id' => $posting->getId(),
-            ]);
+            return $this->redirectToRoute('app_user_posting_privacy_policy', ['id' => $id]);
         }
 
         $clientApplication = (new ClientApplication())->setPosting($posting);
@@ -102,12 +104,12 @@ class UserController extends BaseController
                     if ($e instanceof InvalidFieldException) {
                         $this->addFlash(
                             'error',
-                            message: $this->translator->trans('privacy_policy.email_taken') //TODO: Forgot password
+                            message: 'privacy_policy.email_taken' //TODO: Forgot password
                         );
                     } else {
                         $this->addFlash(
                             'error',
-                            message: $this->translator->trans('errors.generic')
+                            message: 'errors.generic'
                         );
                     }
                     return $this->render('pages/user/application/index.html.twig', [
@@ -141,6 +143,25 @@ class UserController extends BaseController
         return $this->render('pages/user/application/index.html.twig', [
             'posting' => $posting,
             'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route("/posting/{id}/application/{applicationId}", name: "posting_application")]
+    public function postingApplication(Request $request, int $id, int $applicationId): Response
+    {
+        $posting = $this->postingRepository->find($id);
+        if (!$posting) {
+            throw $this->createNotFoundException();
+        }
+
+        $application = $this->em->getRepository(ClientApplication::class)->find($applicationId);
+        if (!$application) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->render('pages/user/application/show.html.twig', [
+            'posting' => $posting,
+            'application' => $application,
         ]);
     }
 

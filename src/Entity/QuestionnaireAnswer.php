@@ -3,23 +3,24 @@
 namespace App\Entity;
 
 use App\Entity\Trait\Identified;
-use App\Repository\PostingAnswerRepository;
-use App\Security\Entity\Client;
+use App\Entity\Trait\Timestampable;
+use App\Repository\QuestionnaireAnswerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-#[ORM\Entity(repositoryClass: PostingAnswerRepository::class)]
-class PostingAnswer
+#[ORM\Entity(repositoryClass: QuestionnaireAnswerRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+class QuestionnaireAnswer
 {
+    use Timestampable;
     use Identified;
 
-    #[Assert\NotNull]
-    #[ORM\ManyToOne(targetEntity: PostingQuestion::class, inversedBy: 'id')]
-    private PostingQuestion $question;
-
-    #[Assert\NotNull]
     #[ORM\ManyToOne(targetEntity: ClientApplication::class, inversedBy: 'answers')]
     private ClientApplication $application;
+
+    #[ORM\ManyToOne(targetEntity: Question::class)]
+    private Question $question;
 
     #[ORM\Column]
     private string $answer;
@@ -29,7 +30,7 @@ class PostingAnswer
         return $this->answer;
     }
 
-    public function setAnswer(string $answer): PostingAnswer
+    public function setAnswer(string $answer): self
     {
         $this->answer = $answer;
         return $this;
@@ -46,12 +47,12 @@ class PostingAnswer
         return $this;
     }
 
-    public function getQuestion(): PostingQuestion
+    public function getQuestion(): Question
     {
         return $this->question;
     }
 
-    public function setQuestion(PostingQuestion $question): self
+    public function setQuestion(Question $question): self
     {
         $this->question = $question;
         return $this;

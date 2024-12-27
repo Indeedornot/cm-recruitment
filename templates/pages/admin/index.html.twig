@@ -9,8 +9,8 @@
                     {% set userType = is_super_admin() ? 'super_admin' : 'admin' %}
                     {% if userType == 'super_admin' %}
                         {{ macros.nav_item('admin.dashboard.items.admin'|trans, 'fa-users', url('app_admin_admins'), 'a') }}
-                        {{ macros.nav_item('admin.dashboard.items.create_admin'|trans, 'fa-user-plus', url('app_admin_create_account'), 'a') }}
-                        {{ macros.nav_item('admin.dashboard.items.questionaire'|trans, 'fa-question', url('app_admin_questionnaire_index'), 'a') }}
+                        {#                        {{ macros.nav_item('admin.dashboard.items.create_admin'|trans, 'fa-user-plus', url('app_admin_create_account'), 'a') }} #}
+                        {#                        {{ macros.nav_item('admin.dashboard.items.questionaire'|trans, 'fa-question', url('app_admin_questionnaire_index'), 'a') }} #}
                     {% endif %}
                     {{ macros.nav_item('admin.dashboard.items.client'|trans, 'fa-users', url('app_admin_users'), 'a') }}
                     {{ macros.nav_item(('admin.dashboard.items.posting.'~userType)|trans, 'fa-list-check', url('app_admin_posting_index'), 'a') }}

@@ -3,7 +3,7 @@
 {% block body %}
     <div class="card card-flush">
         <h1 class="card-header bg-transparent">
-            {{ 'privacy_policy.header'|trans }}
+            {{ 'privacy_policy.header'|trans|raw }}
         </h1>
 
         <div class="card-body">
@@ -16,7 +16,7 @@
                     {% block body %}
                         <p>
                             <span>
-                                {{ 'privacy_policy.apply_without_account.text'|trans }}
+                                {{ 'privacy_policy.apply_without_account.text'|trans|raw }}
                             </span>
 
                             <br/><br/>
@@ -40,11 +40,11 @@
                 {% endembed %}
                 {% embed 'common/accordion-item.html.twig' with { index: 1 } %}
                     {% block buttonText %}
-                        Masz już konto?
+                        {{ 'privacy_policy.apply_with_account.header'|trans }}
                     {% endblock %}
                     {% block body %}
                         <p>
-                            {{ 'privacy_policy.apply_without_account.text'|trans }}
+                            {{ 'privacy_policy.apply_with_account.text'|trans|raw }}
                         </p>
 
                         <a href="{{ path('app_login') }}" class="btn btn-primary">

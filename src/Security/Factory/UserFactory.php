@@ -7,6 +7,7 @@ use App\Entity\ClientApplication;
 use App\Security\Entity\Admin;
 use App\Security\Entity\Client;
 use App\Security\Entity\User;
+use App\Security\Services\UserEmailService;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -16,8 +17,11 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFactory
 {
-    public function __construct(private EntityManagerInterface $em, private UserPasswordHasherInterface $passwordHasher)
-    {
+    public function __construct(
+        private EntityManagerInterface $em,
+        private UserPasswordHasherInterface $passwordHasher,
+        private UserEmailService $emailService
+    ) {
     }
 
     public function createEmptyAdmin(): Admin
@@ -38,10 +42,18 @@ class UserFactory
     {
         try {
             $client = new Client();
+            $email = $application->getValueByKey('email');
+            $name = array_filter(array_map(fn($key) => $application->getValueByKey($key), ['first_name', 'last_name']));
+            if (count($name) > 0) {
+                $name = implode(' ', $name);
+            } else {
+                $name = $email;
+            }
+
             $client
-                ->setEmail($application->getQuestionnaire()->getEmail())
+                ->setEmail($email)
                 ->setPassword($this->generatePassword())
-                ->setName($application->getQuestionnaire()->getEmail());
+                ->setName($name);
 
             $this->em->persist($client);
             $this->em->flush();

@@ -32,16 +32,16 @@ class Posting
 
     #[ORM\Column]
     private string $description;
-    #[ORM\OneToMany(targetEntity: PostingQuestion::class, mappedBy: 'posting', cascade: ['persist', 'remove'])]
-    private Collection $questions;
     #[ORM\OneToMany(targetEntity: ClientApplication::class, mappedBy: 'posting')]
     private Collection $applications;
     #[ORM\ManyToOne(targetEntity: Admin::class)]
     private Admin $assignedTo;
 
+    #[ORM\ManyToOne(targetEntity: Questionnaire::class, cascade: ['persist', 'remove'], inversedBy: 'posting')]
+    private Questionnaire $questionnaire;
+
     public function __construct()
     {
-        $this->questions = new ArrayCollection();
         $this->applications = new ArrayCollection();
     }
 
@@ -67,34 +67,6 @@ class Posting
         return $this;
     }
 
-    public function getQuestions(): Collection
-    {
-        return $this->questions->filter(fn(PostingQuestion $question) => $question->getDisabledAt() === null);
-    }
-
-    public function setQuestions(Collection $questions): Posting
-    {
-        $this->questions = $questions;
-        return $this;
-    }
-
-
-    public function addQuestion(PostingQuestion $question): Posting
-    {
-        if (!$this->questions->contains($question)) {
-            $question->setPosting($this);
-            $this->questions->add($question);
-        }
-        return $this;
-    }
-
-    public function removeQuestion(PostingQuestion $question): Posting
-    {
-        $this->questions->removeElement($question);
-        $question->setDisabledAt(new DateTimeImmutable());
-        return $this;
-    }
-
     public function getApplications(): Collection
     {
         return $this->applications;
@@ -112,9 +84,9 @@ class Posting
             || $user->hasRole(UserRoles::SUPER_ADMIN);
     }
 
-    public function getAssignedTo(): User
+    public function getAssignedTo(): ?Admin
     {
-        return $this->assignedTo;
+        return $this->assignedTo ?? null;
     }
 
     public function setAssignedTo(Admin $assignedTo): Posting
@@ -123,4 +95,14 @@ class Posting
         return $this;
     }
 
+    public function getQuestionnaire(): Questionnaire
+    {
+        return $this->questionnaire;
+    }
+
+    public function setQuestionnaire(Questionnaire $questionnaire): self
+    {
+        $this->questionnaire = $questionnaire;
+        return $this;
+    }
 }

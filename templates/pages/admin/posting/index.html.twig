@@ -1,25 +1,36 @@
 {% extends 'layouts/base.html.twig' %}
+{% import 'common/tables/pagination.html.twig' as pagination %}
 
 {% block body %}
-    <div class="container-y container-fluid">
-        <div class="gap-2 d-grid">
-            <a class="btn btn-primary w-100" href="{{ url('app_admin_posting_create') }}">
-                {{ 'components.posting.create.create_new'|trans }}
-            </a>
 
-            {% embed 'common/accordion.html.twig' %}
-                {% if postings is not empty %}
-                    {% for posting in postings %}
-                        {% include 'pages/admin/posting/posting-item.html.twig' with {
-                            posting: posting
-                        } %}
-                    {% endfor %}
-                {% else %}
-                    {% embed 'common/accordion-item.html.twig' %}
-                        <p>{{ 'components.posting.create.no_postings_created'|trans }}</p>
-                    {% endembed %}
-                {% endif %}
-            {% endembed %}
+    <div class="container-y container">
+        <div class="gap-2 d-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="fs-5 mb-0">{{ 'admin.posting.header'|trans }}</h1>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="postings"></div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex w-100 justify-content-center">
+                        <a class="btn btn-primary" href="{{ url('app_admin_posting_create') }}">
+                            {{ 'components.posting.create.create_new'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+{% endblock %}
+
+{% set js %}
+    {{ pagination.dynamic_content('app_admin_posting_search') }}
+{% endset %}
+
+{% block javascripts %}
+    {{ assets_scripts().addScript(js) }}
+    {{ parent() }}
 {% endblock %}

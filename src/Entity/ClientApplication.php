@@ -22,11 +22,10 @@ class ClientApplication
     #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'applications')]
     private Client $client;
 
-    #[ORM\OneToOne(targetEntity: Questionnaire::class, inversedBy: 'application', cascade: ['persist', 'remove'])]
-    private Questionnaire $questionnaire;
     #[ORM\ManyToOne(targetEntity: Posting::class, inversedBy: 'applications')]
     private Posting $posting;
-    #[ORM\OneToMany(targetEntity: PostingAnswer::class, mappedBy: 'application', cascade: ['persist', 'remove'])]
+
+    #[ORM\OneToMany(targetEntity: QuestionnaireAnswer::class, mappedBy: 'application', cascade: ['persist', 'remove'])]
     private Collection $answers;
 
     public function __construct()
@@ -39,25 +38,12 @@ class ClientApplication
         return $this->answers;
     }
 
-    public function setAnswers(Collection $answers): self
-    {
-        $this->answers = $answers;
-        return $this;
-    }
-
-    public function addAnswer(PostingAnswer $answer): self
+    public function addAnswer(QuestionnaireAnswer $answer): self
     {
         if (!$this->answers->contains($answer)) {
+            $this->answers->add($answer);
             $answer->setApplication($this);
-            $this->answers[] = $answer;
         }
-        return $this;
-    }
-
-    public function removeAnswer(PostingAnswer $answer): self
-    {
-//        TODO: ??
-        $this->answers->removeElement($answer);
         return $this;
     }
 
@@ -83,14 +69,13 @@ class ClientApplication
         return $this;
     }
 
-    public function getQuestionnaire(): Questionnaire
+    public function getValueByKey(string $key): ?string
     {
-        return $this->questionnaire;
-    }
-
-    public function setQuestionnaire(Questionnaire $questionnaire): self
-    {
-        $this->questionnaire = $questionnaire;
-        return $this;
+        foreach ($this->answers as $answer) {
+            if ($answer->getQuestion()->getKey() === $key) {
+                return $answer->getValue();
+            }
+        }
+        return null;
     }
 }
