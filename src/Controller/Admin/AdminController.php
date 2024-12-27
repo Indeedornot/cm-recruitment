@@ -73,10 +73,15 @@ class AdminController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('resetPassword')->isClicked()) {
+                $this->userFactory->resetPassword($user);
+            }
+
             $this->manager->persist($user);
             $this->manager->flush();
-            $form = $this->createForm(UserType::class, $this->userRepository->find($id), ['mode' => UserFormMode::EDIT]
-            );
+            $form = $this->createForm(UserType::class, $this->userRepository->find($id), [
+                'mode' => UserFormMode::EDIT
+            ]);
         }
 
         return $this->render('pages/admin/accounts/manage.html.twig', [

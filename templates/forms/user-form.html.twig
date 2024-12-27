@@ -12,6 +12,10 @@
     {{ form_row(form.plainPassword.second) }}
 {% endif %}
 
+{% if form.resetPassword is defined %}
+    {{ form_row(form.resetPassword) }}
+{% endif %}
+
 {% block buttons %}
     {% block default %}
         <div class="col-md-12">

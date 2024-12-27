@@ -6,11 +6,21 @@ use App\Form\Exception;
 use App\Security\Entity\Admin;
 use App\Security\Entity\User;
 use App\Security\Factory\UserFactory;
+use App\Security\Services\ExtendedSecurity;
 use LogicException;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\{EmailType, PasswordType, RepeatedType, TextType};
+use Symfony\Component\Form\Extension\Core\Type\{ButtonType,
+    EmailType,
+    PasswordType,
+    RepeatedType,
+    SubmitType,
+    TextType
+};
+use Symfony\Component\Form\Button;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\SubmitButton;
+use Symfony\Component\Form\SubmitButtonTypeInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -20,7 +30,7 @@ class UserType extends AbstractType
     private int $minPasswordLength = 12;
 
     public function __construct(
-        private Security $security,
+        private ExtendedSecurity $security,
         private UserFactory $userFactory
     ) {
     }
@@ -30,23 +40,37 @@ class UserType extends AbstractType
         /** @var UserFormMode $mode */
         $mode = $options['mode'];
 
-        $options = in_array($mode, [UserFormMode::EDIT, UserFormMode::PASSWORD_CHANGE]) ? $this->getDisabledOptions(
-        ) : [];
+        $options = in_array($mode,
+            [UserFormMode::EDIT, UserFormMode::PASSWORD_CHANGE]
+        ) ? $this->getDisabledOptions() : [];
         $builder
-            ->add('email', EmailType::class, $options)
-            ->add('name', TextType::class, $options);
+            ->add('email', EmailType::class)
+            ->add('name', TextType::class);
 
-        if (in_array($mode, [UserFormMode::PASSWORD_CHANGE, UserFormMode::EDIT])) {
-            $this->getCurrentPasswordField($builder, $mode);
-        }
+        $isCurrentUser = $builder->getData() instanceof User
+            && $builder->getData()->getId() === $this->security->getUser()->getId();
 
-        if ($options['require_password'] ?? true) {
-            $this->getPasswordField($builder, $mode);
+        if ($isCurrentUser) {
+            if (in_array($mode, [UserFormMode::PASSWORD_CHANGE, UserFormMode::EDIT])) {
+                $this->getCurrentPasswordField($builder, $mode);
+            }
+
+            if ($options['require_password'] ?? true) {
+                $this->getPasswordField($builder, $mode);
+            } else {
+                $pswd = $this->userFactory->generatePassword($this->minPasswordLength);
+                $this->getUser($builder)
+                    ->setPlainPassword($pswd)
+                    ->forcePasswordChange();
+            }
         } else {
-            $pswd = $this->userFactory->generatePassword($this->minPasswordLength);
-            $this->getUser($builder)
-                ->setPlainPassword($pswd)
-                ->forcePasswordChange();
+            $builder->add('resetPassword', SubmitType::class, [
+                'label' => '
+                    <i class="fas fa-key"></i>
+                    Reset password
+                ',
+                'label_html' => true,
+            ]);
         }
     }
 
