@@ -1,0 +1,55 @@
+{% if open is not defined %}
+    {% set open = false %}
+{% endif %}
+
+{% set hasContent = block('body') is not empty or block('collapse') is not empty %}
+
+{% if loop is defined and index is not defined %}
+    {% set index = loop.index %}
+{% endif %}
+{% set index = index|default(0) %}
+{% set itemId = accordionId ~ '-' ~ index %}
+
+{% set header %}
+    {% set attrs = attrs_object({
+        'class': ('w-100 list-group-item border-0 mb-0 shadow-sm' ~ ' ' ~ (open ? '' : 'collapsed') ~ ' ' ~ (hasContent ? '' : 'empty-accordion'))|trim,
+        'type': 'button',
+        'aria-expanded': open ? 'true' : 'false',
+        'aria-controls': itemId,
+        'data-bs-toggle': hasContent ? 'collapse' : null,
+        'data-bs-target': hasContent ? '#' ~ itemId : null,
+        'role': 'button'
+    }) %}
+    {% block button %}
+        {% set buttonContent %}
+            {% block buttonText %}
+                {% block default %}
+                    Button
+                {% endblock %}
+            {% endblock %}
+        {% endset %}
+
+        {% if buttonClasses is defined %}
+            {% do attrs.append('class', ' ' ~ buttonClasses, true) %}
+        {% endif %}
+
+        <a {{ attrs|raw }}>
+            {{ buttonContent }}
+        </a>
+    {% endblock %}
+{% endset %}
+
+<div class="list-group-item p-0 overflow-hidden">
+    {{ header }}
+    {% if hasContent %}
+        <div id="{{ itemId }}"
+             class="collapse{% if open %} show{% endif %} border-top"
+             data-bs-parent="#{{ accordionId }}"
+        >
+            {% block collapse %}
+                {% block body %}
+                {% endblock %}
+            {% endblock %}
+        </div>
+    {% endif %}
+</div>
