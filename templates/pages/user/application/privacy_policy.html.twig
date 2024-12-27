@@ -23,10 +23,9 @@
 
                             {#                            TODO: Privacy policy #}
                             <span>
-                            &bull; Kontynuując, zgadzasz się na nasze
-                                <a href="{{ url('app_user_index') }}">warunki korzystania</a> i
-                                <a href="{{ url('app_user_index') }}">politykę prywatności</a>.
+                            &bull; Kontynuując, zgadzasz się na naszą <a href="{{ url('app_user_privacy_policy') }}">politykę prywatności</a>.
                             </span>
+                        </p>
 
                         <div>
                             <form method="post">
@@ -37,7 +36,6 @@
                                 </button>
                             </form>
                         </div>
-                        </p>
                     {% endblock %}
                 {% endembed %}
                 {% embed 'common/accordion-item.html.twig' with { index: 1 } %}

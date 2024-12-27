@@ -140,4 +140,10 @@ class UserController extends BaseController
             'posting' => $posting,
         ]);
     }
+
+    #[Route("/privacy_policy", name: "privacy_policy")]
+    public function privacyPolicy(): Response
+    {
+        return $this->render('pages/user/privacy_policy.html.twig');
+    }
 }
