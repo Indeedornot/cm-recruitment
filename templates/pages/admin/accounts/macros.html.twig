@@ -6,64 +6,54 @@
                 /** @type {HTMLElement} */
                 const target = event.target;
                 // Check if clicked element is a delete button
-                if (!target.matches('.delete-user-btn')) {
+                if (!target.matches('.toggle-user-btn')) {
                     return;
                 }
 
                 const userId = target.getAttribute('data-user-id');
-                const response = await Swal.fire({
-                    title: '{{ 'common.confirm_your_action'|trans }}',
-                    text: '{{ 'common.are_you_sure'|trans }}',
-                    icon: 'question',
-                    confirmButtonText: '{{ 'common.confirm'|trans }}'
-                });
+                const name = target.getAttribute('data-user-name');
 
-                if (response.isConfirmed) {
-                    window.location.href = '{{ path('app_admin_delete_account', {'id': 'userId'}) }}'.replace('userId', userId);
+
+                const el = document.createElement('div');
+                const type = target.getAttribute('data-type');
+                el.classList.add('text-start');
+                if (target.classList.contains('disable-user-btn')) {
+                    if (type === 'admin') {
+                        el.innerHTML = `{{ 'admin.accounts.manage.admin.disable_text'|trans|raw }}`.replace('{name}', name);
+                    } else {
+                        el.innerHTML = `{{ 'admin.accounts.manage.client.disable_text'|trans|raw }}`.replace('{name}', name);
+                    }
+
+                    const response = await Swal.fire({
+                        title: '{{ 'common.confirm_your_action'|trans }}',
+                        html: el,
+                        icon: 'warning',
+                        confirmButtonText: '{{ 'common.confirm'|trans }}'
+                    });
+
+                    if (response.isConfirmed) {
+                        window.location.href = '{{ path('app_admin_disable_account', {'id': 'userId'}) }}'.replace('userId', userId);
+                    }
+                } else {
+                    if (type === 'admin') {
+                        el.innerHTML = `{{ 'admin.accounts.manage.admin.restore_text'|trans|raw }}`.replace('{name}', name);
+                    } else {
+                        el.innerHTML = `{{ 'admin.accounts.manage.client.restore_text'|trans|raw }}`.replace('{name}', name);
+                    }
+
+                    const response = await Swal.fire({
+                        title: '{{ 'common.confirm_your_action'|trans }}',
+                        html: el,
+                        icon: 'warning',
+                        confirmButtonText: '{{ 'common.confirm'|trans }}'
+                    });
+
+                    if (response.isConfirmed) {
+                        window.location.href = '{{ path('app_admin_restore_account', {'id': 'userId'}) }}'.replace('userId', userId);
+                    }
                 }
             });
-        });
+        })
+        ;
     </script>
-{% endmacro %}
-
-{% macro pagination(route_name, page, total, limit) %}
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
-            {{ 'common.number_of_items'|trans }}: {{ total }}
-        </div>
-        <div class="d-flex">
-            <div>
-                <form action="{{ path(route_name) }}" method="get">
-                    <select name="limit" class="form-select" onchange="this.form.submit()">
-                        {% for option in [10, 20, 50, 100] %}
-                            <option value="{{ option }}"
-                                    {% if limit == option %}selected{% endif %}>{{ option }}</option>
-                        {% endfor %}
-                    </select>
-                    <input type="hidden" name="page" value="{{ page }}">
-                </form>
-            </div>
-            {% if page > 1 %}
-                <a href="{{ path(route_name, app.request.query.all|merge({'page': 1})) }}"
-                   class="btn btn-link">
-                    <i class="fa-solid fa-angle-double-left"></i>
-                </a>
-                <a href="{{ path(route_name, app.request.query.all|merge({'page': page - 1})) }}"
-                   class="btn btn-link">
-                    <i class="fa-solid fa-angle-left"></i>
-                </a>
-            {% endif %}
-            {% set end_page = total // limit + (total % limit > 0 ? 1 : 0) %}
-            {% if page < end_page %}
-                <a href="{{ path(route_name, app.request.query.all|merge({'page': page + 1})) }}"
-                   class="btn btn-link">
-                    <i class="fa-solid fa-angle-right"></i>
-                </a>
-                <a href="{{ path(route_name, app.request.query.all|merge({'page': end_page})) }}"
-                   class="btn btn-link">
-                    <i class="fa-solid fa-angle-double-right"></i>
-                </a>
-            {% endif %}
-        </div>
-    </div>
 {% endmacro %}

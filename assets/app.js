@@ -11,3 +11,37 @@ import './packages/packages';
 import './js/app';
 import './views/views';
 import './app.scss';
+
+document.addEventListener('DOMContentLoaded', () => {
+  const inputSyncElements = document.querySelectorAll('[data-hook^="inputSync"]');
+  console.log({inputSyncElements})
+  const groupedElements = {};
+  inputSyncElements.forEach((element) => {
+    const hook = element.getAttribute('data-hook');
+    (groupedElements[hook] ??= []).push(element);
+  });
+
+  Object.entries(groupedElements).forEach(([hook, elements]) => {
+    window.inputSync(elements);
+  });
+
+  console.log({groupedElements})
+})
+
+document.addEventListener('DOMContentLoaded', () => {
+  const createHiddenInput = (element) => {
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = element.name;
+    hiddenInput.value = element.value;
+    element.parentElement.appendChild(hiddenInput);
+  };
+
+  // Process disabled input elements
+  document
+    .querySelectorAll(':disabled[data-hook^="readonlyInput"]')
+    .forEach((input) => {
+      createHiddenInput(input);
+      input.name = ''; // Remove name to prevent submission
+    });
+});

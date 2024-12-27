@@ -16,7 +16,8 @@ class UserChecker implements UserCheckerInterface
             return;
         }
 
-        if (!$user->isEnabled()) {
+        if ($user->isDisabled()) {
+//            TODO: Message
             throw new AccountExpiredException('...');
         }
     }

@@ -36,8 +36,11 @@ class ElementAttributes
 
     public function append(string $key, mixed $value, bool $trim = true): static
     {
-        $this->attributes[$key] ??= '';
-        $this->attributes[$key] .= $value;
+        if (!array_key_exists($key, $this->attributes)) {
+            $this->attributes[$key] = $value;
+        } else {
+            $this->attributes[$key] .= ' ' . $value;
+        }
         if ($trim) {
             $this->attributes[$key] = trim($this->attributes[$key]);
         }
@@ -77,10 +80,8 @@ class ElementAttributes
         $htmlAttributes = '';
         foreach ($this->attributes as $key => $value) {
             $htmlAttributes .= "$key=\"$value\"";
-            ScriptCollection::Log($key, $value);
             $htmlAttributes .= ' ';
         }
-        ScriptCollection::Log($htmlAttributes);
         return $htmlAttributes;
     }
 }

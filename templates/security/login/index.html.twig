@@ -4,6 +4,18 @@
 {% block body %}
     <div class="d-flex justify-content-center w-100 pt-4">
         <div class="card bg-light" style="width: 800px;">
+            {% for type, messages in app.flashes %}
+                {% if type == 'error' %}
+                    {% set type = 'danger' %}
+                {% endif %}
+
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }}">
+                        {{ message|trans|raw }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            
             {% if is_loggedin() %}
                 <div class="card-body">
                     <div class="mb-3">

@@ -6,6 +6,56 @@ return [
             'form' => [
                 'header' => 'Dodaj nowe konto',
                 'submit' => 'Zapisz konto',
+            ],
+            'admins' => [
+                'header' => 'Administratorzy',
+                'create' => 'Dodaj nowego administratora',
+            ],
+            'clients' => [
+                'header' => 'Użytkownicy',
+            ],
+            'manage' => [
+                'admin' => [
+                    'disable_text' => '
+                        <span class="text-start">
+                        <div class="w-100 text-center">
+                            Czy na pewno chcesz wyłączyć konto użytkownika
+                            <br>
+                            {name}?
+                        </div>
+                        <br>
+                        &bull; Użytkownik nie będzie mógł się zalogować do systemu.
+                        </span>
+                    ',
+                    'restore_text' => '
+                        <span class="text-start">
+                        <div class="w-100 text-center">
+                            Czy na pewno chcesz przywrócić konto użytkownika
+                            <br>
+                            {name}?
+                        </div>
+                        </span>
+                    '
+                ],
+                'client' => [
+                    'disable_text' => '
+                        <span class="text-start">
+                        <div class="w-100 text-center">
+                            Czy na pewno chcesz usunąć konto użytkownika
+                            <br>
+                            {name}?
+                        </div>
+                        <br>
+                        <b>Ta akcja jest nieodwracalna!</b>
+
+                        <br><br>
+                        <ul>
+                            <li>Użytkownik nie będzie mógł się zalogować do systemu.</li>
+                            <li>Wszystkie zgłoszenia użytkownika zostaną usunięte.</li>
+                        </ul>
+                        </span>
+                    ',
+                ]
             ]
         ],
         'dashboard' => [
@@ -21,6 +71,9 @@ return [
                 'questionaire' => 'Manage questionaire'
             ]
         ],
+        'posting' => [
+            'header' => 'Zarządzaj zajęciami',
+        ]
     ],
     'privacy_policy' => [
         'header' => '&bull; Polityka prywatności',
@@ -50,9 +103,6 @@ return [
                 <br/>
                 <br/>
                 &bull; M.in. zapisywać swoje aplikacje, edytować swoje dane, przeglądać historię aplikacji.
-
-                <br/>
-                &bull; Oraz możliwości auto-uzupełniania na podstawie danych z poprzednich lat.
             ',
             'submit' => 'Zaloguj się'
         ],
@@ -60,6 +110,25 @@ return [
     'index' => [
         'header' => '&bull; Zapisz się na zajęcia',
         'signed_up_list' => 'Zajęcia na które jesteś zapisany'
+    ],
+    'user' => [
+        'application' => [
+            'title' => 'Zgłoszenie #{application_id} na zajęcia "{posting_title}"',
+            'details' => [
+                'header' => 'Szczegóły zgłoszenia',
+                'posting' => 'Zajęcia',
+                'date_applied' => 'Data zgłoszenia',
+                'managed_by' => 'Zarządzane przez',
+            ],
+            'help' => 'W przypadku pytań lub zmiany danych prosimy o kontakt z
+                <a href="mailto:{email}">{email}</a>',
+        ],
+        'posting_list' => [
+            'filter' => [
+                'assigned_to' => 'Prowadzący',
+                'title' => 'Tytuł',
+            ]
+        ]
     ],
     'security' => [
         'logout' => 'Wyloguj się',
@@ -85,14 +154,12 @@ return [
             'email' => 'Adres email',
             'password' => 'Hasło',
             'password_confirmation' => 'Powtórz hasło',
-        ]
+        ],
+        'disabled_account' => 'Twoje konto zostało wyłączone. Skontaktuj się z administratorem serwisu w celu uzyskania pomocy.',
     ],
     'components' => [
         'posting' => [
-            'sign_up' => '{again, select,
-                true {Zapisz się ponownie}
-                other {Zapisz się}
-             }',
+            'sign_up' => 'Zapisz się',
             'sign_up_again' => 'Zapisz się ponownie',
             'assigned_to' => 'Prowadzi: {name}',
             'create' => [
@@ -104,12 +171,7 @@ return [
                 ]
             ],
             'candidates_count' => '{count, plural,
-                =0 {Brak kandydatów}
-                =1 {1 Zapis}
-                =2 {2 Zapisy}
-                =3 {3 Zapisy}
-                =4 {4 Zapisy}
-                other {# Zapisów}
+                other {<b>#</b> Kandydatów}
             }',
             'candidate' => [
                 'admin' => [
@@ -122,6 +184,13 @@ return [
                     'list_header' => 'Pytania do zajęć:',
                     'list_empty' => 'Brak jeszcze pytań specjalnych. Dodaj pytanie, aby zobaczyć je tutaj.',
                 ]
+            ],
+            'form' => [
+                'title' => 'Tytuł',
+                'description' => 'Opis',
+                'assigned_to' => 'Prowadzący',
+                'questionnaire' => 'Zestaw pytań',
+                'success' => 'Zajęcia zostały zapisane',
             ]
         ],
         'user' => [
@@ -137,7 +206,25 @@ return [
                 ROLE_SUPER_ADMIN {Super Administrator}
                 other {Nieznana Rola}
             }',
+            'status' => 'Status',
+            'account_status' => '{status, select,
+                active {Aktywny}
+                inactive {Nieaktywny}
+                other {Nieznany}
+            }',
         ],
+        'question' => [
+            'first_name' => 'Imię',
+            'last_name' => 'Nazwisko',
+            'email' => 'Adres email',
+            'phone' => 'Numer telefonu',
+            'age' => 'Wiek',
+            'pesel' => 'PESEL',
+            'city' => 'Miasto',
+            'street' => 'Ulica',
+            'house_no' => 'Numer domu',
+            'postal_code' => 'Kod pocztowy',
+        ]
     ],
     'errors' => [
         'generic' => 'Wystąpił błąd podczas przetwarzania akcji. Proszę spróbować ponownie.
@@ -149,6 +236,7 @@ return [
         'edit' => 'Edytuj',
         'back' => 'Wróć',
         'delete' => 'Usuń',
+        'restore' => 'Przywróć',
         'save' => 'Zapisz',
         'cancel' => 'Anuluj',
         'confirm' => 'Potwierdź',
@@ -163,5 +251,29 @@ return [
         'are_you_sure' => 'Czy na pewno chcesz to zrobić?',
         'confirm_your_action' => 'Potwierdź swoją akcję',
         'number_of_items' => 'Liczba elementów',
+        'items_per_page' => 'Elementów na stronie',
+        'search' => 'Szukaj',
+        'preview' => 'Podgląd',
+    ],
+    'emails' => [
+        'security' => [
+            'password_reset' => [
+                'header' => '<h1>Odzyskiwanie hasła</h1>',
+                'text' => '
+                    Otrzymujesz tę wiadomość, ponieważ otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta.
+                    <br>
+                    Twoje nowe hasło to: <b>{password}</b>
+                    <br><br>
+                    &bull; Po zalogowaniu się na swoje konto, zostaniesz poproszony o zmianę hasła.
+
+                    <br><br>
+                    Możesz zalogować się na swoje konto klikając w poniższy link: <br>
+                    <a href="{link}">{link}</a>
+
+                    <br><br>
+                    &bull; Jeśli nie prosiłeś o zmianę hasła, skontaktuj się z administratorem serwisu.',
+            ]
+        ],
+        'noreply' => '<b>Ta wiadomość została wysłana automatycznie. Prosimy na nią nie odpowiadać.</b>',
     ]
 ];

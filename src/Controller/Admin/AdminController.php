@@ -6,6 +6,7 @@ use App\Controller\Base\BaseController;
 use App\Controller\Base\ErrorHandlerType;
 use App\Security\Entity\Admin;
 use App\Security\Entity\Client;
+use App\Security\Entity\User;
 use App\Security\Entity\UserRoles;
 use App\Security\Factory\UserFactory;
 use App\Security\Form\UserFormMode;
@@ -116,9 +117,53 @@ class AdminController extends BaseController
 
 
     #[IsGranted(UserRoles::SUPER_ADMIN->value)]
-    #[Route("/delete-account", name: "delete_account")]
-    public function deleteAccount(Request $request): Response
+    #[Route("/disable-account", name: "disable_account")]
+    public function disableAccount(Request $request, #[MapQueryParameter] int $id): Response
     {
+        /** @var User $user */
+        $user = $this->userRepository->find($id);
+        if (empty($user)) {
+            throw $this->createNotFoundException();
+        }
+
+        if ($user->isDisabled()) {
+            $this->addFlash('error', 'This account is already disabled');
+            $from = $request->headers->get('referer');
+            return $this->redirect($from);
+        }
+
+        $user->disable();
+        $this->manager->persist($user);
+        $this->manager->flush();
+
+        $this->addFlash('success', 'Account disabled successfully');
+
+        $from = $request->headers->get('referer');
+        return $this->redirect($from);
+    }
+
+    #[IsGranted(UserRoles::SUPER_ADMIN->value)]
+    #[Route("/restore-account", name: "restore_account")]
+    public function restoreAccount(Request $request, #[MapQueryParameter] int $id): Response
+    {
+        /** @var User $user */
+        $user = $this->userRepository->find($id);
+        if (empty($user)) {
+            throw $this->createNotFoundException();
+        }
+
+        if (!$user->isDisabled()) {
+            $this->addFlash('error', 'This account is already enabled');
+            $from = $request->headers->get('referer');
+            return $this->redirect($from);
+        }
+
+        $user->enable();
+        $this->manager->persist($user);
+        $this->manager->flush();
+
+        $this->addFlash('success', 'Account enabled successfully');
+
         $from = $request->headers->get('referer');
         return $this->redirect($from);
     }
