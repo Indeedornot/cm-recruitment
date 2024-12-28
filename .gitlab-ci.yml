@@ -3,6 +3,8 @@ stages:
 
 deploy_to_test:
     stage: deploy
+    environment:
+        name: dev
     only:
         - dep/test
     script:
@@ -16,6 +18,7 @@ deploy_to_test:
         
         # Push code to the droplet
         - scp -r . root@$DROPLET_IP:/var/www/container
+        - scp .env.${CI_ENVIRONMENT_NAME} root@$DROPLET_IP:/var/www/container/.env
         
         # Run Docker commands on the droplet
         - ssh root@$DROPLET_IP <<EOF
