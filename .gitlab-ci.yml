@@ -9,14 +9,28 @@ deploy_to_test:
     only:
         - dep/test
     before_script:
-        - apt-get update -y && apt-get install -y openssh-client iputils-ping
-        - mkdir -p ~/.ssh
-        - echo "$DEPLOY_SSH_KEY" > ~/.ssh/id_rsa
-        - chmod 600 ~/.ssh/id_rsa
+        #        - apt-get update -y && apt-get install -y openssh-client iputils-ping
+        #        - mkdir -p ~/.ssh
+        #        - echo "$DEPLOY_SSH_KEY" > ~/.ssh/id_rsa
+        #        - chmod 600 ~/.ssh/id_rsa
+        #        - eval $(ssh-agent -s)
+        #        - ssh-add ~/.ssh/id_rsa
+        #        - ssh-keyscan -H $DROPLET_IP >> ~/.ssh/known_hosts
+        #        - ping -c 4 $DROPLET_IP
+        ## Install ssh agent (so we can access the Digital Ocean Droplet) and run it.
+        - apk update && apk add openssh-client
         - eval $(ssh-agent -s)
-        - ssh-add ~/.ssh/id_rsa
-        - ssh-keyscan -H $DROPLET_IP >> ~/.ssh/known_hosts
-        - ping -c 4 $DROPLET_IP
+        
+        ## Write the environment variable value to the agent store, create the ssh directory and give the right permissions to it.
+        - echo "$DEPLOY_SSH_KEY" | ssh-add -
+        - mkdir -p ~/.ssh
+        - chmod 700 ~/.ssh
+        
+        ## Make sure that ssh will trust the new host, instead of asking
+        - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+        
+        ## Test it!
+        - ssh -t root@${DROPLET_IP} 'echo $HOME'
     script:
         - ssh -v root@$DROPLET_IP "echo 'Connection established'"
         # Push code to the droplet
