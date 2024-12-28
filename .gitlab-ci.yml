@@ -19,7 +19,7 @@ deploy_to_test:
     script:
         # Push code to the droplet using rsync
         - ssh root@$DROPLET_IP 'mkdir -p /var/www/container'
-        - rsync -avz -delete-before --exclude='.git' --exclude='.gitlab-ci.yml' . root@$DROPLET_IP:/var/www/container
+        - rsync -avz --delete-before --exclude='.git' --exclude='.gitlab-ci.yml' . root@$DROPLET_IP:/var/www/container
         - echo "$CI_ENVIRONMENT_NAME"
         
         # Run Docker commands on the droplet
