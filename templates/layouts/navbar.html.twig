@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Symfony</a>
 
-        <div class="collapse navbar-collapse " id="navbarTogglerDemo02">
+        <div class="collapse navbar-collapse border-top border-md-0" id="navbarTogglerDemo02">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 {# @var nav_links App\Services\Navigation\NavRoute[] #}
                 {% set nav_links = getNavLinks() %}
@@ -19,9 +19,45 @@
                         </li>
                     {% endif %}
                 {% endfor %}
+
+                {% if app.environment in ['test', 'dev'] %}
+                    {#                    bootstrap dropdown #}
+                    <li class="nav-item dropdown">
+                        <button class="dropdown-toggle h-100 nav-link" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            Use Test Account
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item gap-2 d-flex align-items-center"
+                                   href="{{ url('app_test_account', {type: 'Client'}) }}"
+                                >
+                                    <i class="fa-solid fa-user"></i>
+                                    Client
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item gap-2 d-flex align-items-center"
+                                   href="{{ url('app_test_account', {type: 'Admin'}) }}"
+                                >
+                                    <i class="fa-solid fa-user"></i>
+                                    Admin
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item gap-2 d-flex align-items-center"
+                                   href="{{ url('app_test_account', {type: 'SuperAdmin'}) }}"
+                                >
+                                    <i class="fa-solid fa-user"></i>
+                                    Super Admin
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                {% endif %}
             </ul>
         </div>
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 ms-auto ms-md-auto">
             <div>
                 {% if app.user %}
                     Logged in as: <b>{{ app.user.name }}</b>

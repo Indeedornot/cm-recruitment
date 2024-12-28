@@ -1,40 +1,89 @@
 {% extends 'layouts/base.html.twig' %}
 {% block body %}
-    <div class="container-fluid container-y">
-        <table class="admin-list-table table table-striped rounded overflow-hidden table-cells-vertical">
-            <thead>
-            <tr>
-                <th>No.</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Roles</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for user in users %}
-                <tr>
-                    <td>{{ loop.index + (page - 1) * 10 }}</td>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.getReadableRoles|join(', ') }}</td>
-                    <td>
-                        <twig:Modal
-                            onConfirm="() => {
-                            window.location.href = '{{ path('app_admin_delete_account', {'id': user.id}) }}';
-                        }"
-                        >
-                            <twig:block name="trigger">
-                                <btn {{ btnAttrs.addOrSet({class: 'icon-link link-danger'})|raw }}>
-                                    <i class="fa-solid fa-user-xmark"></i>
-                                </btn>
-                            </twig:block>
-                        </twig:Modal>
-                    </td>
-                </tr>
+    {% import 'common/tables/pagination.html.twig' as pagination %}
+
+    <div class="container container-y" data-hook="userTable">
+        {% for type, messages in app.flashes %}
+            {% if type == 'error' %}
+                {% set type = 'danger' %}
+            {% endif %}
+
+            {% for message in messages %}
+                <div class="alert alert-{{ type }}">
+                    {{ message|trans|raw }}
+                </div>
             {% endfor %}
-            </tbody>
-        </table>
+        {% endfor %}
+        <div class="bg-white card">
+            <div class="card-header d-flex align-items-center">
+                <h1 class="fs-5 mb-0">{{ 'admin.accounts.clients.header'|trans }}</h1>
+            </div>
+            <div class="card-body p-0 py-2">
+                <div class="px-2">
+                    {{ pagination.pagination('app_admin_users', page, total, limit) }}
+                </div>
+                <table class="table table-striped overflow-hidden border table-cells-vertical m-0 my-2">
+                    <thead>
+                    <tr>
+                        <th>{{ 'common.row_number'|trans }}</th>
+                        <th>{{ 'components.user.name'|trans }}</th>
+                        <th>{{ 'components.user.email'|trans }}</th>
+                        <th>{{ 'components.user.status'|trans }}</th>
+                        <th>{{ 'common.actions'|trans }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                        {% set disabled = user.isDisabled %}
+                        <tr>
+                            <td>{{ loop.index + (page - 1) * 10 }}
+                            </td>
+                            <td {% if disabled %} class="text-muted"{% endif %}>{{ user.name }}</td>
+                            <td {% if disabled %} class="text-muted"{% endif %}>{{ user.email }}</td>
+                            <td {% if disabled %} class="text-muted"{% endif %}>{{ 'components.user.account_status'|trans({status: disabled ? 'inactive' : 'active'}) }}</td>
+                            <td>
+                                {% if is_super_admin() %}
+                                    {% if not disabled %}
+                                        <button type="button"
+                                                class="btn icon-link link-danger disable-user-btn toggle-user-btn"
+                                                data-user-id="{{ user.id }}"
+                                                data-user-name="{{ user.name }}"
+                                                data-path="{{ path('app_admin_disable_account', {'id': user.id}) }}"
+                                                data-type="client"
+                                                title="{{ 'common.delete'|trans }}"
+                                        >
+                                            <i class="fa-solid fa-user-xmark"></i>
+                                        </button>
+                                    {% else %}
+                                        <button type="button"
+                                                class="btn icon-link link-success restore-user-btn toggle-user-btn"
+                                                data-user-id="{{ user.id }}"
+                                                data-user-name="{{ user.name }}"
+                                                data-type="client"
+                                                data-path="{{ path('app_admin_restore_account', {'id': user.id}) }}"
+                                                title="{{ 'common.restore'|trans }}"
+                                        >
+                                            <i class="fa-solid fa-user-slash"></i>
+                                        </button>
+                                    {% endif %}
+                                    <a
+                                            class="btn icon-link link-primary"
+                                            title="{{ 'common.edit'|trans }}"
+                                            href="{{ path('app_admin_edit_account', {'id': user.id}) }}"
+                                    >
+                                        <i class="fa-solid fa-user-edit"></i>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div class="px-2">
+                    {{ pagination.pagination('app_admin_users', page, total, limit) }}
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 

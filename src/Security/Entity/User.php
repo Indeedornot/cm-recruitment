@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Translation\TranslatableMessage;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\InheritanceType('JOINED')]
@@ -24,6 +25,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\HasLifecycleCallbacks]
 abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const string PASSWORD_CHANGE_INTERVAL = '3 months';
+
     use Identified;
     use Disableable;
     use Timestampable;
@@ -46,8 +49,13 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     protected ?string $name = null;
 
+    #[ORM\Column]
+    protected DateTimeImmutable $lastPasswordChange;
+
     public function __construct()
     {
+        $this->createdAt = new DateTimeImmutable();
+        $this->lastPasswordChange = new DateTimeImmutable();
     }
 
     public function getEmail(): ?string
@@ -161,6 +169,7 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\PostPersist]
     public function postPersist(): void
     {
+        $this->lastPasswordChange = new DateTimeImmutable();
     }
 
     #[ORM\PreUpdate]
@@ -176,6 +185,37 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getReadableRoles(): array
     {
         $roles = $this->getRoles();
-        return array_map(fn($role) => UserRoles::from($role)->getLabel(), $roles);
+        $roles = array_diff($roles, [UserRoles::BASE_USER->value]);
+        return array_map(fn($role) => new TranslatableMessage('components.user.user_role', ['role' => $role]), $roles);
+    }
+
+    public function hasRole(string|UserRoles $role): bool
+    {
+        if ($role instanceof UserRoles) {
+            $role = $role->value;
+        }
+
+        return in_array($role, $this->getRoles());
+    }
+
+    public function getLastPasswordChange(): DateTimeImmutable
+    {
+        return $this->lastPasswordChange;
+    }
+
+    public function setLastPasswordChange(DateTimeImmutable $lastPasswordChange): self
+    {
+        $this->lastPasswordChange = $lastPasswordChange;
+        return $this;
+    }
+
+    public function isPasswordChangeRequired(): bool
+    {
+        return $this->lastPasswordChange->modify('+' . self::PASSWORD_CHANGE_INTERVAL) < new DateTimeImmutable();
+    }
+
+    public function forcePasswordChange(): void
+    {
+        $this->lastPasswordChange = (new DateTimeImmutable())->modify('-' . self::PASSWORD_CHANGE_INTERVAL);
     }
 }

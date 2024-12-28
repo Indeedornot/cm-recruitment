@@ -1,19 +1,31 @@
 {# templates/security/login.html.twig #}
 {% extends 'layouts/base.html.twig' %}
-{% block title %}Log in!{% endblock %}
+{% block title %}{{ 'security.form.login.header'|trans }}{% endblock %}
 {% block body %}
     <div class="d-flex justify-content-center w-100 pt-4">
         <div class="card bg-light" style="width: 800px;">
-            {% if app.user %}
+            {% for type, messages in app.flashes %}
+                {% if type == 'error' %}
+                    {% set type = 'danger' %}
+                {% endif %}
+
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }}">
+                        {{ message|trans|raw }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            
+            {% if is_loggedin() %}
                 <div class="card-body">
                     <div class="mb-3">
-                        You are logged in as {{ app.user.name }},
-                        <a href="{{ path('app_logout') }}">Logout</a>
+                        {{ 'security.form.error.already_logged_in'|trans({name: app.user.name}) }}
+                        <a href="{{ path('app_logout') }}">{{ 'security.logout'|trans }}</a>
                     </div>
                 </div>
             {% else %}
                 <form class="form-horizontal" role="form" method="post">
-                    <div class="card-header py-3 fw-semibold">Please sign in</div>
+                    <div class="card-header py-3 fw-semibold">{{ 'security.form.login.header'|trans }}</div>
                     <div class="card-body gap-2 d-grid py-4">
                         {% if error %}
                             <div class="alert alert-danger">
@@ -21,8 +33,8 @@
                             </div>
                         {% endif %}
                         <div class="form-group">
-                            <label for="email" class="col-md-4 control-label">
-                                E-Mail Address
+                            <label for="inputEmail" class="col-md-4 control-label">
+                                {{ 'security.form.email'|trans }}
                             </label>
                             <div class="col-md-12">
                                 <input
@@ -37,8 +49,8 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="password" class="col-md-4 control-label">
-                                Password
+                            <label for="inputPassword" class="col-md-4 control-label">
+                                {{ 'security.form.password'|trans }}
                             </label>
                             <div class="col-md-12">
                                 <input
@@ -55,10 +67,15 @@
                             name="_csrf_token"
                             value="{{ csrf_token('authenticate') }}"
                         />
+                        <input
+                            type="hidden"
+                            name="_target_path"
+                            value="{{ app.request.get('redirect_after') }}"
+                        />
                         <div class="form-group">
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-btn fa-sign-in"></i> Login
+                                    <i class="fa fa-btn fa-sign-in"></i> {{ 'security.form.login.submit'|trans }}
                                 </button>
                             </div>
                         </div>
@@ -66,8 +83,8 @@
                 </form>
 
                 <div class="card-footer py-3">
-                    Don't have an account yet?
-                    <a href="{{ path('app_registration') }}">Register</a>
+                    {{ 'security.form.login.no_account'|trans }}
+                    <a href="{{ path('app_registration') }}">{{ 'security.register'|trans }}</a>
                 </div>
             {% endif %}
         </div>

@@ -1,6 +1,6 @@
 
 ###> symfony/framework-bundle ###
-/.env.local
+/.env
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
@@ -21,3 +21,5 @@ yarn-error.log
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+/migrations

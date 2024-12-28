@@ -37,7 +37,7 @@ class CreateAdminCommand extends Command
         $io = new SymfonyStyle($input, $output);
         [$email, $name, $password] = array_map(fn($arg) => $input->getArgument($arg), ['email', 'name', 'password']);
 
-        $user = $this->userFactory->createAdmin()
+        $user = $this->userFactory->createEmptyAdmin()
             ->setEmail($email)
             ->setName($name)
             ->setPlainPassword($password)

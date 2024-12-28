@@ -6,3 +6,15 @@
 .table-cells-vertical td {
     vertical-align: center;
 }
+
+label.required:after {
+    content: " *";
+    color: red;
+}
+
+fieldset {
+    input[type="checkbox"].required + label:after {
+        content: " *";
+        color: red;
+    }
+}

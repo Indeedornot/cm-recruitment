@@ -1,0 +1,44 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">{{ 'user.application.title'|trans({application_id: application.id, posting_title: application.posting.title}) }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="px-2">
+                    <h4>{{ 'user.application.details.header'|trans }}</h4>
+                    <dl class="row">
+                        <dt class="col-sm-4">{{ 'user.application.details.posting'|trans }}</dt>
+                        <dd class="col-sm-8">{{ application.posting.title }}</dd>
+                        <dt class="col-sm-4">{{ 'user.application.details.date_applied'|trans }}</dt>
+                        <dd class="col-sm-8">{{ application.createdAt|date('Y-m-d H:i') }}</dd>
+                        <dt class="col-sm-4">{{ 'user.application.details.managed_by'|trans }}</dt>
+                        <dd class="col-sm-8">{{ application.posting.assignedTo.name }}</dd>
+                    </dl>
+                </div>
+
+                {% embed 'common/accordion.html.twig' %}
+                    {% embed 'common/accordion-item.html.twig' %}
+                        {% block buttonText %}
+                            <b>Formularz zgłoszeniowy:</b>
+                        {% endblock %}
+                        {% block body %}
+                            <dl class="row">
+                                {% for answer in application.answers %}
+                                    <dt class="col-sm-4">{{ answer.question.label }}</dt>
+                                    <dd class="col-sm-8">{{ answer.answer }}</dd>
+                                {% endfor %}
+                            </dl>
+                        {% endblock %}
+                    {% endembed %}
+                {% endembed %}
+            </div>
+            <div class="card-footer">
+                {{ 'user.application.help'|trans({'email': application.posting.assignedTo.email })|raw }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

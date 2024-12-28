@@ -1,32 +1,53 @@
 {% extends 'layouts/base.html.twig' %}
-{% import 'common/accordion-item.html.twig' as accordion %}
+{% import 'common/tables/pagination.html.twig' as pagination %}
+{% form_theme form 'common/forms/bundle.html.twig' %}
 
 {% block body %}
-    <div class="container-y container-fluid">
-        <div class="gap-2 d-grid">
-            <a class="btn btn-primary w-100" href="{{ url('app_admin_posting_create') }}">
-                Stwórz nowe ogłoszenie
-            </a>
 
-            {% set accordionId = 'postings-' ~ random() %}
-            <div class="accordion" id="{{ accordionId }}">
-                {% if postings is not empty %}
-                    {% for posting in postings %}
-                        {% include 'pages/admin/posting/posting-item.html.twig' with {
-                            posting: posting
-                        } %}
-                    {% endfor %}
-                {% else %}
-                    {% embed 'common/accordion-item.html.twig' with {
-                        parentId: accordionId,
-                        index: 0,
-                    } %}
-                        {% block buttonText %}
-                            <p>Nie stworzono jeszcze żadnych ogłoszeń. Stwórz nowe żeby je tu zobaczyć</p>
-                        {% endblock %}
-                    {% endembed %}
-                {% endif %}
+    <div class="container-y container">
+        <div class="gap-2 d-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="fs-5 mb-0">{{ 'admin.posting.header'|trans }}</h1>
+                </div>
+                <div class="card-body">
+                    <form>
+                        {{ form_start(form) }}
+                        <div class="row px-lg-4 px-md-3 px-2">
+                            <div class="col-lg-4 col-md-4 col-12">
+                                {{ form_row(form.title) }}
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-12">
+                                {{ form_row(form.assignedTo) }}
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-12 d-flex align-items-center pt-md-3">
+                                <button type="submit" class="btn btn-primary w-100 text-nowrap">
+                                    <i class="fas fa-search me-1"></i>
+                                    {{ 'common.search'|trans }}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="postings"></div>
+                        {{ form_end(form) }}
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex w-100 justify-content-center">
+                        <a class="btn btn-primary" href="{{ url('app_admin_posting_create') }}">
+                            {{ 'components.posting.create.create_new'|trans }}
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% set js %}
+    {{ pagination.dynamic_content('app_admin_posting_search') }}
+{% endset %}
+
+{% block javascripts %}
+    {{ assets_scripts().addScript(js) }}
+    {{ parent() }}
 {% endblock %}

@@ -1,68 +1,83 @@
 {% extends 'layouts/base.html.twig' %}
+{% form_theme form 'common/forms/bundle.html.twig' %}
+{% import 'common/tables/pagination.html.twig' as pagination %}
 
 {% block body %}
-    <div class="card card-flush">
-        <h1 class="card-header bg-transparent">
-            &bull; Zapisz się na zajęcia
-        </h1>
+    <div class="container py-4">
+        <div class="card shadow-sm">
+            <div class="card-header border-0 py-3">
+                <h1 class="fs-4 mb-0">
+                    {{ 'index.header'|trans|raw }}
+                </h1>
+            </div>
 
-        <div class="card-body px-0">
-            {% if app.user.applications|length %}
-                {#            <div class="py-2 px-2 bg-light"> #}
-                {% set accordionId = 'accordion-' ~ random() %}
-                <div class="accordion accordion-flush mb-3 border-top border-bottom" id="{{ accordionId }}">
-                    {% embed 'common/accordion-item.html.twig' with {
-                        parentId: accordionId,
-                        headerTag: 'h3',
-                        buttonClasses: 'fs-3 fw-semibold bg-light border-1',
-                    } %}
-                        {% block buttonText %}
-                            Zajęcia na które jesteś zapisany
-                        {% endblock %}
+            <div class="card-body pt-2 p-0">
+                {% if app.user is not empty and app.user.applications|length %}
+                    <div class="mb-4">
+                        {% embed 'common/accordion.html.twig' with {classes: 'border-0 shadow-sm', flush: true} %}
+                            {% embed 'common/accordion-item.html.twig' with { headerTag: 'h5' } %}
+                                {% block buttonText %}
+                                    {% do attrs.append('class', 'fw-semibold bg-light') %}
+                                    <i class="fas fa-clipboard-list me-2"></i>
+                                    {{ 'index.signed_up_list'|trans }}
+                                {% endblock %}
 
-                        {% block body %}
-                            <div class="card-group-vertical">
-                                {% for application in app.user.applications %}
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h2>{{ application.posting.title }}
-                                                <span class="text-secondary">
-                                                    Prowadzi: {{ application.posting.assignedTo.name }}
-                                                </span>
-                                            </h2>
-                                            <p>{{ application.posting.description }}</p>
-                                            <a href="{{ path('app_user_index', {id: application.id}) }}"
-                                               class="btn btn-primary">Edit</a>
-                                        </div>
+                                {% block body %}
+                                    <div class="list-group">
+                                        {% for application in app.user.applications %}
+                                            <div
+                                                class="list-group-item border d-flex justify-content-between align-items-center p-3">
+                                                <div>
+                                                    <h3 class="h5 mb-1">
+                                                        {{ application.posting.title }}
+                                                    </h3>
+                                                    <p class="text-muted mb-0">
+                                                        <i class="fas fa-user me-1"></i>
+                                                        {{ 'components.posting.assigned_to'|trans({'name': application.posting.assignedTo.name}) }}
+                                                    </p>
+                                                </div>
+                                                <a class="btn btn-outline-primary btn-sm"
+                                                   href="{{ path('app_user_posting_application', {applicationId: application.id, id: application.posting.id}) }}">
+                                                    <i class="fas fa-eye me-1"></i>
+                                                    {{ 'common.preview'|trans }}
+                                                </a>
+                                            </div>
+                                        {% endfor %}
                                     </div>
-                                {% endfor %}
-                            </div>
-                        {% endblock %}
-                    {% endembed %}
-                </div>
-                {#            </div> #}
-            {% endif %}
-
-            <div class="card-group-vertical px-4">
-                {% for posting in postings %}
-                    <div class="card">
-                        <div class="card-body">
-                            <h2>{{ posting.title }}
-                                <span class="text-secondary">
-                                    Prowadzi: {{ posting.assignedTo.name }}
-                                </span>
-                            </h2>
-                            <p>{{ posting.description }}</p>
-                            <a href="{{ path('app_user_posting', {id: posting.id}) }}"
-                               class="btn btn-primary"
-                            >
-                                {% set alreadyApplied = app.user.applications|filter(x => x.posting.id == posting.id)|length %}
-                                Zapisz się {% if alreadyApplied %}ponownie{% endif %}
-                            </a>
-                        </div>
+                                {% endblock %}
+                            {% endembed %}
+                        {% endembed %}
                     </div>
-                {% endfor %}
+                {% endif %}
+
+                {{ form_start(form) }}
+                <div class="row px-lg-4 px-md-3 px-2">
+                    <div class="col-lg-4 col-md-4 col-12">
+                        {{ form_row(form.title) }}
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-12">
+                        {{ form_row(form.assignedTo) }}
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-12 d-flex align-items-center pt-md-3">
+                        <button type="submit" class="btn btn-primary w-100 text-nowrap">
+                            <i class="fas fa-search me-1"></i>
+                            {{ 'common.search'|trans }}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="postings pt-md-0 pt-3"></div>
+                {{ form_end(form) }}
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% set js %}
+    {{ pagination.dynamic_content('app_user_search') }}
+{% endset %}
+
+{% block javascripts %}
+    {{ assets_scripts().addScript(js) }}
+    {{ parent() }}
 {% endblock %}

@@ -34,6 +34,24 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    public function findAdminsAll(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u INSTANCE OF App\Security\Entity\Admin')
+//            ->andWhere('u.disabledAt IS NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAll(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->orderBy('u.id', 'ASC')
+            ->where('u.disabledAt IS NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

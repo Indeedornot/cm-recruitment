@@ -6,12 +6,16 @@ use App\Controller\Base\BaseController;
 use App\Controller\Base\ErrorHandlerType;
 use App\Security\Entity\Admin;
 use App\Security\Entity\Client;
+use App\Security\Entity\User;
 use App\Security\Entity\UserRoles;
 use App\Security\Factory\UserFactory;
+use App\Security\Form\UserFormMode;
 use App\Security\Form\UserType;
 use App\Security\Repository\UserRepository;
+use App\Security\Services\ExtendedSecurity;
+use App\Services\Form\PaginationService;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -24,9 +28,10 @@ class AdminController extends BaseController
 {
     function __construct(
         private readonly EntityManagerInterface $manager,
-        private readonly Security $security,
+        private readonly ExtendedSecurity $security,
         private readonly UserFactory $userFactory,
-        private readonly UserRepository $userRepository
+        private readonly UserRepository $userRepository,
+        private readonly PaginationService $pagination
     ) {
     }
 
@@ -42,14 +47,14 @@ class AdminController extends BaseController
     {
         $this->setErrorHandler(ErrorHandlerType::FORM);
 
-        $user = $this->userFactory->createAdmin();
+        $user = $this->userFactory->createEmptyAdmin();
         $form = $this->createForm(UserType::class, $user, ['require_password' => false]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->persist($user);
             $this->manager->flush();
-            $form = $this->createForm(UserType::class, $this->userFactory->createAdmin());
+            $form = $this->createForm(UserType::class, $this->userFactory->createEmptyAdmin());
         }
 
         return $this->render('pages/admin/accounts/manage.html.twig', [
@@ -65,13 +70,19 @@ class AdminController extends BaseController
 
         $id = $request->query->get('id');
         $user = $this->userRepository->find($id);
-        $form = $this->createForm(UserType::class, $user, ['mode' => 'edit']);
+        $form = $this->createForm(UserType::class, $user, ['mode' => UserFormMode::EDIT]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('resetPassword')->isClicked()) {
+                $this->userFactory->resetPassword($user);
+            }
+
             $this->manager->persist($user);
             $this->manager->flush();
-            $form = $this->createForm(UserType::class, $this->userRepository->find($id), ['mode' => 'edit']);
+            $form = $this->createForm(UserType::class, $this->userRepository->find($id), [
+                'mode' => UserFormMode::EDIT
+            ]);
         }
 
         return $this->render('pages/admin/accounts/manage.html.twig', [
@@ -83,44 +94,76 @@ class AdminController extends BaseController
     #[Route("/admins", name: "admins")]
     public function admins(
         Request $request,
-        #[MapQueryParameter] int $page = 1,
-        #[MapQueryParameter] int $limit = 10
     ): Response {
-        $admins = $this->manager->getRepository(Admin::class)->createQueryBuilder('a')
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
-        return $this->render('pages/admin/accounts/admins.html.twig', [
-            'admins' => $admins,
-            'page' => $page,
-            'limit' => $limit
-        ]);
+        $pagination = $this->pagination->handleRequest($request);
+        $pagination = $this->pagination->getPagination(Admin::class, $pagination);
+        $pagination['users'] = $pagination['items'];
+        unset($pagination['items']);
+
+        return $this->render('pages/admin/accounts/admins.html.twig', $pagination);
     }
 
     #[Route("/users", name: "users")]
     public function users(
         Request $request,
-        #[MapQueryParameter] int $page = 1,
-        #[MapQueryParameter] int $limit = 10
     ): Response {
-        $users = $this->manager->getRepository(Client::class)->createQueryBuilder('a')
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
-        return $this->render('pages/admin/accounts/users.html.twig', [
-            'users' => $users,
-            'page' => $page,
-            'limit' => $limit
-        ]);
+        $pagination = $this->pagination->handleRequest($request);
+        $pagination = $this->pagination->getPagination(Client::class, $pagination);
+        $pagination['users'] = $pagination['items'];
+        unset($pagination['items']);
+
+        return $this->render('pages/admin/accounts/users.html.twig', $pagination);
     }
 
 
     #[IsGranted(UserRoles::SUPER_ADMIN->value)]
-    #[Route("/delete-account", name: "delete_account")]
-    public function deleteAccount(Request $request): Response
+    #[Route("/disable-account", name: "disable_account")]
+    public function disableAccount(Request $request, #[MapQueryParameter] int $id): Response
     {
+        /** @var User $user */
+        $user = $this->userRepository->find($id);
+        if (empty($user)) {
+            throw $this->createNotFoundException();
+        }
+
+        if ($user->isDisabled()) {
+            $this->addFlash('error', 'This account is already disabled');
+            $from = $request->headers->get('referer');
+            return $this->redirect($from);
+        }
+
+        $user->disable();
+        $this->manager->persist($user);
+        $this->manager->flush();
+
+        $this->addFlash('success', 'Account disabled successfully');
+
+        $from = $request->headers->get('referer');
+        return $this->redirect($from);
+    }
+
+    #[IsGranted(UserRoles::SUPER_ADMIN->value)]
+    #[Route("/restore-account", name: "restore_account")]
+    public function restoreAccount(Request $request, #[MapQueryParameter] int $id): Response
+    {
+        /** @var User $user */
+        $user = $this->userRepository->find($id);
+        if (empty($user)) {
+            throw $this->createNotFoundException();
+        }
+
+        if (!$user->isDisabled()) {
+            $this->addFlash('error', 'This account is already enabled');
+            $from = $request->headers->get('referer');
+            return $this->redirect($from);
+        }
+
+        $user->enable();
+        $this->manager->persist($user);
+        $this->manager->flush();
+
+        $this->addFlash('success', 'Account enabled successfully');
+
         $from = $request->headers->get('referer');
         return $this->redirect($from);
     }

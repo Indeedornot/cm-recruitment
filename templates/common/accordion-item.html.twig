@@ -9,33 +9,38 @@
 {% endset %}
 {% set hasContent = block('body') is not empty or block('collapse') is not same as (defaultCollapse) %}
 
-{% set index = 0 %}
-{% if loop is defined %}
+{% if loop is defined and index is not defined %}
     {% set index = loop.index %}
 {% endif %}
-{% set itemId = parentId ~ '-' ~ index|default(0) %}
+{% set index = index|default(0) %}
+{% set itemId = accordionId ~ '-' ~ index %}
 
 {% set header %}
     {% set headerTag = headerTag|default('div') %}
     <{{ headerTag }} class="accordion-header">
-    {% set attrs = 'data-bs-toggle="collapse" data-bs-target="#'~itemId~'" aria-controls="'~itemId~'"' %}
-    {% if open %}
-        {% set attrs = attrs ~ ' aria-expanded="true"' %}
-    {% else %}
-        {% set attrs = attrs ~ ' aria-expanded="false" ' %}
-    {% endif %}
 
+    {% set attrs = attrs_object({
+        'class': ('accordion-button' ~ ' ' ~ (open ? '' : 'collapsed') ~ ' ' ~ (hasContent ? '' : 'empty-accordion'))|trim,
+        'type': 'button',
+        'aria-expanded': open ? 'true' : 'false',
+        'aria-controls': itemId,
+        'data-bs-toggle': 'collapse',
+        'data-bs-target': '#' ~ itemId,
+    }) %}
     {% block button %}
-        <button class="
-                    accordion-button
-                    {% if not open %}collapsed{% endif %}
-                    {{ buttonClasses|default('') }}
-                    {% if not hasContent %}empty-accordion{% endif %}
-                "
-                type="button" {{ attrs|raw }}>
+        {% set buttonContent %}
             {% block buttonText %}
-                Button
+                {% block default %}
+                    Button
+                {% endblock %}
             {% endblock %}
+        {% endset %}
+
+        {% if buttonClasses is defined %}
+            {% do attrs.append('class', ' ' ~ buttonClasses, true) %}
+        {% endif %}
+        <button {{ attrs|raw }}>
+            {{ buttonContent }}
         </button>
     {% endblock %}
     </{{ headerTag }}>
@@ -46,7 +51,7 @@
     {% if hasContent %}
         <div id="{{ itemId }}"
              class="accordion-collapse collapse {% if open %}true{% endif %}"
-             data-bs-parent="#{{ parentId }}"
+             data-bs-parent="#{{ accordionId }}"
         >
             {% block collapse %}
                 {{ defaultCollapse }}

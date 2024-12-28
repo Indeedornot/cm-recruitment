@@ -10,13 +10,13 @@
         <a href="{{ path('app_user_index', {id: application.id}) }}"
            class="btn btn-primary"
         >
-            Edytuj
+            {{ 'common.edit'|trans }}
         </a>
 
         <a href="{{ path('app_user_index', {id: application.id}) }}"
            class="btn btn-danger"
         >
-            Anuluj
+            {{ 'common.cancel'|trans }}
         </a>
     </div>
 </div>

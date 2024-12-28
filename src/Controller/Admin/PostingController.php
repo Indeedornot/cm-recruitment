@@ -5,29 +5,33 @@ namespace App\Controller\Admin;
 use App\Controller\Base\BaseController;
 use App\Controller\Base\ErrorHandlerType;
 use App\Entity\Posting;
+use App\Form\PostingDisplayType;
 use App\Form\PostingType;
 use App\Repository\PostingRepository;
+use App\Security\Entity\Client;
 use App\Security\Entity\UserRoles;
+use App\Security\Services\ExtendedSecurity;
+use App\Services\Form\PaginationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Translation\TranslatableMessage;
 
 #[IsGranted(UserRoles::ADMIN->value)]
 #[Route("/admin/posting", name: "app_admin_posting_")]
 class PostingController extends BaseController
 {
-    function __construct(private PostingRepository $postingRepository, private EntityManagerInterface $em)
-    {
-    }
-
-    #[Route("/", name: "index")]
-    public function index(): Response
-    {
-        return $this->render('pages/admin/posting/index.html.twig', [
-            'postings' => $this->postingRepository->findAll(),
-        ]);
+    function __construct(
+        private readonly EntityManagerInterface $manager,
+        private PostingRepository $postingRepository,
+        private EntityManagerInterface $em,
+        private readonly ExtendedSecurity $extendedSecurity,
+        private readonly PaginationService $pagination
+    ) {
     }
 
     #[Route("/{id}", name: "show", requirements: ['id' => '\d+'])]
@@ -44,8 +48,7 @@ class PostingController extends BaseController
     {
         $this->setErrorHandler(ErrorHandlerType::FORM);
 
-        $posting = new Posting();
-        $posting->setCreatedBy($this->getAdmin());
+        $posting = (new Posting())->setCreatedBy($this->getAdmin());
         return $this->handlePostingForm($posting, $request);
     }
 
@@ -58,6 +61,8 @@ class PostingController extends BaseController
             $this->em->persist($posting);
             $this->em->flush();
             $form = $this->createForm(PostingType::class);
+
+            $this->addFlash('success', new TranslatableMessage('components.posting.form.success'));
         }
 
         return $this->render('pages/admin/posting/manage.html.twig', array_merge([
@@ -65,23 +70,49 @@ class PostingController extends BaseController
         ], $params));
     }
 
-    #[Route("/edit", name: "edit")]
-    public function edit(Request $request): Response
+    #[Route("/edit/{id}", name: "edit", requirements: ['id' => '\d+'])]
+    public function edit(Request $request, int $id): Response
     {
         $this->setErrorHandler(ErrorHandlerType::FORM);
-
-        $id = $request->query->get('id');
         $posting = $this->postingRepository->find($id);
 
-        if ($this->getAdmin()->getId() !== $posting->getAssignedTo()->getId() &&
-            !$this->isGranted(UserRoles::SUPER_ADMIN->value)
-        ) {
-            $this->createAccessDeniedException("You are not allowed to edit this posting");
+        if (!$posting->canEdit($this->getAdmin())) {
+            throw $this->createAccessDeniedException("You are not allowed to edit this posting");
         }
-
 
         return $this->handlePostingForm($posting, $request, [
             'form' => $this->createForm(PostingType::class, $this->postingRepository->find($id))->createView(),
+        ]);
+    }
+
+    #[Route("/", name: "index")]
+    public function users(Request $request): Response
+    {
+        $pagination = $this->pagination->handleRequest($request);
+        $form = $this->createForm(PostingDisplayType::class);
+        return $this->render('pages/admin/posting/index.html.twig', [...$pagination, 'form' => $form]);
+    }
+
+    #[Route("/_search", name: "search")]
+    public function search(Request $request): Response
+    {
+        $form = $this->createForm(PostingDisplayType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+        }
+
+        $pagination = $this->pagination->handleRequest($request);
+        $qb = $this->postingRepository->getAdminDisplayPostingsQb($data ?? []);
+        $totalItems = (clone $qb)->select('COUNT(p)')->getQuery()->getSingleScalarResult();
+
+        $qb = $this->pagination->attachPagination($qb, $pagination);
+        $postings = $qb->getQuery()->getResult();
+
+        return $this->render('pages/admin/posting/postings.html.twig', [
+            'postings' => $postings,
+            ...$pagination,
+            'total' => $totalItems,
         ]);
     }
 }

@@ -3,6 +3,9 @@
 namespace App\Security\EventListener;
 
 use App\Security\Entity\User;
+use App\Security\Event\PostUserCreatedEvent;
+use App\Security\Event\PreUserChangedEvent;
+use App\Security\Event\PreUserCreatedEvent;
 use App\Security\Event\UserEvent;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PostPersistEventArgs;
@@ -24,21 +27,21 @@ class UserEventProxy
 
     public function postPersist(User $user, PostPersistEventArgs $event): void
     {
-        $_ = $this->dispatcher->dispatch(new UserEvent($user), UserEvent::POST_USER_CREATED);
+        $_ = $this->dispatcher->dispatch(new PostUserCreatedEvent($user, $event), UserEvent::POST_USER_CREATED);
     }
 
     public function prePersist(User $user, PrePersistEventArgs $event): void
     {
-        $_ = $this->dispatcher->dispatch(new UserEvent($user), UserEvent::PRE_USER_CREATED);
+        $_ = $this->dispatcher->dispatch(new PreUserCreatedEvent($user, $event), UserEvent::PRE_USER_CREATED);
     }
 
     public function postUpdate(User $user, PostUpdateEventArgs $event): void
     {
-        $_ = $this->dispatcher->dispatch(new UserEvent($user), UserEvent::POST_USER_CHANGED);
+        $_ = $this->dispatcher->dispatch(new PostUserCreatedEvent($user, $event), UserEvent::POST_USER_CHANGED);
     }
 
     public function preUpdate(User $user, PreUpdateEventArgs $event): void
     {
-        $_ = $this->dispatcher->dispatch(new UserEvent($user), UserEvent::PRE_USER_CHANGED);
+        $_ = $this->dispatcher->dispatch(new PreUserChangedEvent($user, $event), UserEvent::PRE_USER_CHANGED);
     }
 }

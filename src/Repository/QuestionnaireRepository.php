@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\PostingQuestion;
 use App\Entity\Questionnaire;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -14,6 +13,6 @@ class QuestionnaireRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, PostingQuestion::class);
+        parent::__construct($registry, Questionnaire::class);
     }
 }

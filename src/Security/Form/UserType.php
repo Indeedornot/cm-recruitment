@@ -6,72 +6,123 @@ use App\Form\Exception;
 use App\Security\Entity\Admin;
 use App\Security\Entity\User;
 use App\Security\Factory\UserFactory;
+use App\Security\Services\ExtendedSecurity;
+use LogicException;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\{EmailType, PasswordType, RepeatedType, TextType};
+use Symfony\Component\Form\Extension\Core\Type\{ButtonType,
+    EmailType,
+    PasswordType,
+    RepeatedType,
+    SubmitType,
+    TextType
+};
+use Symfony\Component\Form\Button;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\SubmitButton;
+use Symfony\Component\Form\SubmitButtonTypeInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class UserType extends AbstractType
 {
     private int $minPasswordLength = 12;
 
     public function __construct(
-        private Security $security,
+        private ExtendedSecurity $security,
         private UserFactory $userFactory
     ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var UserFormMode $mode */
+        $mode = $options['mode'];
+
+        $options = in_array($mode,
+            [UserFormMode::EDIT, UserFormMode::PASSWORD_CHANGE]
+        ) ? $this->getDisabledOptions() : [];
         $builder
             ->add('email', EmailType::class)
             ->add('name', TextType::class);
 
-        if ($options['mode'] !== 'edit') {
-            if ($options['require_password'] ?? true) {
-                $builder->add('plainPassword', RepeatedType::class, [
-                    'type' => PasswordType::class,
-                    'first_options' => [
-                        'label' => 'Password',
-                        'constraints' => [
-                            new Assert\NotBlank(),
-                            new Assert\Length(['min' => $this->minPasswordLength])
-                        ],
-                    ],
-                    'second_options' => ['label' => 'Confirm Password']
-                ]);
-            } else {
-                $pswd = $this->random_str($this->minPasswordLength);
-                $builder->getData()
-                    ->setPassword($pswd)
-                    ->setPlainPassword($pswd);
+        $isCurrentUser = $builder->getData() instanceof User
+            && $builder->getData()->getId() === $this->security->getUser()->getId();
+
+        if ($isCurrentUser) {
+            if (in_array($mode, [UserFormMode::PASSWORD_CHANGE, UserFormMode::EDIT])) {
+                $this->getCurrentPasswordField($builder, $mode);
             }
+
+            if ($options['require_password'] ?? true) {
+                $this->getPasswordField($builder, $mode);
+            } else {
+                $pswd = $this->userFactory->generatePassword($this->minPasswordLength);
+                $this->getUser($builder)
+                    ->setPlainPassword($pswd)
+                    ->forcePasswordChange();
+            }
+        } else {
+            $builder->add('resetPassword', SubmitType::class, [
+                'label' => '
+                    <i class="fas fa-key"></i>
+                    Reset password
+                ',
+                'label_html' => true,
+            ]);
         }
     }
 
-    /**
-     * Generate a random string, using a cryptographically secure
-     * pseudorandom number generator (random_int)
-     *
-     * @param int $length How many characters do we want?
-     * @param string $keyspace A string of all possible characters to select from
-     * @return string
-     */
-    function random_str(
-        int $length,
-        string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    ): string {
-        $str = '';
-        $max = mb_strlen($keyspace, '8bit') - 1;
-        if ($max < 1) {
-            throw new Exception('$keyspace must be at least two characters long');
+    private function getDisabledOptions(): array
+    {
+        return [
+            'disabled' => true,
+            'attr' => ['readonly' => true]
+        ];
+    }
+
+    public function getCurrentPasswordField(FormBuilderInterface $builder, UserFormMode $mode): void
+    {
+        $builder->add('currentPassword', PasswordType::class, [
+            'mapped' => false,
+            'constraints' => [
+                new Assert\NotBlank(),
+                new Assert\Callback(function (mixed $value, ExecutionContextInterface $context) use ($builder) {
+                    $user = $this->getUser($builder);
+                    if (!$this->userFactory->checkPassword($user, $value)) {
+                        $context->buildViolation('Invalid old password')
+                            ->atPath('currentPassword')
+                            ->addViolation();
+                    }
+                })
+            ]
+        ]);
+    }
+
+    private function getUser(FormBuilderInterface $builder): User
+    {
+        $user = $builder->getData();
+        if (!$user instanceof User) {
+            throw new LogicException('User expected');
         }
-        for ($i = 0; $i < $length; ++$i) {
-            $str .= $keyspace[random_int(0, $max)];
-        }
-        return $str;
+
+        return $user;
+    }
+
+    public function getPasswordField(FormBuilderInterface $builder, UserFormMode $mode): void
+    {
+        $builder->add('plainPassword', RepeatedType::class, [
+            'type' => PasswordType::class,
+            'first_options' => [
+                'label' => 'Password',
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Length(['min' => $this->minPasswordLength])
+                ],
+            ],
+            'second_options' => ['label' => 'Confirm Password']
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -79,8 +130,9 @@ class UserType extends AbstractType
         $resolver->setDefaults([
             'data_class' => User::class,
             'require_password' => true,
-            'mode' => 'create',
-            'createdBy' => $this->security->getUser()
+            'mode' => UserFormMode::CREATE,
+            'createdBy' => $this->security->getUser(),
         ]);
+        $resolver->setAllowedTypes('mode', UserFormMode::class);
     }
 }

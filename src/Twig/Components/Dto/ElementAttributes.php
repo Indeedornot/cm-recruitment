@@ -9,12 +9,16 @@ class ElementAttributes
 {
     public function __construct(
         public array $attributes = [],
-        public bool  $merge = true
-    )
-    {
+        public bool $merge = true
+    ) {
     }
 
     public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    public function all(): array
     {
         return $this->attributes;
     }
@@ -30,6 +34,42 @@ class ElementAttributes
         return $this;
     }
 
+    public function append(string $key, mixed $value, bool $trim = true): static
+    {
+        if (!array_key_exists($key, $this->attributes)) {
+            $this->attributes[$key] = $value;
+        } else {
+            $this->attributes[$key] .= ' ' . $value;
+        }
+        if ($trim) {
+            $this->attributes[$key] = trim($this->attributes[$key]);
+        }
+        return $this;
+    }
+
+    public function add(string $key, mixed $value): static
+    {
+        $this->attributes[$key] = $value;
+        return $this;
+    }
+
+    public function remove(string $key): static
+    {
+        unset($this->attributes[$key]);
+        return $this;
+    }
+
+    public function set(string $key, mixed $value): static
+    {
+        $this->attributes[$key] = $value;
+        return $this;
+    }
+
+    public function get(string $key, mixed $default = null): mixed
+    {
+        return $this->attributes[$key] ?? $default;
+    }
+
     public function __toString(): string
     {
         return $this->getHtmlAttributes();
@@ -40,10 +80,8 @@ class ElementAttributes
         $htmlAttributes = '';
         foreach ($this->attributes as $key => $value) {
             $htmlAttributes .= "$key=\"$value\"";
-            ScriptCollection::Log($key, $value);
             $htmlAttributes .= ' ';
         }
-        ScriptCollection::Log($htmlAttributes);
         return $htmlAttributes;
     }
 }

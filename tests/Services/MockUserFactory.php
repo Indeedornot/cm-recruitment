@@ -8,19 +8,9 @@ use App\Security\Factory\UserFactory;
 
 class MockUserFactory
 {
-    private UserFactory $userFactory;
-
-    function __construct()
-    {
-        $this->userFactory = new UserFactory(
-            new MockEventDispatcher(),
-            new MockPasswordHasher(),
-        );
-    }
-
     public function createAdmin(): Admin
     {
-        $admin = $this->userFactory->createAdmin()
+        $admin = (new Admin())
             ->setPlainPassword('password')
             ->setEmail('test@test.com')
             ->setName('Test Admin');
@@ -31,7 +21,7 @@ class MockUserFactory
 
     public function createClient(): Client
     {
-        $client = $this->userFactory->createClient()
+        $client = (new Client())
             ->setPlainPassword('password')
             ->setEmail('test@test.com')
             ->setName('Test Client');

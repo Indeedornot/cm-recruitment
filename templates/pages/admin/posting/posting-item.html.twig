@@ -3,19 +3,20 @@
 {# {% endif %} #}
 
 {% set actionRow %}
-    {% set canEdit = is_granted(constant('App\\Security\\Entity\\UserRoles::SUPER_ADMIN').value) or posting.assignedTo.id == app.user.id %}
+    {% set canEdit = posting.canEdit(app.user) %}
     <div class="d-flex justify-content-end gap-1">
-        <a class="btn btn-primary {% if not canEdit %}disabled{% endif %}"
-           href="{{ path('app_admin_posting_edit', {'id': posting.id}) }}"
-        >
-            <i class="fa-solid fa-pen"></i>
-        </a>
-        <a class="btn btn-secondary"
+        <a class="btn-sm btn-outline-secondary btn"
            href="{{ path('app_admin_posting_show', {'id': posting.id}) }}"
         >
             <i class="fa-solid fa-eye"></i>
         </a>
-        <a class="btn btn-danger"
+        <a class="btn-sm btn btn-outline-primary {% if not canEdit %}disabled{% endif %}"
+           href="{{ path('app_admin_posting_edit', {'id': posting.id}) }}"
+        >
+            <i class="fa-solid fa-pen"></i>
+        </a>
+        <a class="btn-sm btn btn-outline-danger {% if not canEdit %}disabled{% endif %}"
+            {#           TODO: #}
             {#            href="{{ path('app_admin_posting_delete', {'id': posting.id}) }}" #}
         >
             <i class="fa-solid fa-trash"></i>
@@ -23,20 +24,46 @@
     </div>
 {% endset %}
 
-{% set buttonClasses = 'px-2 fw-bold fs-5' %}
-{% embed 'common/accordion-item.html.twig' with {
-    parentId: accordionId,
-    index: loop.index0,
-    headerTag: 'h5',
-    buttonClasses: buttonClasses
+{% embed 'common/list-accordion/accordion-item.html.twig' with {
+    buttonClasses: posting.isClosed ? 'bg-light' : '',
 } %}
     {% block buttonText %}
-        {{ loop.index }}. {{ posting.title }}
-        <span class="text-secondary ps-2">- {{ posting.assignedTo.name }}</span>
-        <span class="ps-2">- Kandydaci: {{ posting.applications|length }}</span>
+        <div class="d-flex justify-content-between flex-wrap">
+            <div>
+                <span class="text-muted">
+                    {{ loop.index }}.
+                </span>
+                <span class="fw-semibold">
+                    {{ posting.title }}
+                </span>
+            </div>
+            <span class="d-flex flex-wrap">
+                <span class="text-secondary px-1">{{ posting.assignedTo.name }}</span>
+                    |
+                <span class="gap-1 d-flex px-1">
+                    <span class="text-muted">
+                        {{ 'components.posting.closing_date'|trans }}:
+                    </span>
+                    {{ posting.closingDate|date('Y-m-d') }}
+                    <div>
+                        {% if posting.isClosed %}
+                            <i class="fa-solid fa-lock text-muted"></i>
+                        {% else %}
+                            <i class="fa-solid fa-unlock"></i>
+                        {% endif %}
+                    </div>
+                </span>
+                    |
+                <span class="ps-1">
+                    {{ 'components.posting.candidates_count'|trans({count: posting.applications|length})|raw }}
+                </span>
+            </span>
+        </div>
     {% endblock %}
     {% block body %}
-        <p>{{ posting.description }}</p>
-        {{ actionRow }}
+        <div class="border p-2 bg-white">
+            <p class="mb-0">{{ posting.description }}</p>
+            {{ actionRow }}
+        </div>
     {% endblock %}
 {% endembed %}

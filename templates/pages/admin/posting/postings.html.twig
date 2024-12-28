@@ -1,0 +1,25 @@
+{% import 'common/tables/pagination.html.twig' as pagination %}
+
+{% if total == 0 %}
+    <div class="alert alert-light fw-semibold">
+        <p>{{ 'components.posting.create.no_postings_created'|trans }}</p>
+    </div>
+{% else %}
+    <div class="pb-2">
+        {{ pagination.pagination('app_admin_posting_index', page, total, limit) }}
+    </div>
+
+    <div class="border">
+        {% embed 'common/list-accordion/accordion.html.twig' with {flush: true} %}
+            {% for posting in postings %}
+                {% include 'pages/admin/posting/posting-item.html.twig' with {
+                    posting: posting
+                } %}
+            {% endfor %}
+        {% endembed %}
+    </div>
+
+    <div class="pt-2">
+        {{ pagination.pagination('app_admin_posting_index', page, total, limit) }}
+    </div>
+{% endif %}

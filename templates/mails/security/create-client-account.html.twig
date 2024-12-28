@@ -18,7 +18,7 @@
                 <li>
                     Username: {{ user.name }}
                 </li>
-                {% if user.plainPassword is defined %}
+                {% if user.plainPassword is defined and user.isPasswordChangeRequired %}
                     <li>
                         Password: {{ user.plainPassword }}
                     </li>

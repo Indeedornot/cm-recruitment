@@ -9,6 +9,7 @@
         "php": ">=8.3.8",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "acalvino4/twig-embed-implicit-default": "^1.0",
         "doctrine/dbal": "^3",
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.3",
@@ -28,6 +29,7 @@
         "symfony/runtime": "7.1.*",
         "symfony/security-bundle": "7.1.*",
         "symfony/stimulus-bundle": "^2.20",
+        "symfony/translation": "7.1.*",
         "symfony/twig-bundle": "7.1.*",
         "symfony/ux-live-component": "^2.20",
         "symfony/validator": "7.1.*",
@@ -75,6 +77,10 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "migrate": [
+            "php bin/console doctrine:migrations:diff --no-interaction",
+            "php bin/console doctrine:migrations:migrate --no-interaction"
         ]
     },
     "conflict": {

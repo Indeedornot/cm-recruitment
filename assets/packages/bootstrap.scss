@@ -45,6 +45,25 @@ $card-cap-padding-y: $card-spacer-y * .75;
             }
         }
     }
+    $border-directions: (
+        '': '',
+        '-top': '-top',
+        '-end': '-right',
+        '-bottom': '-bottom',
+        '-start': '-left'
+    );
+
+    @each $suffix, $direction in $border-directions {
+        @media (min-width: map-get($grid-breakpoints, $breakpoint)) {
+            .border-#{$breakpoint}#{$suffix} {
+                border#{$direction}: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+            }
+
+            .border-#{$breakpoint}#{$suffix}-0 {
+                border#{$direction}: 0 !important;
+            }
+        }
+    }
 }
 
 .card-flush.card {
@@ -111,4 +130,14 @@ $card-cap-padding-y: $card-spacer-y * .75;
 .card-group-vertical > .card:not(:first-child) .card-img-bottom,
 .card-group-vertical > .card:not(:first-child) .card-footer {
     border-top-right-radius: 0;
+}
+
+
+[data-bs-toggle="collapse"] {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.accordion-button {
+    font-size: inherit !important;
 }
