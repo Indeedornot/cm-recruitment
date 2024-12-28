@@ -9,14 +9,13 @@ deploy_to_test:
     only:
         - dep/test
     before_script:
-        - apk update && apk add openssh-client
+        - apt-get update && apt-get install -y openssh-client rsync
         - eval $(ssh-agent -s)
         - echo "$DEPLOY_SSH_KEY" | ssh-add -
         - mkdir -p ~/.ssh
         - chmod 700 ~/.ssh
         - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
         - ssh -t root@${DROPLET_IP} 'echo $HOME'
-        - apk add rsync
     script:
         #        - apt-get update && apt-get install rsync
 
