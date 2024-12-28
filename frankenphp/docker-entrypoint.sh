@@ -57,8 +57,13 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 	setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var
 fi
 
-cat /etc/caddy/Caddyfile
-echo HTTP: $HTTP_SERVER_NAME
-echo HTTPS: $HTTPS_SERVER_NAME
+if [ -f package.json ]; then
+	npm install
+fi
 
+if [ -f webpack.config.js ]; then
+	npm run build
+fi
+
+cat /etc/caddy/Caddyfile
 exec docker-php-entrypoint "$@"

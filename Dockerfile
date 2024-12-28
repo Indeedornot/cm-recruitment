@@ -1,4 +1,8 @@
 #syntax=docker/dockerfile:1
+FROM node:latest AS node_base
+
+RUN echo "NODE Version:" && node --version
+RUN echo "NPM Version:" && npm --version
 
 # Versions
 FROM dunglas/frankenphp:1-php8.3 AS frankenphp_upstream
@@ -47,6 +51,10 @@ RUN install-php-extensions pdo_mysql
 COPY --link frankenphp/conf.d/10-app.ini $PHP_INI_DIR/app.conf.d/
 COPY --link --chmod=755 frankenphp/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 COPY --link frankenphp/Caddyfile /etc/caddy/Caddyfile
+
+# Install Node and NPM
+COPY --from=node_base /usr/local/bin /usr/local/bin
+COPY --from=node_base /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
 
 ENTRYPOINT ["docker-entrypoint"]
 
