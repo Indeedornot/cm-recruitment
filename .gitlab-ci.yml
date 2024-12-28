@@ -23,8 +23,8 @@ deploy_to_test:
         - scp .env.${CI_ENVIRONMENT_NAME} root@$DROPLET_IP:/var/www/container/.env
         
         # Run Docker commands on the droplet
-        - ssh root@$DROPLET_IP <<EOF
-            cd /var/www/container
-            docker-compose build
+        - ssh root@$DROPLET_IP "
+            cd /var/www/container && \
+            docker-compose build && \
             docker-compose up -d
-            EOF
+            "   
