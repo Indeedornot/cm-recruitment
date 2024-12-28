@@ -40,6 +40,9 @@ class Posting
     #[ORM\ManyToOne(targetEntity: Questionnaire::class, cascade: ['persist', 'remove'], inversedBy: 'posting')]
     private Questionnaire $questionnaire;
 
+    #[ORM\Column(type: 'datetime_immutable')]
+    private DateTimeImmutable $closingDate;
+
     public function __construct()
     {
         $this->applications = new ArrayCollection();

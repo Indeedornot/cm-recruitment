@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Controller\Base\BaseController;
 use App\Controller\Base\ErrorHandlerType;
 use App\Entity\Posting;
+use App\Form\PostingDisplayType;
 use App\Form\PostingType;
 use App\Repository\PostingRepository;
 use App\Security\Entity\Client;
@@ -88,14 +89,21 @@ class PostingController extends BaseController
     public function users(Request $request): Response
     {
         $pagination = $this->pagination->handleRequest($request);
-        return $this->render('pages/admin/posting/index.html.twig', $pagination);
+        $form = $this->createForm(PostingDisplayType::class);
+        return $this->render('pages/admin/posting/index.html.twig', [...$pagination, 'form' => $form]);
     }
 
     #[Route("/_search", name: "search")]
     public function search(Request $request): Response
     {
+        $form = $this->createForm(PostingDisplayType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+        }
+
         $pagination = $this->pagination->handleRequest($request);
-        $qb = $this->postingRepository->getDisplayedPostingsQb($data ?? []);
+        $qb = $this->postingRepository->getAdminDisplayPostingsQb($data ?? []);
         $totalItems = (clone $qb)->select('COUNT(p)')->getQuery()->getSingleScalarResult();
 
         $qb = $this->pagination->attachPagination($qb, $pagination);
