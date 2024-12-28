@@ -5,6 +5,7 @@ deploy_to_test:
     stage: deploy
     environment:
         name: dev
+        url: http://$DROPLET_IP
     only:
         - dep/test
     script:

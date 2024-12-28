@@ -18,22 +18,11 @@ services:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
     tty: true
-    env_file:
-      - path: ./.env.dev
-        required: false
-      - path: ./.env.dev.local
-        required: false
-  db:
-    env_file:
-      - path: ./.env.dev
-        required: false
-      - path: ./.env.dev.local
-        required: false
-
-###> symfony/mercure-bundle ###
-###< symfony/mercure-bundle ###
-
-###> symfony/mailer ###
+  
+  ###> symfony/mercure-bundle ###
+  ###< symfony/mercure-bundle ###
+  
+  ###> symfony/mailer ###
   mailer:
     image: axllent/mailpit
     ports:
@@ -42,4 +31,4 @@ services:
     environment:
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
-###< symfony/mailer ###
+  ###< symfony/mailer ###
