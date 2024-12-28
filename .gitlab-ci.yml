@@ -20,7 +20,7 @@ deploy_to_test:
         # Push code to the droplet using rsync
         - ssh root@$DROPLET_IP 'mkdir -p /var/www/container'
 
-        - sudo apt-get install rsync
+        - apt-get install rsync
         - rsync -avz --exclude='.git' --exclude='.gitlab-ci.yml' . root@$DROPLET_IP:/var/www/container
         - scp .env.${CI_ENVIRONMENT_NAME} root@$DROPLET_IP:/var/www/container/.env
         
