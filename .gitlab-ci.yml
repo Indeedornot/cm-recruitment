@@ -15,7 +15,6 @@ deploy_to_test:
         - chmod 600 ~/.ssh/id_rsa
         - eval $(ssh-agent -s)
         - ssh-add ~/.ssh/id_rsa
-        - echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
         - ssh-keyscan -H $DROPLET_IP >> ~/.ssh/known_hosts
         - ping -c 4 $DROPLET_IP
     script:
