@@ -1,0 +1,25 @@
+stages:
+    - deploy
+
+deploy_to_test:
+    stage: deploy
+    only:
+        - dep/test
+    script:
+        # Create SSH directory and configure permissions
+        - mkdir -p ~/.ssh
+        - echo "$DEPLOY_SSH_KEY" > ~/.ssh/id_rsa
+        - chmod 600 ~/.ssh/id_rsa
+        
+        # Add droplet to known hosts
+        - ssh-keyscan -H $DROPLET_IP >> ~/.ssh/known_hosts
+        
+        # Push code to the droplet
+        - scp -r . root@$DROPLET_IP:/var/www/container
+        
+        # Run Docker commands on the droplet
+        - ssh root@$DROPLET_IP <<EOF
+            cd /var/www/container
+            docker-compose build
+            docker-compose up -d
+            EOF

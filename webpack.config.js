@@ -1,5 +1,8 @@
 const Encore = require('@symfony/webpack-encore');
+const dotenv = require('dotenv');
 
+dotenv.config();
+throw new Error(JSON.stringify(process.env, null, 2));
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
 if (!Encore.isRuntimeEnvironmentConfigured()) {
@@ -10,8 +13,7 @@ Encore
   // directory where compiled assets will be stored
   .setOutputPath('public/build/')
   // public path used by the web server to access the output path
-  // TODO: Adjust with env variables
-  .setPublicPath('/projects/cm-recruitment-symfony/public/build')
+  .setPublicPath(process.env.PUBLIC_DIR)
   // only needed for CDN's or subdirectory deploy
   //.setManifestKeyPrefix('build/')
 
@@ -26,8 +28,8 @@ Encore
   // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
   .splitEntryChunks()
 
-    // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
-    .enableStimulusBridge('./assets/controllers.json')
+  // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
+  .enableStimulusBridge('./assets/controllers.json')
 
   // will require an extra script tag for runtime.js
   // but, you probably want this, unless you're building a single-page app
