@@ -33,7 +33,5 @@ for key in "${!env_vars[@]}"; do
     DOCKER_ENV_ARGS="$DOCKER_ENV_ARGS -e $key=${env_vars[$key]}"
 done
 
-# Start Docker container with environment variables
-# Note: Replace YOUR_IMAGE_NAME and optional arguments as needed
 echo "Starting Docker container with loaded environment variables..."
-docker run $DOCKER_ENV_ARGS YOUR_IMAGE_NAME
+docker compose $DOCKER_ENV_ARGS up -d

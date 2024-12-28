@@ -19,13 +19,13 @@ deploy_to_test:
     script:
         # Push code to the droplet using rsync
         - ssh root@$DROPLET_IP 'mkdir -p /var/www/container'
-
         - rsync -avz --exclude='.git' --exclude='.gitlab-ci.yml' . root@$DROPLET_IP:/var/www/container
-        - scp .env.${CI_ENVIRONMENT_NAME} root@$DROPLET_IP:/var/www/container/.env
         
         # Run Docker commands on the droplet
         - ssh root@$DROPLET_IP "
             cd /var/www/container && \
+            mv .env.{$CI_ENVIRONMENT_NAME}.dist .env.{$CI_ENVIRONMENT_NAME} && \
             docker compose build && \
-            docker compose up -d
+            chmod +x docker-start.sh && \
+            ./docker-start.sh
             "
