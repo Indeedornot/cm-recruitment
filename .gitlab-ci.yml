@@ -20,7 +20,7 @@ deploy_to_test:
         - ssh-keyscan -H $DROPLET_IP >> ~/.ssh/known_hosts
     script:
         # Check if the server is reachable using nc (netcat)
-        - apt-get update -y && apt-get install -y netcat
+        - apt-get update -y && apt-get install -y netcat-traditional
         - nc -zv $DROPLET_IP 22
         - ssh -v root@$DROPLET_IP "echo 'Connection established'"
         # Push code to the droplet
