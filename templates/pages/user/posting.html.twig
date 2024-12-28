@@ -1,49 +1,60 @@
 {% extends 'layouts/base.html.twig' %}
 
 {% block body %}
-    <div class="p-4">
+    {% if app.user %}
+        {% set applications = app.user.applications|filter(x => x.posting.id == posting.id) %}
+        {% set hasApplied = applications|length %}
+    {% else %}
+        {% set hasApplied = false %}
+    {% endif %}
 
+    <div class="p-4 container">
         <div class="card">
-            <div class="card-body">
-                {% if app.user %}
-                    {% set applications = app.user.applications|filter(x => x.posting.id == posting.id) %}
-                    {% set hasApplied = applications|length %}
-                {% else %}
-                    {% set hasApplied = false %}
-                {% endif %}
-
-                <div {% if hasApplied %}class="mb-3"{% endif %}>
-                    <h2>{{ posting.title }}
-                        <span class="text-secondary">
-                            {{ 'components.posting.assigned_to'|trans({'name': posting.assignedTo.name}) }}
+            <div class="card-header {% if hasApplied %}mb-3{% endif %}">
+                <div class="d-flex justify-content-between flex-wrap">
+                    <div class="d-flex align-items-end pe-2 flex-wrap">
+                        <h2 class="mb-0 pe-2">{{ posting.title }}</h2>
+                        <span class="text-secondary fs-4">
+                                {{ 'components.posting.assigned_to'|trans({'name': posting.assignedTo.name}) }}
+                            </span>
+                    </div>
+                    <span class="text-secondary fs-4 d-flex align-items-end flex-wrap">
+                            <span class="text-muted pe-1">
+                                {{ 'components.posting.closing_date'|trans }}:
+                            </span>
+                            {{ posting.closingDate|date('Y-m-d') }}
                         </span>
-                    </h2>
-                    <p>{{ posting.description }}</p>
-                    <a href="{{ path('app_user_posting_apply', {id: posting.id}) }}"
-                       class="btn btn-primary"
-                    >
-                        {{ 'components.posting.sign_up'|trans({again: hasApplied|default(false)}) }}
-                    </a>
                 </div>
-                {% if hasApplied %}
-                    {% embed 'common/collapse/collapse.html.twig' with {type: 'a'} %}
-                        {% block trigger %}
-                            <a {{ attrs|raw }}>
-                                Zajęcia na które jesteś zapisany
-                            </a>
-                        {% endblock %}
-                        {% block collapse %}
-                            <div class="card-group-vertical">
-                                {% for application in applications %}
-                                    {% include 'pages/user/application/card.html.twig' with {
-                                        application: application,
-                                        flush: true,
-                                    } %}
-                                {% endfor %}
-                            </div>
-                        {% endblock %}
-                    {% endembed %}
-                {% endif %}
+            </div>
+            <div class="card-body">
+                <p>{{ posting.description }}</p>
+
+                {#                {% if hasApplied %} #}
+                {#                    {% embed 'common/collapse/collapse.html.twig' with {type: 'a'} %} #}
+                {#                        {% block trigger %} #}
+                {#                            <a {{ attrs|raw }}> #}
+                {#                                Zajęcia na które jesteś zapisany #}
+                {#                            </a> #}
+                {#                        {% endblock %} #}
+                {#                        {% block collapse %} #}
+                {#                            <div class="card-group-vertical"> #}
+                {#                                {% for application in applications %} #}
+                {#                                    {% include 'pages/user/application/card.html.twig' with { #}
+                {#                                        application: application, #}
+                {#                                        flush: true, #}
+                {#                                    } %} #}
+                {#                                {% endfor %} #}
+                {#                            </div> #}
+                {#                        {% endblock %} #}
+                {#                    {% endembed %} #}
+                {#                {% endif %} #}
+            </div>
+            <div class="card-footer">
+                <a href="{{ path('app_user_posting_apply', {id: posting.id}) }}"
+                   class="btn btn-primary"
+                >
+                    {{ 'components.posting.sign_up'|trans({again: hasApplied|default(false)}) }}
+                </a>
             </div>
         </div>
     </div>

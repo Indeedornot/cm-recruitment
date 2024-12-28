@@ -105,4 +105,20 @@ class Posting
         $this->questionnaire = $questionnaire;
         return $this;
     }
+
+    public function getClosingDate(): DateTimeImmutable
+    {
+        return $this->closingDate;
+    }
+
+    public function setClosingDate(DateTimeImmutable $closingDate): self
+    {
+        $this->closingDate = $closingDate;
+        return $this;
+    }
+
+    public function isClosed(): bool
+    {
+        return $this->closingDate < new DateTimeImmutable();
+    }
 }

@@ -1,0 +1,17 @@
+{% if bag is defined %}
+    {% set flashes = app.flashes(bag) %}
+{% else %}
+    {% set flashes = app.flashes %}
+{% endif %}
+
+{% for type, messages in flashes %}
+    {% if type == 'error' %}
+        {% set type = 'danger' %}
+    {% endif %}
+
+    {% for message in messages %}
+        <div class="alert alert-{{ type }}">
+            {{ message|trans|raw }}
+        </div>
+    {% endfor %}
+{% endfor %}

@@ -42,10 +42,33 @@ class PostingRepository extends ServiceEntityRepository
     //        ;
     //    }
 
+    public function getAdminDisplayPostingsQb(array $filters = []): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->andWhere('p.disabledAt IS NULL')
+            ->orderBy('p.createdAt', 'DESC');
+
+        if (isset($filters['title']) && $filters['title']) {
+            $qb
+                ->andWhere('p.title LIKE :title')
+                ->setParameter('title', '%' . $filters['title'] . '%');
+        }
+
+        if (isset($filters['assignedTo']) && $filters['assignedTo']) {
+            $qb
+                ->andWhere('p.assignedTo = :assignedTo')
+                ->setParameter('assignedTo', $filters['assignedTo']);
+        }
+
+        return $qb;
+    }
+
     public function getDisplayedPostingsQb(array $filters = []): QueryBuilder
     {
         $qb = $this->createQueryBuilder('p')
             ->andWhere('p.disabledAt IS NULL')
+            ->andWhere('p.closingDate > :now')
+            ->setParameter('now', new \DateTime())
             ->orderBy('p.createdAt', 'DESC');
 
         if (isset($filters['title']) && $filters['title']) {

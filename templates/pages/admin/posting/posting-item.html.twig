@@ -24,9 +24,11 @@
     </div>
 {% endset %}
 
-{% embed 'common/list-accordion/accordion-item.html.twig' %}
+{% embed 'common/list-accordion/accordion-item.html.twig' with {
+    buttonClasses: posting.isClosed ? 'bg-light' : '',
+} %}
     {% block buttonText %}
-        <div class="d-flex justify-content-between ">
+        <div class="d-flex justify-content-between flex-wrap">
             <div>
                 <span class="text-muted">
                     {{ loop.index }}.
@@ -34,10 +36,27 @@
                 <span class="fw-semibold">
                     {{ posting.title }}
                 </span>
-                <span class="text-secondary ps-2">{{ posting.assignedTo.name }}</span>
             </div>
-            <span class="ps-2">
-                {{ 'components.posting.candidates_count'|trans({count: posting.applications|length})|raw }}
+            <span class="d-flex flex-wrap">
+                <span class="text-secondary px-1">{{ posting.assignedTo.name }}</span>
+                    |
+                <span class="gap-1 d-flex px-1">
+                    <span class="text-muted">
+                        {{ 'components.posting.closing_date'|trans }}:
+                    </span>
+                    {{ posting.closingDate|date('Y-m-d') }}
+                    <div>
+                        {% if posting.isClosed %}
+                            <i class="fa-solid fa-lock text-muted"></i>
+                        {% else %}
+                            <i class="fa-solid fa-unlock"></i>
+                        {% endif %}
+                    </div>
+                </span>
+                    |
+                <span class="ps-1">
+                    {{ 'components.posting.candidates_count'|trans({count: posting.applications|length})|raw }}
+                </span>
             </span>
         </div>
     {% endblock %}

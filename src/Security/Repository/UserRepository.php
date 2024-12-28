@@ -38,7 +38,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         return $this->createQueryBuilder('u')
             ->where('u INSTANCE OF App\Security\Entity\Admin')
-            ->andWhere('u.disabledAt IS NULL')
+//            ->andWhere('u.disabledAt IS NULL')
             ->getQuery()
             ->getResult();
     }

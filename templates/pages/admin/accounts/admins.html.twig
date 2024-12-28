@@ -39,7 +39,7 @@
                     </thead>
                     <tbody>
                     {% for user in users %}
-                        {% set disabled = user.disabledAt is not null %}
+                        {% set disabled = user.isDisabled %}
                         <tr>
                             <td>{{ loop.index + (page - 1) * 10 }}
                             </td>
