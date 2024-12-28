@@ -170,6 +170,7 @@ return [
                     'submit' => 'Dodaj pytanie',
                 ]
             ],
+            'closing_date' => 'Data zakończenia',
             'candidates_count' => '{count, plural,
                 other {<b>#</b> Kandydatów}
             }',
