@@ -17,7 +17,7 @@ deploy_to_test:
         - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
         - ssh -t root@${DROPLET_IP} 'echo $HOME'
     script:
-        - apk add install rsync
+        - apk add rsync
 
         # Push code to the droplet using rsync
         - ssh root@$DROPLET_IP 'mkdir -p /var/www/container'
