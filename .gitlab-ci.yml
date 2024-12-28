@@ -23,7 +23,7 @@ deploy_to_test:
         - echo "$CI_ENVIRONMENT_NAME"
         
         # Run Docker commands on the droplet
-        - ssh -o SendEnv=CI_ENVIRONMENT_NAME root@$DROPLET_IP '
+        - CI_ENVIRONMENT_NAME=$CI_ENVIRONMENT_NAME ssh -o SendEnv=CI_ENVIRONMENT_NAME root@$DROPLET_IP '
             cd /var/www/container && \
             mv .env.${CI_ENVIRONMENT_NAME}.dist .env.${CI_ENVIRONMENT_NAME} && \
             docker compose build && \
