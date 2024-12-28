@@ -17,10 +17,11 @@ deploy_to_test:
         - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
         - ssh -t root@${DROPLET_IP} 'echo $HOME'
     script:
+        - apk add install rsync
+
         # Push code to the droplet using rsync
         - ssh root@$DROPLET_IP 'mkdir -p /var/www/container'
 
-        - apt-get install rsync
         - rsync -avz --exclude='.git' --exclude='.gitlab-ci.yml' . root@$DROPLET_IP:/var/www/container
         - scp .env.${CI_ENVIRONMENT_NAME} root@$DROPLET_IP:/var/www/container/.env
         
