@@ -7,6 +7,8 @@ use App\Entity\Question;
 use App\Entity\Questionnaire;
 use App\Repository\QuestionnaireRepository;
 use App\Repository\QuestionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
@@ -101,7 +103,7 @@ class CreateQuestionnaireType extends AbstractType
 
         $builder->get('questions')->addModelTransformer(
             new CallbackTransformer(
-                static fn($q) => $q instanceof PersistentCollection ? $q->toArray() : $q,
+                static fn($q) => $q instanceof Collection ? $q->toArray() : $q,
                 static fn($q) => $q
             )
         );
