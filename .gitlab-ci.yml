@@ -28,3 +28,4 @@ deploy_to_test:
             docker compose build && \
             chmod +x docker-start.sh && \
             ./docker-start.sh
+            "
