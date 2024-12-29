@@ -72,8 +72,8 @@ class ClientApplication
     public function getValueByKey(string $key): ?string
     {
         foreach ($this->answers as $answer) {
-            if ($answer->getQuestion()->getKey() === $key) {
-                return $answer->getValue();
+            if ($answer->getQuestion()->getQuestionKey() === $key) {
+                return $answer->getAnswer();
             }
         }
         return null;
