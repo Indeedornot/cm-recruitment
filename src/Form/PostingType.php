@@ -47,7 +47,9 @@ class PostingType extends AbstractType
                     'disabled' => !$this->security->isSuperAdmin()
                 ]
             ])
-            ->add('closingDate', DateTimeType::class)
+            ->add('closingDate', DateTimeType::class, [
+                'label' => 'components.posting.form.closing_date'
+            ])
             ->add('questionnaire', CreateQuestionnaireType::class, [
                 'label' => 'components.posting.form.questionnaire',
             ]);

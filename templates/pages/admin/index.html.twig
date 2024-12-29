@@ -6,14 +6,18 @@
             <div class="card-header">{{ 'admin.dashboard.header'|trans }}</div>
             <div class="card-body">
                 <ul class="list-group">
-                    {% set userType = is_super_admin() ? 'super_admin' : 'admin' %}
-                    {% if userType == 'super_admin' %}
+                    {% if is_super_admin() %}
                         {{ macros.nav_item('admin.dashboard.items.admin'|trans, 'fa-users', url('app_admin_admins'), 'a') }}
-                        {#                        {{ macros.nav_item('admin.dashboard.items.create_admin'|trans, 'fa-user-plus', url('app_admin_create_account'), 'a') }} #}
-                        {#                        {{ macros.nav_item('admin.dashboard.items.questionaire'|trans, 'fa-question', url('app_admin_questionnaire_index'), 'a') }} #}
+                        {{ macros.nav_item('admin.dashboard.items.create_admin'|trans, 'fa-user-plus', url('app_admin_create_account'), 'a') }}
                     {% endif %}
                     {{ macros.nav_item('admin.dashboard.items.client'|trans, 'fa-users', url('app_admin_users'), 'a') }}
-                    {{ macros.nav_item(('admin.dashboard.items.posting.'~userType)|trans, 'fa-list-check', url('app_admin_posting_index'), 'a') }}
+
+                    {% if is_super_admin() %}
+                        {% set postingText = 'admin.dashboard.items.posting.super_admin'|trans %}
+                    {% else %}
+                        {% set postingText = 'admin.dashboard.items.posting.admin'|trans %}
+                    {% endif %}
+                    {{ macros.nav_item(postingText, 'fa-list-check', url('app_admin_posting_index'), 'a') }}
                 </ul>
             </div>
         </div>

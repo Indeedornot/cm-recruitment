@@ -2,42 +2,56 @@
 {% form_theme form 'common/forms/bundle.html.twig' %}
 
 {% block body %}
-    <div class="card">
-        <div class="card-body">
-            <h2>{{ posting.title }}
-                <span class="text-secondary">
-                    {{ 'components.posting.assigned_to'|trans({'name': posting.assignedTo.name}) }}
-                </span>
-            </h2>
-            <p>{{ posting.description }}</p>
-            {{ form_start(form) }}
-            {% for message in app.flashes('error') %}
-                <div class="alert alert-danger">
-                    {{ message|raw }}
-                </div>
-            {% endfor %}
-            <div class="mb-3">
-                <div class="card">
-                    <div class="card-header">
-                        Odpowiedzi
-                    </div>
-                    <div class="card-body">
-                        {% for field in form.children|filter(field => field.vars.name starts with 'answer_') %}
-                            <div class="mb-3">
-                                {{ form_row(field) }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 mb-3">
-                    {{ form_button(form, {variant: 'primary', icon: 'user', label: 'Save'}) }}
-                    {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'Back', href: path('app_user_index')}) }}
-                </div>
-            </div>
+    <div class="container container-y">
 
-            {{ form_end(form) }}
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between flex-wrap">
+                    <div class="d-flex align-items-end pe-2 flex-wrap">
+                        <h2 class="mb-0 pe-2">{{ posting.title }}</h2>
+                        <span class="text-secondary fs-4">
+                                {{ 'components.posting.assigned_to'|trans({'name': posting.assignedTo.name}) }}
+                            </span>
+                    </div>
+                    <span class="text-secondary fs-4 d-flex align-items-end flex-wrap">
+                            <span class="text-muted pe-1">
+                                {{ 'components.posting.closing_date'|trans }}:
+                            </span>
+                            {{ posting.closingDate|date('Y-m-d') }}
+                        </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>{{ posting.description }}</p>
+                {{ form_start(form) }}
+                {% for message in app.flashes('error') %}
+                    <div class="alert alert-danger">
+                        {{ message|raw }}
+                    </div>
+                {% endfor %}
+                <div class="mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            Odpowiedzi
+                        </div>
+                        <div class="card-body">
+                            {% for field in form.children|filter(field => field.vars.name starts with 'answer_') %}
+                                <div class="mb-3">
+                                    {{ form_row(field) }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        {{ form_button(form, {variant: 'primary', icon: 'user', label: 'common.save'|trans}) }}
+                        {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'common.cancel'|trans, href: path('app_user_index')}) }}
+                    </div>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
         </div>
     </div>
 {% endblock %}

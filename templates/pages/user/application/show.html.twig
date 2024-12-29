@@ -22,12 +22,12 @@
                 {% embed 'common/accordion.html.twig' %}
                     {% embed 'common/accordion-item.html.twig' %}
                         {% block buttonText %}
-                            <b>Formularz zgłoszeniowy:</b>
+                            <b>{{ 'user.application.questionnaire.header'|trans }}</b>
                         {% endblock %}
                         {% block body %}
                             <dl class="row">
                                 {% for answer in application.answers %}
-                                    <dt class="col-sm-4">{{ answer.question.label }}</dt>
+                                    <dt class="col-sm-4">{{ answer.question.label|trans }}</dt>
                                     <dd class="col-sm-8">{{ answer.answer }}</dd>
                                 {% endfor %}
                             </dl>

@@ -51,14 +51,20 @@ class AdminController extends BaseController
         $form = $this->createForm(UserType::class, $user, ['require_password' => false]);
         $form->handleRequest($request);
 
+        $data = [];
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->persist($user);
             $this->manager->flush();
             $form = $this->createForm(UserType::class, $this->userFactory->createEmptyAdmin());
+            $this->addFlash('success', 'Account created successfully');
+            $data = [
+                'success' => true,
+            ];
         }
 
         return $this->render('pages/admin/accounts/manage.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            ...$data
         ]);
     }
 
@@ -74,12 +80,9 @@ class AdminController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('resetPassword')->isClicked()) {
-                $this->userFactory->resetPassword($user);
-            }
-
             $this->manager->persist($user);
             $this->manager->flush();
+            $this->addFlash('success', 'common.success');
             $form = $this->createForm(UserType::class, $this->userRepository->find($id), [
                 'mode' => UserFormMode::EDIT
             ]);
@@ -127,7 +130,7 @@ class AdminController extends BaseController
         }
 
         if ($user->isDisabled()) {
-            $this->addFlash('error', 'This account is already disabled');
+            $this->addFlash('error', 'admin.manage.flashes.disable.already_disabled');
             $from = $request->headers->get('referer');
             return $this->redirect($from);
         }
@@ -136,7 +139,7 @@ class AdminController extends BaseController
         $this->manager->persist($user);
         $this->manager->flush();
 
-        $this->addFlash('success', 'Account disabled successfully');
+        $this->addFlash('success', 'admin.manage.flashes.disable.success');
 
         $from = $request->headers->get('referer');
         return $this->redirect($from);
