@@ -39,7 +39,7 @@ class LoginListener
         }
 
         if ($user->isDisabled()) {
-            $this->security->logout();
+            $this->security->logout(false);
             $event->getRequest()->getSession()->getFlashBag()->add('error', 'security.disabled_account');
             $event->setResponse(new RedirectResponse($this->urlGenerator->generate('app_login')));
             return;
