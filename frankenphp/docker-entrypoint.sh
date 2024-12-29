@@ -62,7 +62,7 @@ if [ -f package.json ]; then
 fi
 
 if [ -f webpack.config.js ]; then
-	npm run build
+	APP_ENV=$APP_ENV npm run build
 fi
 
 cat /etc/caddy/Caddyfile
