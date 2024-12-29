@@ -1,7 +1,27 @@
 const Encore = require('@symfony/webpack-encore');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const path = require('path');
 
-dotenv.config();
+const envFiles = [
+  `.env`,
+  `.env.local`,
+  `.env.${process.env.APP_ENV}.dist`,
+  `.env.${process.env.APP_ENV}.local`,
+]
+const envFile = envFiles.map((file) => {
+  const realPath = path.resolve(__dirname, file);
+  if (fs.existsSync(realPath)) {
+    return realPath;
+  }
+
+  return null;
+}).filter(Boolean);
+
+dotenv.config({
+  path: envFile,
+  override: true,
+});
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.

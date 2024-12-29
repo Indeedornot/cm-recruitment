@@ -27,11 +27,15 @@ load_env_file ".env.local"
 load_env_file ".env.$APP_ENV"
 load_env_file ".env.$APP_ENV.local"
 
-# Build Docker environment arguments string
-DOCKER_ENV_ARGS=""
+# Write environment variables to a temporary .env file
+temp_env_file=".env.temp"
+> "$temp_env_file"
 for key in "${!env_vars[@]}"; do
-    DOCKER_ENV_ARGS="$DOCKER_ENV_ARGS -e $key=${env_vars[$key]}"
+    echo "$key=${env_vars[$key]}" >> "$temp_env_file"
 done
 
 echo "Starting Docker container with loaded environment variables..."
-docker compose $DOCKER_ENV_ARGS up -d
+docker compose --env-file "$temp_env_file" up -d
+
+# Clean up temporary .env file
+rm "$temp_env_file"
