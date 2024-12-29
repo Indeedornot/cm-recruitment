@@ -16,13 +16,14 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\RawMessage;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
+use Twig\Error\LoaderError;
 
 #[AsEventListener(event: MessageEvent::class, method: 'onMessage', priority: -1)]
 #[AsEventListener(event: SentMessageEvent::class, method: 'onMessageSent', priority: -1)]
 class UserEmailService
 {
 //                TODO: CHANGE ME
-    private string $from = 'gravitybartek@gmail.com';
+    private string $from = 'cm_dev@cm.com';
     private ?User $user = null;
 
     public function __construct(
@@ -55,7 +56,7 @@ class UserEmailService
         $email->getHeaders()->addTextHeader('X-Email-Report-Id', $emailReport->getId());
     }
 
-    public function onMessageSent(SentMessageEvent $event)
+    public function onMessageSent(SentMessageEvent $event): void
     {
         $email = $event->getMessage()->getOriginalMessage();
         $emailReportId = $email->getHeaders()->get('X-Email-Report-Id')->getBodyAsString();
@@ -64,45 +65,60 @@ class UserEmailService
         $this->em->flush();
     }
 
+    /**
+     * @throws LoaderError
+     */
+    private function getTemplateFile(string $template): string
+    {
+        if ($this->twig->getLoader()->exists($template)) {
+            return $template;
+        } else {
+            $locale = $this->translator->getLocale();
+            $template = str_replace('.html.twig', ".$locale.html.twig", $template);
+            if ($this->twig->getLoader()->exists($template)) {
+                return $template;
+            } else {
+                throw new LoaderError('Email template not found');
+            }
+        }
+    }
+
     public function sendToUserAccountCreatedMail(User $user): void
     {
         $this->user = $user;
         if ($user instanceof Admin) {
-            $email = (new TemplatedEmail())
-                ->from($this->from)
-                ->to($user->getEmail())
-                ->subject('New admin account created')
-                ->htmlTemplate('mails/security/create-admin-account.html.twig')
-                ->context([
-                    'user' => $user
-                ]);
+            $template = 'mails/security/create-admin-account.html.twig';
+            $subject = $this->translator->trans('emails.security.create-admin-account.subject');
         } else {
-            $email = (new TemplatedEmail())
-                ->from($this->from)
-                ->to($user->getEmail())
-                ->subject('New account created')
-                ->htmlTemplate('mails/security/create-client-account.html.twig')
-                ->context([
-                    'user' => $user
-                ]);
+            $template = 'mails/security/create-client-account.html.twig';
+            $subject = $this->translator->trans('emails.security.create-client-account.subject');
         }
 
-        $this->sendEmail($email);
-    }
-
-    public function sendToUserPasswordChangedMail(User $user): void
-    {
-        $this->user = $user;
         $email = (new TemplatedEmail())
             ->from($this->from)
             ->to($user->getEmail())
-            ->subject('Password changed')
-            ->htmlTemplate('mails/security/password-changed.html.twig')
+            ->subject($subject)
+            ->htmlTemplate($this->getTemplateFile($template))
             ->context([
                 'user' => $user
             ]);
+
         $this->sendEmail($email);
     }
+
+//    public function sendToUserPasswordChangedMail(User $user): void
+//    {
+//        $this->user = $user;
+//        $email = (new TemplatedEmail())
+//            ->from($this->from)
+//            ->to($user->getEmail())
+//            ->subject('Password changed')
+//            ->htmlTemplate($this->getTemplateFile('mails/security/password-changed.html.twig'))
+//            ->context([
+//                'user' => $user
+//            ]);
+//        $this->sendEmail($email);
+//    }
 
     public function sendToUserPasswordResetMail(User $user): void
     {
@@ -110,8 +126,8 @@ class UserEmailService
         $email = (new TemplatedEmail())
             ->from($this->from)
             ->to($user->getEmail())
-            ->subject('Password reset')
-            ->htmlTemplate('mails/security/password-reset.html.twig')
+            ->subject($this->translator->trans('emails.security.password_reset.subject'))
+            ->htmlTemplate($this->getTemplateFile('mails/security/password-reset.html.twig'))
             ->context([
                 'user' => $user
             ]);
