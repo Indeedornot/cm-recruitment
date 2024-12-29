@@ -131,9 +131,10 @@ class UserController extends BaseController
                         'form' => $form->createView(),
                     ]);
                 }
-
-                $clientApplication->setClient($client);
+            } else {
+                $client = $this->security->getUser();
             }
+            $clientApplication->setClient($client);
 
             $this->em->persist($clientApplication);
             $this->em->flush();
