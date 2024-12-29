@@ -116,7 +116,11 @@ class Question
         return array_map(function ($constraint) {
             $type = $constraint['class'];
             unset($constraint['class']);
-            return new $type($constraint);
+            if (array_key_exists('options', $constraint)) {
+                return new $type($constraint['options']);
+            } else {
+                return new $type();
+            }
         }, $this->constraints);
     }
 

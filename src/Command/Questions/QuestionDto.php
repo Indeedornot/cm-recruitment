@@ -78,15 +78,16 @@ class QuestionDto
         return $question;
     }
 
+    /** @param array{0: class-string, 1: mixed}[] $constraint */
     public static function serializeConstraint(Constraint|array $constraint): array
     {
-        if (is_array($constraint)) {
-            return array_map(fn($c) => self::serializeConstraint($c), $constraint);
-        } else {
-            return [
-                ...json_decode(json_encode($constraint), true),
-                'class' => get_class($constraint),
-            ];
-        }
+        return array_map(function ($constraint) {
+            $data = [];
+            $data['class'] = $constraint[0];
+            if (array_key_exists(1, $constraint)) {
+                $data['options'] = $constraint[1];
+            }
+            return $data;
+        }, $constraint);
     }
 }

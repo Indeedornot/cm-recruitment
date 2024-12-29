@@ -46,60 +46,60 @@ class SeedQuestionsCommand extends Command
             new QuestionDto(
                 'first_name',
                 'string',
-                [new Assert\Length(['min' => 2, 'max' => 100])],
+                [[Assert\Length::class, ['min' => 2, 'max' => 100]]],
                 true,
                 dependsOn: ['last_name']
             ),
             new QuestionDto(
                 'last_name',
                 'string',
-                [new Assert\Length(['min' => 2, 'max' => 100])],
+                [[Assert\Length::class, ['min' => 2, 'max' => 100]]],
                 true,
                 dependsOn: ['first_name']
             ),
             new QuestionDto(
                 'email',
                 'string',
-                [new Assert\Email()],
+                [[Assert\Email::class]],
                 true
             ),
             new QuestionDto(
                 'phone',
                 PhoneNumber::class,
-                [new PhoneNumber(['defaultRegion' => 'PL', 'type' => PhoneNumber::MOBILE])],
+                [[PhoneNumber::class, (['defaultRegion' => 'PL', 'type' => PhoneNumber::MOBILE])]],
             ),
             new QuestionDto(
                 'age',
                 'integer',
-                [new Assert\Range(['min' => 0, 'max' => 100])],
+                [[Assert\Range::class, (['min' => 0, 'max' => 100])]],
                 true
             ),
             new QuestionDto(
                 'pesel',
                 'string',
-                [new Assert\Length(['value' => 11])],
+                [[Assert\Length::class, (['value' => 11])]],
                 true
             ),
             new QuestionDto(
                 'city',
                 'string',
-                [new Assert\Length(['min' => 2, 'max' => 100])],
+                [[Assert\Length::class, (['min' => 2, 'max' => 100])]],
             ),
             new QuestionDto(
                 'street',
                 'string',
-                [new Assert\Length(['min' => 1, 'max' => 100]), new Assert\IsNull()],
+                [[Assert\Length::class, (['min' => 1, 'max' => 100])], [Assert\IsNull::class]],
             ),
             new QuestionDto(
                 'house_no',
                 'string',
-                [new Assert\Length(['min' => 1, 'max' => 6])],
+                [[Assert\Length::class, (['min' => 1, 'max' => 6])]],
                 dependsOn: ['street', 'city']
             ),
             new QuestionDto(
                 'postal_code',
                 'string',
-                [new Assert\Regex('/^\d{2}-\d{3}$/')],
+                [[Assert\Regex::class, '/^\d{2}-\d{3}$/']],
                 dependsOn: ['city']
             ),
         ];
