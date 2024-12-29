@@ -4,6 +4,7 @@ namespace App\Security\Repository;
 
 use App\Security\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\LockMode;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -50,6 +51,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->where('u.disabledAt IS NULL')
             ->getQuery()
             ->getResult();
+    }
+
+    /** @return T|null */
+    public function find(mixed $id, LockMode|int|null $lockMode = null, int|null $lockVersion = null): User|null
+    {
+        return parent::find($id, $lockMode, $lockVersion);
     }
 
     //    /**
