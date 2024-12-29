@@ -12,18 +12,23 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\{ButtonType,
     EmailType,
+    HiddenType,
     PasswordType,
     RepeatedType,
     SubmitType,
     TextType
 };
 use Symfony\Component\Form\Button;
+use Symfony\Component\Form\Event\PostSubmitEvent;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\Form\SubmitButtonTypeInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserType extends AbstractType
 {
@@ -31,7 +36,8 @@ class UserType extends AbstractType
 
     public function __construct(
         private ExtendedSecurity $security,
-        private UserFactory $userFactory
+        private UserFactory $userFactory,
+        private TranslatorInterface $translator
     ) {
     }
 
@@ -44,13 +50,17 @@ class UserType extends AbstractType
             [UserFormMode::EDIT, UserFormMode::PASSWORD_CHANGE]
         ) ? $this->getDisabledOptions() : [];
         $builder
-            ->add('email', EmailType::class)
-            ->add('name', TextType::class);
+            ->add('email', EmailType::class, [
+                'label' => 'security.form.email'
+            ])
+            ->add('name', TextType::class, [
+                'label' => 'security.form.name',
+            ]);
 
-        $isCurrentUser = $builder->getData() instanceof User
+        $isCurrentUser = $builder->getData() instanceof User && $this->security->isLoggedIn()
             && $builder->getData()->getId() === $this->security->getUser()->getId();
 
-        if ($isCurrentUser) {
+        if ($isCurrentUser || $mode === UserFormMode::CREATE) {
             if (in_array($mode, [UserFormMode::PASSWORD_CHANGE, UserFormMode::EDIT])) {
                 $this->getCurrentPasswordField($builder, $mode);
             }
@@ -65,13 +75,21 @@ class UserType extends AbstractType
             }
         } else {
             $builder->add('resetPassword', SubmitType::class, [
-                'label' => '
-                    <i class="fas fa-key"></i>
-                    Reset password
-                ',
+                'label' => 'security.form.reset_password.submit',
                 'label_html' => true,
             ]);
         }
+
+        $builder->add('mode', HiddenType::class, [
+            'data' => $mode->name,
+            'mapped' => false
+        ]);
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (PostSubmitEvent $e) use ($builder, $mode) {
+            if ($e->getForm()->get('resetPassword')->isClicked()) {
+                $this->userFactory->resetPassword($this->getUser($builder));
+            }
+        });
     }
 
     private function getDisabledOptions(): array
@@ -85,14 +103,22 @@ class UserType extends AbstractType
     public function getCurrentPasswordField(FormBuilderInterface $builder, UserFormMode $mode): void
     {
         $builder->add('currentPassword', PasswordType::class, [
+            'label' => 'security.form.current_password',
             'mapped' => false,
             'constraints' => [
                 new Assert\NotBlank(),
                 new Assert\Callback(function (mixed $value, ExecutionContextInterface $context) use ($builder) {
                     $user = $this->getUser($builder);
                     if (!$this->userFactory->checkPassword($user, $value)) {
-                        $context->buildViolation('Invalid old password')
+                        $context->buildViolation($this->translator->trans('security.form.error.invalid_old_password'))
                             ->atPath('currentPassword')
+                            ->addViolation();
+                    }
+
+                    $newPassword = $context->getRoot()->get('plainPassword')->getData();
+                    if ($newPassword && $this->userFactory->checkPassword($user, $newPassword)) {
+                        $context->buildViolation($this->translator->trans('security.form.error.same_password'))
+                            ->atPath('plainPassword')
                             ->addViolation();
                     }
                 })
@@ -115,13 +141,13 @@ class UserType extends AbstractType
         $builder->add('plainPassword', RepeatedType::class, [
             'type' => PasswordType::class,
             'first_options' => [
-                'label' => 'Password',
+                'label' => 'security.form.password',
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Length(['min' => $this->minPasswordLength])
                 ],
             ],
-            'second_options' => ['label' => 'Confirm Password']
+            'second_options' => ['label' => 'security.form.password_confirmation'],
         ]);
     }
 

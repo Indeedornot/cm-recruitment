@@ -9,7 +9,7 @@ use Twig\TwigFunction;
 
 class SecurityExtension extends AbstractExtension
 {
-    public function __construct(private Security $security)
+    public function __construct(private ExtendedSecurity $security)
     {
     }
 
@@ -20,6 +20,7 @@ class SecurityExtension extends AbstractExtension
             new TwigFunction('is_client', [$this, 'isClient']),
             new TwigFunction('is_loggedin', [$this, 'isLoggedIn']),
             new TwigFunction('is_super_admin', [$this, 'isSuperAdmin']),
+            new TwigFunction('encode_value', [$this, 'encodeValue']),
         ];
     }
 
@@ -41,5 +42,10 @@ class SecurityExtension extends AbstractExtension
     public function isLoggedIn(): bool
     {
         return !empty($this->security->getUser());
+    }
+
+    public function encodeValue(string|int $value): string
+    {
+        return $this->security->encodeValue((string)$value);
     }
 }

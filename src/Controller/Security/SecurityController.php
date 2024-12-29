@@ -6,6 +6,7 @@ use App\Controller\Base\BaseController;
 use App\Security\Entity\User;
 use App\Security\Entity\UserRoles;
 use App\Security\Factory\UserFactory;
+use App\Security\Form\ForgotPasswordType;
 use App\Security\Form\UserFormMode;
 use App\Security\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -59,6 +60,38 @@ class SecurityController extends BaseController
         }
 
         return $this->render('security/login/reset-password.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[IsGranted(UserRoles::BASE_USER->value)]
+    #[Route(path: '/edit-account', name: 'app_edit_account')]
+    public function editAccount(Request $request): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $form = $this->createForm(UserType::class, $user, ['mode' => UserFormMode::EDIT]);
+
+        if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
+            $this->em->flush();
+            return $this->redirectToRoute('app_index_index');
+        }
+
+        return $this->render('security/login/edit-account.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route(path: '/forgot-password', name: 'app_forgot_password')]
+    public function forgotPassword(Request $request): Response
+    {
+        $form = $this->createForm(ForgotPasswordType::class);
+        if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
+            $this->addFlash('success', 'security.form.forgot_password.success');
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('security/login/forgot-password.html.twig', [
             'form' => $form->createView(),
         ]);
     }

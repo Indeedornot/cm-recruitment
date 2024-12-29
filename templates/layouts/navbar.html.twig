@@ -2,7 +2,7 @@
     class="navbar navbar-expand-lg navbar-light bg-light"
 >
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Symfony</a>
+        <a class="navbar-brand" href="#">{{ 'global.brand'|trans }}</a>
 
         <div class="collapse navbar-collapse border-top border-md-0" id="navbarTogglerDemo02">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -25,7 +25,7 @@
                     <li class="nav-item dropdown">
                         <button class="dropdown-toggle h-100 nav-link" type="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
-                            Use Test Account
+                            {{ 'test.use_test_account'|trans }}
                         </button>
                         <ul class="dropdown-menu">
                             <li>
@@ -60,7 +60,9 @@
         <div class="d-flex align-items-center gap-2 ms-auto ms-md-auto">
             <div>
                 {% if app.user %}
-                    Logged in as: <b>{{ app.user.name }}</b>
+                    {{ 'security.logged_in_as'|trans }}
+                    <a href="{{ url('app_edit_account') }}"
+                       class="text-decoration-none text-black"><b>{{ app.user.name }}</b></a>
                 {% endif %}
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"

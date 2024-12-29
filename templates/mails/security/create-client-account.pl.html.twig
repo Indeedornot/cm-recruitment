@@ -1,0 +1,52 @@
+{% extends 'mails/base.html.twig' %}
+{# @var user App\Security\Entity\User #}
+
+{% block header %}
+    <h1>
+        Nowe konto zostało utworzone dla Ciebie
+    </h1>
+{% endblock %}
+
+{% block body %}
+    <h2>
+        Twoje dane konta są następujące:
+    </h2>
+
+    <div>
+        <div>
+            <ul>
+                <li>
+                    Nazwa: {{ user.name }}
+                </li>
+                <li>
+                    Email: {{ user.email }}
+                </li>
+                {% if user.plainPassword is defined and user.isPasswordChangeRequired %}
+                    <li>
+                        Hasło: {{ user.plainPassword }}
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <div>
+        <hr>
+        {% set confirmationUrl = url('app_registration_confirm', { id: encode_value(user.id) }) %}
+        Użyj tego linku by aktywować swoje konto: <a href="{{ confirmationUrl }}">{{ confirmationUrl }}</a>
+    </div>
+    <br/>
+
+    {% if user.plainPassword is defined and user.isPasswordChangeRequired %}
+        <div>
+            Po pierwszym zalogowaniu zostaniesz poproszony o zmianę hasła.
+        </div>
+        <br/>
+    {% endif %}
+
+    <div>
+        Dziękujemy.
+    </div>
+
+{% endblock %}
+
