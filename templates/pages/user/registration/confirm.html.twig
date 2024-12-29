@@ -1,0 +1,27 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block body %}
+    {# Show info that user's account has been successfuly created and can proceed further #}
+    <div class="container py-4">
+        <div class="card shadow-sm">
+            <div class="card-header border-0 py-3">
+                <h1 class="fs-4 mb-0">
+                    {{ 'security.register_confirmed.header'|trans|raw }}
+                </h1>
+            </div>
+
+            <div class="card-body pt-2">
+                <p>{{ 'security.register_confirmed.text'|trans }}</p>
+            </div>
+            <div class="card-footer">
+                <div class="text-center">
+                    <a href="{{ path('app_login') }}" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        {{ 'security.register_confirmed.login'|trans }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
