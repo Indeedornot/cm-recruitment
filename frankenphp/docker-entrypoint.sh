@@ -27,6 +27,13 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 	fi
 
 	if grep -q ^DATABASE_URL= .env; then
+		echo "Checking if database exists..."
+        DATABASE_EXISTS=$(php bin/console dbal:run-sql -q "SELECT 1 FROM information_schema.schemata WHERE schema_name = 'your_database_name'" 2>&1)
+        if [ $? -ne 0 ]; then
+        	echo "Database does not exist. Creating database..."
+        	php bin/console doctrine:database:create --if-not-exists
+        fi
+
 		echo "Waiting for database to be ready..."
 		ATTEMPTS_LEFT_TO_REACH_DATABASE=60
 		until [ $ATTEMPTS_LEFT_TO_REACH_DATABASE -eq 0 ] || DATABASE_ERROR=$(php bin/console dbal:run-sql -q "SELECT 1" 2>&1); do
@@ -48,9 +55,11 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 			echo "The database is now ready and reachable"
 		fi
 
-		if [ "$( find ./migrations -iname '*.php' -print -quit )" ]; then
-			php bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing
-		fi
+#		TODO:
+#		if [ "$( find ./migrations -iname '*.php' -print -quit )" ]; then
+#			php bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing
+#		fi
+		composer run migrate
 	fi
 
 	setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
