@@ -74,7 +74,7 @@ class UserController extends BaseController
     public function posting(Request $request, int $id): Response
     {
         $posting = $this->postingRepository->find($id);
-        if (!$posting) {
+        if (!$posting || $posting->isClosed()) {
             throw $this->createNotFoundException();
         }
         return $this->render('pages/user/posting.html.twig', [
@@ -86,7 +86,7 @@ class UserController extends BaseController
     public function postingApply(Request $request, int $id): Response
     {
         $posting = $this->postingRepository->find($id);
-        if (!$posting) {
+        if (!$posting || $posting->isClosed()) {
             throw $this->createNotFoundException();
         }
 
@@ -160,6 +160,10 @@ class UserController extends BaseController
             throw $this->createNotFoundException();
         }
 
+        if ($application->getClient()->getId() !== $this->security->getUser()?->getId()) {
+            throw $this->createAccessDeniedException();
+        }
+
         return $this->render('pages/user/application/show.html.twig', [
             'posting' => $posting,
             'application' => $application,
@@ -172,7 +176,7 @@ class UserController extends BaseController
         int $id
     ): Response {
         $posting = $this->postingRepository->find($id);
-        if (!$posting) {
+        if (!$posting || $posting->isClosed()) {
             throw $this->createNotFoundException();
         }
 
