@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\ClientApplication;
 use App\Entity\QuestionnaireAnswer;
+use App\Repository\QuestionnaireAnswerRepository;
 use LogicException;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
@@ -18,6 +19,7 @@ class ClientApplicationType extends AbstractType
 {
     public function __construct(
         private Security $security,
+        private QuestionnaireAnswerRepository $answerRepository
     ) {
     }
 
@@ -25,8 +27,9 @@ class ClientApplicationType extends AbstractType
     {
         $application = $builder->getData();
         $posting = $application->getPosting();
+        $questions = $posting->getQuestionnaire()->getQuestions();
 
-        foreach ($posting->getQuestionnaire()->getQuestions() as $question) {
+        foreach ($questions as $question) {
             $builder->add('answer_' . $question->getId(), TextType::class, [
                 'label' => $question->getLabel(),
                 'required' => !$question->getIsNullable(),
@@ -35,7 +38,27 @@ class ClientApplicationType extends AbstractType
             ]);
         }
 
+        if (!$application instanceof ClientApplication) {
+            throw new LogicException('ClientApplicationType can only be used with ClientApplication objects');
+        }
+
+        $answers = $application->getAnswers();
+        if (!$answers->isEmpty()) {
+            foreach ($application->getAnswers() as $answer) {
+                $builder->get('answer_' . $answer->getQuestion()->getId())->setData($answer->getAnswer());
+            }
+        } else {
+            $previousAnswers = $this->answerRepository->getPreviousAnswers(
+                $questions->map(fn($question) => $question->getId())->toArray(),
+                $this->security->getUser()->getId()
+            );
+            foreach ($previousAnswers as $previousAnswer) {
+                $builder->get('answer_' . $previousAnswer->getQuestion()->getId())->setData($previousAnswer->getAnswer());
+            }
+        }
+
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+            /** @var ClientApplication $application */
             $application = $event->getData();
             $form = $event->getForm();
 
@@ -43,7 +66,16 @@ class ClientApplicationType extends AbstractType
                 $answer = new QuestionnaireAnswer();
                 $answer->setQuestion($question);
                 $answer->setAnswer($form->get('answer_' . $question->getId())->getData());
-                $application->addAnswer($answer);
+                $previousAnswer = $this->answerRepository->findOneBy([
+                    'question' => $question,
+                    'application' => $application,
+                ]);
+
+                if ($previousAnswer) {
+                    $previousAnswer->setAnswer($answer->getAnswer());
+                } else {
+                    $application->addAnswer($answer);
+                }
             }
         });
     }
