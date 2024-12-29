@@ -5,8 +5,10 @@ namespace App\Controller\Admin;
 use App\Controller\Base\BaseController;
 use App\Controller\Base\ErrorHandlerType;
 use App\Entity\Posting;
+use App\Form\ClientApplicationType;
 use App\Form\PostingDisplayType;
 use App\Form\PostingType;
+use App\Repository\ClientApplicationRepository;
 use App\Repository\PostingRepository;
 use App\Security\Entity\Client;
 use App\Security\Entity\UserRoles;
@@ -30,7 +32,8 @@ class PostingController extends BaseController
         private PostingRepository $postingRepository,
         private EntityManagerInterface $em,
         private readonly ExtendedSecurity $extendedSecurity,
-        private readonly PaginationService $pagination
+        private readonly PaginationService $pagination,
+        private readonly ClientApplicationRepository $applicationRepository
     ) {
     }
 
@@ -113,6 +116,34 @@ class PostingController extends BaseController
             'postings' => $postings,
             ...$pagination,
             'total' => $totalItems,
+        ]);
+    }
+
+    #[Route('/{id}/application/{applicationId}', name: 'application', requirements: [
+        'id' => '\d+',
+        'applicationId' => '\d+'
+    ])]
+    public function showApplication(
+        Request $request,
+        int $id,
+        int $applicationId
+    ): Response {
+        $application = $this->applicationRepository->find($applicationId);
+        $form = $this->createForm(ClientApplicationType::class, $application);
+        if (!$application || $application->getPosting()->getId() !== $id) {
+            throw $this->createNotFoundException();
+        }
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->manager->flush();
+            $this->addFlash('success', 'common.success');
+        }
+
+        return $this->render('pages/admin/posting/application.html.twig', [
+            'application' => $application,
+            'form' => $form->createView(),
+            'posting' => $application->getPosting(),
         ]);
     }
 }

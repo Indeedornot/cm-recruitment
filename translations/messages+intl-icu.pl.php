@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'global' => [
+        'brand' => 'CM Jordan'
+    ],
     'admin' => [
         'accounts' => [
             'form' => [
@@ -55,18 +58,22 @@ return [
                         </ul>
                         </span>
                     ',
+                ],
+                'disable' => [
+                    'success' => 'Konto zostało wyłączone.',
+                    'already_disabled' => 'To konto jest już wyłączone.',
                 ]
             ]
         ],
         'dashboard' => [
             'header' => 'Panel administratora',
             'items' => [
-                'create_admin' => 'Create new Admin user here',
-                'admin' => 'Manage all Admin users here',
-                'client' => 'Manage all Client users here',
+                'create_admin' => 'Stwórz nowego administratora',
+                'admin' => 'Zarządzaj wszystkimi administratorami',
+                'client' => 'Zarządzaj wszystkimi użytkownikami',
                 'posting' => [
-                    'super_admin' => 'Manage all Postings here',
-                    'admin' => 'Manage your Postings here',
+                    'super_admin' => 'Zarządzaj wszystkimi zajęciami',
+                    'admin' => 'Zarządzaj swoimi zajęciami',
                 ],
                 'questionaire' => 'Manage questionaire'
             ]
@@ -122,18 +129,28 @@ return [
             ],
             'help' => 'W przypadku pytań lub zmiany danych prosimy o kontakt z
                 <a href="mailto:{email}">{email}</a>',
+            'questionnaire' => [
+                'header' => 'Formularz zgłoszeniowy',
+            ]
         ],
         'posting_list' => [
             'filter' => [
                 'assigned_to' => 'Prowadzący',
                 'title' => 'Tytuł',
-            ]
+            ],
+            'no_postings_found' => 'Nie znaleziono żadnych zajęć spełniających kryteria wyszukiwania.',
         ]
     ],
     'security' => [
         'logout' => 'Wyloguj się',
         'login' => 'Zaloguj się',
         'register' => 'Zarejestruj się',
+        'register_success' => '<p class="text-center">Konto zostało utworzone. <br> Sprawdź swoją skrzynkę email, aby dokończyć rejestrację.</p>',
+        'register_confirmed' => [
+            'header' => 'Konto zostało aktywowane',
+            'text' => 'Możesz teraz zalogować się na swoje konto i korzystać ze wszystkich funkcji.',
+            'login' => 'Zaloguj się'
+        ],
         'form' => [
             'login' => [
                 'header' => 'Zaloguj się',
@@ -144,18 +161,42 @@ return [
                 'header' => 'Zarejestruj się',
                 'submit' => 'Zarejestruj się',
             ],
+            'edit' => [
+                'header' => 'Edytuj konto',
+            ],
             'error' => [
                 'already_logged_in' => 'Jesteś już zalogowany jako {name}.',
+                'invalid_old_password' => 'Aktualne hasło jest nieprawidłowe.',
+                'same_password' => 'Nowe hasło nie może być takie samo jak aktualne.'
+            ],
+            'success' => [
+                'register' => 'Konto zostało utworzone. Sprawdź swoją skrzynkę email, aby dokończyć rejestrację.',
+                'create_admin' => 'Konto administratora zostało utworzone. Na skrzynkę email użytkownika został wysłany link, aby dokończyć rejestrację.',
             ],
             'reset_password' => [
                 'header' => 'Zresetuj hasło',
-                'submit' => 'Zresetuj hasło',
+                'submit' => '
+                    <i class="fas fa-key"></i>
+                    Reset password
+                    ',
             ],
             'email' => 'Adres email',
+            'name' => 'Imię i nazwisko',
+            'current_password' => 'Aktualne hasło',
             'password' => 'Hasło',
             'password_confirmation' => 'Powtórz hasło',
+            'forgot_password' => [
+                'link' => 'Zapomniałeś hasła?',
+                'header' => 'Zapomniałeś hasła?',
+                'text' => 'Podaj adres email, na który zostanie wysłany link do zresetowania hasła.',
+                'submit' => '
+                <i class="fas fa-key"></i>
+                Wyślij link do resetowania hasła',
+                'success' => 'Jeśli podany adres email istnieje w naszej bazie, na niego zostanie wysłany link do zresetowania hasła.'
+            ]
         ],
         'disabled_account' => 'Twoje konto zostało wyłączone. Skontaktuj się z administratorem serwisu w celu uzyskania pomocy.',
+        'logged_in_as' => 'Zalogowany jako:',
     ],
     'components' => [
         'posting' => [
@@ -192,6 +233,7 @@ return [
                 'assigned_to' => 'Prowadzący',
                 'questionnaire' => 'Zestaw pytań',
                 'success' => 'Zajęcia zostały zapisane',
+                'closing_date' => 'Data zakończenia rekrutacji',
             ]
         ],
         'user' => [
@@ -259,6 +301,7 @@ return [
     'emails' => [
         'security' => [
             'password_reset' => [
+                'subject' => 'Odzyskiwanie hasła',
                 'header' => '<h1>Odzyskiwanie hasła</h1>',
                 'text' => '
                     Otrzymujesz tę wiadomość, ponieważ otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta.
@@ -273,8 +316,17 @@ return [
 
                     <br><br>
                     &bull; Jeśli nie prosiłeś o zmianę hasła, skontaktuj się z administratorem serwisu.',
-            ]
+            ],
+            'create-admin-account' => [
+                'subject' => 'Nowe konto administratora',
+            ],
+            'create-client-account' => [
+                'subject' => 'Nowe konto użytkownika',
+            ],
         ],
         'noreply' => '<b>Ta wiadomość została wysłana automatycznie. Prosimy na nią nie odpowiadać.</b>',
+    ],
+    'test' => [
+        'use_test_account' => 'Użyj testowego konta',
     ]
 ];

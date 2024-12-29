@@ -1,0 +1,75 @@
+{% extends 'layouts/base.html.twig' %}
+{% form_theme form 'common/forms/bundle.html.twig' %}
+
+{% block body %}
+    <div class="container container-y">
+        {% for type, alerts in app.flashes %}
+            {% for message in alerts %}
+                <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+                    {{ message|trans|raw }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">{{ 'user.application.title'|trans({application_id: application.id, posting_title: application.posting.title}) }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        {{ 'user.application.details.header'|trans }}
+                    </div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-4">{{ 'user.application.details.posting'|trans }}</dt>
+                            <dd class="col-sm-8">{{ application.posting.title }}</dd>
+                            <dt class="col-sm-4">{{ 'user.application.details.date_applied'|trans }}</dt>
+                            <dd class="col-sm-8">{{ application.createdAt|date('Y-m-d H:i') }}</dd>
+                            <dt class="col-sm-4">{{ 'user.application.details.managed_by'|trans }}</dt>
+                            <dd class="col-sm-8">{{ application.posting.assignedTo.name }}</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                {% set answersBody %}
+                    {{ form_start(form) }}
+                    <dl class="row mb-0">
+                        {% set answers = form.children|filter(field => field.vars.name starts with 'answer_') %}
+                        {% for field in answers %}
+                            <div class="mb-3">
+                                {{ form_row(field) }}
+                            </div>
+                        {% endfor %}
+                    </dl>
+                    <div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-user"></i>
+                            {{ 'common.save'|trans }}
+                        </button>
+                    </div>
+                    {{ form_end(form) }}
+                {% endset %}
+                {% embed 'common/accordion.html.twig' %}
+                    {% embed 'common/accordion-item.html.twig' %}
+                        {% block buttonText %}
+                            <b>{{ 'user.application.questionnaire.header'|trans }}</b>
+                        {% endblock %}
+                        {% block body %}
+                            {#                                {% for answer in application.answers %} #}
+                            {#                                    <dt class="col-sm-4">{{ answer.question.label|trans }}</dt> #}
+                            {#                                    <dd class="col-sm-8">{{ answer.answer }}</dd> #}
+                            {#                                {% endfor %} #}
+                            {{ answersBody|raw }}
+                        {% endblock %}
+                    {% endembed %}
+                {% endembed %}
+            </div>
+            <div class="card-footer">
+                {{ 'user.application.help'|trans({'email': application.posting.assignedTo.email })|raw }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
