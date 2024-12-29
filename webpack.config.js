@@ -6,7 +6,7 @@ const path = require('path');
 const envFiles = [
   `.env`,
   `.env.local`,
-  `.env.${process.env.APP_ENV}.dist`,
+  `.env.${process.env.APP_ENV}`,
   `.env.${process.env.APP_ENV}.local`,
 ]
 const envFile = envFiles.map((file) => {
