@@ -47,7 +47,7 @@ class ClientApplicationType extends AbstractType
             foreach ($application->getAnswers() as $answer) {
                 $builder->get('answer_' . $answer->getQuestion()->getId())->setData($answer->getAnswer());
             }
-        } else {
+        } elseif ($this->security->isLoggedIn()) {
             $previousAnswers = $this->answerRepository->getPreviousAnswers(
                 $questions->map(fn($question) => $question->getId())->toArray(),
                 $this->security->getUser()->getId()
