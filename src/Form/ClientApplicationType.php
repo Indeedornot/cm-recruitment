@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\ClientApplication;
 use App\Entity\QuestionnaireAnswer;
 use App\Repository\QuestionnaireAnswerRepository;
+use App\Security\Services\ExtendedSecurity;
 use LogicException;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
@@ -18,7 +19,7 @@ use Symfony\Component\Form\FormEvents;
 class ClientApplicationType extends AbstractType
 {
     public function __construct(
-        private Security $security,
+        private ExtendedSecurity $security,
         private QuestionnaireAnswerRepository $answerRepository
     ) {
     }
