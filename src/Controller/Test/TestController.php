@@ -45,6 +45,10 @@ class TestController extends BaseController
         }
 
         $user = $this->getTestAccount($class, $type);
+
+        if ($this->security->isLoggedIn()) {
+            $this->security->logout(false);
+        }
         $this->security->login($user);
 
         return $this->redirectToRoute('app_index_index');
