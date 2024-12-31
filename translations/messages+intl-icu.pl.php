@@ -267,6 +267,7 @@ return [
             'street' => 'Ulica',
             'house_no' => 'Numer domu',
             'postal_code' => 'Kod pocztowy',
+            'address' => 'Adres',
         ]
     ],
     'errors' => [

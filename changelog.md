@@ -12,3 +12,5 @@ Changelog
 - Unable to change to a test account when already logged in (now switches correctly)
 
 ### Other:
+
+- Move address questions to one question

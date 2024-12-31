@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Command\Questions;
+namespace App\Migration\Dto;
 
-use App\Entity\Question;
 use Symfony\Component\Validator\Constraint;
 
 class QuestionDto
@@ -63,21 +62,6 @@ class QuestionDto
         return $this->dependsOn;
     }
 
-    public function fillQuestion(Question $question): Question
-    {
-        $question->setQuestionKey($this->questionKey);
-        $question->setExpectedType($this->expectedType);
-        $question->setDefaultValue($this->defaultValue);
-        $question->setIsNullable($this->isNullable);
-        $question->setLabel($this->label);
-        $question->setConstraints(self::serializeConstraint($this->constraints));
-        $question->setForceSet($this->forceSet);
-        $question->setDependsOn($this->dependsOn);
-        $question->setSortOrder($this->sortOrder);
-
-        return $question;
-    }
-
     /** @param array{0: class-string, 1: mixed}[] $constraint */
     public static function serializeConstraint(Constraint|array $constraint): array
     {
@@ -89,5 +73,16 @@ class QuestionDto
             }
             return $data;
         }, $constraint);
+    }
+
+    public function getSortOrder(): int
+    {
+        return $this->sortOrder;
+    }
+
+    public function setSortOrder(int $sortOrder): self
+    {
+        $this->sortOrder = $sortOrder;
+        return $this;
     }
 }

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
+use App\Contract\PhoneNumber\Validator\PhoneNumber;
+use App\Migration\Dto\QuestionDto;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
@@ -43,6 +46,88 @@ final class Version20241231175007 extends AbstractMigration
         $this->addSql('ALTER TABLE questionnaire_question ADD CONSTRAINT FK_28CC40C31E27F6BF FOREIGN KEY (question_id) REFERENCES question (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE questionnaire_answer ADD CONSTRAINT FK_437B451C3E030ACD FOREIGN KEY (application_id) REFERENCES client_application (id)');
         $this->addSql('ALTER TABLE questionnaire_answer ADD CONSTRAINT FK_437B451C1E27F6BF FOREIGN KEY (question_id) REFERENCES question (id)');
+
+        /* @var QuestionDto[] $questions */
+        $questions = [
+            new QuestionDto(
+                'first_name',
+                'string',
+                [[Assert\Length::class, ['min' => 2, 'max' => 100]]],
+                true,
+                dependsOn: ['last_name']
+            ),
+            new QuestionDto(
+                'last_name',
+                'string',
+                [[Assert\Length::class, ['min' => 2, 'max' => 100]]],
+                true,
+                dependsOn: ['first_name']
+            ),
+            new QuestionDto(
+                'email',
+                'string',
+                [[Assert\Email::class]],
+                true
+            ),
+            new QuestionDto(
+                'phone',
+                PhoneNumber::class,
+                [[PhoneNumber::class, (['defaultRegion' => 'PL', 'type' => PhoneNumber::MOBILE])]],
+            ),
+            new QuestionDto(
+                'age',
+                'integer',
+                [[Assert\Range::class, (['min' => 0, 'max' => 100])]],
+                true
+            ),
+            new QuestionDto(
+                'pesel',
+                'string',
+                [[Assert\Length::class, (['value' => 11])]],
+                true
+            ),
+            new QuestionDto(
+                'city',
+                'string',
+                [[Assert\Length::class, (['min' => 2, 'max' => 100])]],
+            ),
+            new QuestionDto(
+                'street',
+                'string',
+                [[Assert\Length::class, (['min' => 1, 'max' => 100])], [Assert\IsNull::class]],
+            ),
+            new QuestionDto(
+                'house_no',
+                'string',
+                [[Assert\Length::class, (['min' => 1, 'max' => 6])]],
+                dependsOn: ['street', 'city']
+            ),
+            new QuestionDto(
+                'postal_code',
+                'string',
+                [[Assert\Regex::class, '/^\d{2}-\d{3}$/']],
+                dependsOn: ['city']
+            ),
+        ];
+
+        foreach ($questions as $question) {
+            $this->addSql(
+                <<<SQL
+                INSERT INTO question (question_key, expected_type, constraints, is_nullable, label, force_set, depends_on, sort_order, created_at)
+                VALUES (:question_key, :expected_type, :constraints, :is_nullable, :label, :force_set, :depends_on, :sort_order, NOW())
+                SQL,
+                [
+                    'question_key' => $question->getQuestionKey(),
+                    'expected_type' => $question->getExpectedType(),
+                    'constraints' => json_encode($question->getConstraints()),
+                    'is_nullable' => (int)$question->isNullable(),
+                    'label' => $question->getLabel(),
+                    'force_set' => (int)$question->isForceSet(),
+                    'depends_on' => json_encode($question->getDependsOn()),
+                    'sort_order' => $question->getSortOrder(),
+                ]
+            );
+        }
     }
 
     public function down(Schema $schema): void
