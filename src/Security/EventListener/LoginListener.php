@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\NullToken;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 
 #[AsEventListener(event: KernelEvents::REQUEST, method: 'onKernelRequest')]
 class LoginListener
@@ -18,7 +20,8 @@ class LoginListener
 
     function __construct(
         private readonly ExtendedSecurity $security,
-        private readonly UrlGeneratorInterface $urlGenerator
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly AccessDecisionManagerInterface $router
     ) {
     }
 
@@ -30,6 +33,10 @@ class LoginListener
         }
 
         if (!$this->security->isLoggedIn()) {
+            return;
+        }
+
+        if ($this->router->decide(new NullToken(), ['PUBLIC_ACCESS'], $event->getRequest())) {
             return;
         }
 
