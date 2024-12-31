@@ -31,7 +31,9 @@ class PostingType extends AbstractType
                 'label' => 'components.posting.form.title'
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'components.posting.form.description'
+                'label' => 'components.posting.form.description',
+                'required' => false,
+                'empty_data' => ''
             ])
             ->add('assignedTo', ChoiceType::class, [
                 'choices' => $this->userRepository->findAdminsAll(),

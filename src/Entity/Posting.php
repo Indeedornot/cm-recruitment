@@ -13,8 +13,10 @@ use App\Security\Entity\UserRoles;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_TITLE', fields: ['title'])]
 #[UniqueEntity(fields: ['title'], message: 'A posting with that title already exists')]
@@ -30,8 +32,9 @@ class Posting
     #[ORM\Column]
     private string $title;
 
-    #[ORM\Column]
-    private string $description;
+    #[ORM\Column(type: Types::STRING, nullable: false, options: ['default' => ''])]
+    #[Assert\NotNull]
+    private string $description = '';
     #[ORM\OneToMany(targetEntity: ClientApplication::class, mappedBy: 'posting')]
     private Collection $applications;
     #[ORM\ManyToOne(targetEntity: Admin::class)]
