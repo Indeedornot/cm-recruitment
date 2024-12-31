@@ -229,7 +229,7 @@ return [
             ],
             'form' => [
                 'title' => 'Tytuł',
-                'description' => 'Opis',
+                'description' => 'Dodatkowe informacje',
                 'assigned_to' => 'Prowadzący',
                 'questionnaire' => 'Zestaw pytań',
                 'success' => 'Zajęcia zostały zapisane',
