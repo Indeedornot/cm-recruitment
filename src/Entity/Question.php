@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\Disableable;
 use App\Entity\Trait\Identified;
 use App\Entity\Trait\Timestampable;
 use App\Repository\QuestionRepository;
@@ -17,6 +18,7 @@ class Question
 {
     use Timestampable;
     use Identified;
+    use Disableable;
 
     #[ORM\Column(type: "string", length: 255)]
     private string $questionKey;

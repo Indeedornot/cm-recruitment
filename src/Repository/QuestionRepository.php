@@ -19,6 +19,7 @@ class QuestionRepository extends ServiceEntityRepository
     public function findAll(): array
     {
         return $this->createQueryBuilder('q')
+            ->where('q.disabledAt IS NULL')
             ->orderBy('q.sortOrder', 'DESC')
             ->getQuery()
             ->getResult();
