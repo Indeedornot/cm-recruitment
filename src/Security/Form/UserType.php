@@ -86,7 +86,7 @@ class UserType extends AbstractType
         ]);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (PostSubmitEvent $e) use ($builder, $mode) {
-            if ($e->getForm()->get('resetPassword')->isClicked()) {
+            if ($e->getForm()->has('resetPassword') && $e->getForm()->get('resetPassword')->isClicked()) {
                 $this->userFactory->resetPassword($this->getUser($builder));
             }
         });
