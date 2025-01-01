@@ -90,7 +90,7 @@ class PostingType extends AbstractType
         /** @var ?Posting $data */
         $data = $builder->getData();
         foreach ($this->copyTextRepository->findAll() as $copyText) {
-            $text = $data->getCopyText($copyText->getKey());
+            $text = $data?->getCopyText($copyText->getKey());
             $builder->add('copy_' . $copyText->getKey(), $copyText->getFormType(), array_merge([
                 'label' => $copyText->getLabel(),
                 'required' => $copyText->isRequired(),

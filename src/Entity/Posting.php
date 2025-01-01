@@ -17,6 +17,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Polyfill\Intl\Icu\Exception\NotImplementedException;
 
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_TITLE', fields: ['title'])]
 #[UniqueEntity(fields: ['title'], message: 'A posting with that title already exists')]
@@ -45,6 +47,9 @@ class Posting
 
     #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $closingDate;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?DateTimeImmutable $completedAt = null;
 
     #[ORM\OneToMany(targetEntity: PostingText::class, mappedBy: 'posting', cascade: [
         'persist',
@@ -159,11 +164,31 @@ class Posting
 
     public function removeCopyText(PostingText $copyText): self
     {
-        if ($this->copyTexts->removeElement($copyText)) {
-            if ($copyText->getPosting() === $this) {
-                $copyText->setPosting(null);
-            }
-        }
+        throw new NotImplementedException('No CopyText removal implemented');
+    }
+
+    public function getCompletedAt(): ?DateTimeImmutable
+    {
+        return $this->completedAt;
+    }
+
+    public function setCompletedAt(?DateTimeImmutable $completedAt): self
+    {
+        $this->completedAt = $completedAt;
         return $this;
+    }
+
+    #[Assert\Callback]
+    public function validate(ExecutionContextInterface $context): void
+    {
+        if ($this->completedAt !== null && $this->disabledAt !== null) {
+            $context->buildViolation('components.posting.cannot_disable_completed')
+                ->atPath('completedAt')
+                ->addViolation();
+
+            $context->buildViolation('components.posting.cannot_disable_completed')
+                ->atPath('disabledAt')
+                ->addViolation();
+        }
     }
 }
