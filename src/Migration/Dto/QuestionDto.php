@@ -2,7 +2,8 @@
 
 namespace App\Migration\Dto;
 
-use Symfony\Component\Validator\Constraint;
+
+use App\Entity\Dto;
 
 class QuestionDto
 {
@@ -20,6 +21,8 @@ class QuestionDto
         if ($this->label === null) {
             $this->label = 'components.question.' . $this->questionKey;
         }
+
+        $this->constraints = Dto\Constraint::serializeArray($constraints);
     }
 
     public function getQuestionKey(): string
@@ -60,19 +63,6 @@ class QuestionDto
     public function getDependsOn(): array
     {
         return $this->dependsOn;
-    }
-
-    /** @param array{0: class-string, 1: mixed}[] $constraint */
-    public static function serializeConstraint(Constraint|array $constraint): array
-    {
-        return array_map(function ($constraint) {
-            $data = [];
-            $data['class'] = $constraint[0];
-            if (array_key_exists(1, $constraint)) {
-                $data['options'] = $constraint[1];
-            }
-            return $data;
-        }, $constraint);
     }
 
     public function getSortOrder(): int

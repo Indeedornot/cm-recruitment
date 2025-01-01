@@ -115,15 +115,7 @@ class Question
      */
     public function getConstraints(): array
     {
-        return array_map(function ($constraint) {
-            $type = $constraint['class'];
-            unset($constraint['class']);
-            if (array_key_exists('options', $constraint)) {
-                return new $type($constraint['options']);
-            } else {
-                return new $type();
-            }
-        }, $this->constraints);
+        return Dto\Constraint::unserializeArray($this->constraints);
     }
 
     public function setConstraints(array $constraints): self
