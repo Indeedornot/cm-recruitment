@@ -4,10 +4,13 @@ namespace App\Form;
 
 use App\Entity\Posting;
 use App\Entity\PostingText;
+use App\Repository\GlobalConfigRepository;
 use App\Security\Entity\Admin;
 use App\Security\Repository\UserRepository;
 use App\Security\Services\ExtendedSecurity;
+use DateTimeImmutable;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Event\PostSetDataEvent;
 use Symfony\Component\Form\Event\PreSetDataEvent;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -28,7 +31,8 @@ class PostingType extends AbstractType
     public function __construct(
         private ExtendedSecurity $security,
         private UserRepository $userRepository,
-        private CopyTextRepository $copyTextRepository
+        private CopyTextRepository $copyTextRepository,
+        private GlobalConfigRepository $globalConfigRepository
     ) {
     }
 
@@ -58,13 +62,23 @@ class PostingType extends AbstractType
                 ]
             ])
             ->add('closingDate', DateTimeType::class, [
-                'label' => 'components.posting.form.closing_date'
+                'label' => 'components.posting.form.closing_date',
             ])
             ->add('questionnaire', CreateQuestionnaireType::class, [
                 'label' => 'components.posting.form.questionnaire',
             ]);
 
         $this->addCopyTextFields($builder);
+
+        $builder->addEventListener(FormEvents::POST_SET_DATA, function (PostSetDataEvent $event) {
+            $closingDate = $event->getForm()->get('closingDate');
+            if ($closingDate->getData() === null) {
+                $date = $this->globalConfigRepository->getValue('closing_date');
+                if (!empty($date)) {
+                    $closingDate->setData(new DateTimeImmutable($date));
+                }
+            }
+        });
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             $form = $event->getForm();
