@@ -9,6 +9,7 @@ use App\Entity\Questionnaire;
 use App\Form\ClientApplicationType;
 use App\Form\CreateQuestionnaireType;
 use App\Form\PostingDisplayType;
+use App\Repository\ClientApplicationRepository;
 use App\Repository\PostingRepository;
 use App\Security\Entity\UserRoles;
 use App\Security\Factory\UserFactory;
@@ -34,7 +35,8 @@ class UserController extends BaseController
         private UserFactory $userFactory,
         private readonly ExtendedSecurity $security,
         private readonly TranslatorInterface $translator,
-        private readonly PaginationService $pagination
+        private readonly PaginationService $pagination,
+        private readonly ClientApplicationRepository $applicationRepository,
     ) {
     }
 
@@ -155,7 +157,7 @@ class UserController extends BaseController
             throw $this->createNotFoundException();
         }
 
-        $application = $this->em->getRepository(ClientApplication::class)->find($applicationId);
+        $application = $this->applicationRepository->find($applicationId);
         if (!$application) {
             throw $this->createNotFoundException();
         }
