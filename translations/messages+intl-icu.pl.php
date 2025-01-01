@@ -75,12 +75,16 @@ return [
                     'super_admin' => 'Zarządzaj wszystkimi zajęciami',
                     'admin' => 'Zarządzaj swoimi zajęciami',
                 ],
-                'questionaire' => 'Manage questionaire'
+                'global_config' => 'Globalne ustawienia',
             ]
         ],
         'posting' => [
             'header' => 'Zarządzaj zajęciami',
-        ]
+        ],
+        'global_config' => [
+            'header' => 'Globalne ustawienia',
+            'success' => 'Ustawienia zostały zapisane.',
+        ],
     ],
     'privacy_policy' => [
         'header' => '&bull; Polityka prywatności',
@@ -284,7 +288,29 @@ return [
             'house_no' => 'Numer domu',
             'postal_code' => 'Kod pocztowy',
             'address' => 'Adres',
-        ]
+        ],
+        'global_config' => [
+            'application_phase' => [
+                'label' => 'Etap rekrutacji',
+                'continuation' => 'Kontynuacja',
+                'first_phase' => 'Pierwszy etap',
+                'second_phase' => 'Drugi etap',
+                'help' => 'Etap rekrutacji, w którym znajduje się system. <br>
+                <ul>
+                    <li>
+                        Wpływa na dostępność funkcji i widoczność danych.
+                    </li>
+                    <li>
+                        Zmienia wartość dodatkowych kryteriów rekrutacji.
+                    </li>
+                </ul>
+                '
+            ],
+            'closing_date' => [
+                'label' => 'Masowa zmiana daty zakończenia rekrutacji',
+                'help' => 'Zmienia masowo datę, po której nie będzie można zgłaszać się na zajęcia.'
+            ]
+        ],
     ],
     'errors' => [
         'generic' => 'Wystąpił błąd podczas przetwarzania akcji. Proszę spróbować ponownie.

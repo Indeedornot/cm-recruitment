@@ -9,6 +9,7 @@
                     {% if is_super_admin() %}
                         {{ macros.nav_item('admin.dashboard.items.admin'|trans, 'fa-users', url('app_admin_admins'), 'a') }}
                         {{ macros.nav_item('admin.dashboard.items.create_admin'|trans, 'fa-user-plus', url('app_admin_create_account'), 'a') }}
+                        {{ macros.nav_item('admin.dashboard.items.global_config'|trans, 'fa-cogs', url('app_admin_global_config'), 'a') }}
                     {% endif %}
                     {{ macros.nav_item('admin.dashboard.items.client'|trans, 'fa-users', url('app_admin_users'), 'a') }}
 

@@ -29,6 +29,11 @@
                             <dd class="col-sm-8">{{ application.createdAt|date('Y-m-d H:i') }}</dd>
                             <dt class="col-sm-4">{{ 'user.application.details.managed_by'|trans }}</dt>
                             <dd class="col-sm-8">{{ application.posting.assignedTo.name }}</dd>
+                            {% set applicationPhase = application.dataByKey('application_phase') %}
+                            {% if applicationPhase %}
+                                <dt class="col-sm-4">{{ 'components.global_config.application_phase.label'|trans }}</dt>
+                                <dd class="col-sm-8">{{ ('components.global_config.application_phase.'~applicationPhase)|trans }}</dd>
+                            {% endif %}
                         </dl>
                     </div>
                 </div>
@@ -57,10 +62,6 @@
                             <b>{{ 'user.application.questionnaire.header'|trans }}</b>
                         {% endblock %}
                         {% block body %}
-                            {#                                {% for answer in application.answers %} #}
-                            {#                                    <dt class="col-sm-4">{{ answer.question.label|trans }}</dt> #}
-                            {#                                    <dd class="col-sm-8">{{ answer.answer }}</dd> #}
-                            {#                                {% endfor %} #}
                             {{ answersBody|raw }}
                         {% endblock %}
                     {% endembed %}

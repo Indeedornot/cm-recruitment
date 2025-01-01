@@ -1,0 +1,27 @@
+{% form_theme form 'common/forms/bundle.html.twig' %}
+{% extends 'layouts/base.html.twig' %}
+
+{% block body %}
+    <div class="pt-4 container">
+        {% include 'common/alerts/display.html.twig' %}
+
+        <div class="card">
+            <div class="card-header">
+                {{ 'admin.global_config.header'|trans }}
+            </div>
+            <div class="card-body">
+                {{ form_start(form) }}
+                {% for child in form.children %}
+                    <div class="mb-3">
+                        {{ form_row(child) }}
+                    </div>
+                {% endfor %}
+                <div class="d-flex justify-content-between">
+                    {{ form_button(form, {variant: 'primary', icon: 'save', label: 'common.save'|trans}) }}
+                    {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'common.back'|trans, href: path('app_admin_index')}) }}
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Posting;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -84,5 +85,16 @@ class PostingRepository extends ServiceEntityRepository
         }
 
         return $qb;
+    }
+
+    public function updateActiveClosingDates(DateTimeImmutable $date): void
+    {
+        $this->createQueryBuilder('p')
+            ->update()
+            ->set('p.closingDate', ':date')
+            ->andWhere('p.disabledAt IS NULL')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->execute();
     }
 }

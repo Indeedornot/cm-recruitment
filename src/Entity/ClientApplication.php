@@ -28,6 +28,9 @@ class ClientApplication
     #[ORM\OneToMany(targetEntity: QuestionnaireAnswer::class, mappedBy: 'application', cascade: ['persist', 'remove'])]
     private Collection $answers;
 
+    #[ORM\Column(type: 'json')]
+    private array $data = [];
+
     public function __construct()
     {
         $this->answers = new ArrayCollection();
@@ -77,5 +80,27 @@ class ClientApplication
             }
         }
         return null;
+    }
+
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    public function getDataByKey(string $key): mixed
+    {
+        return $this->data[$key] ?? null;
+    }
+
+    public function setData(array $data): self
+    {
+        $this->data = $data;
+        return $this;
+    }
+
+    public function setDataByKey(string $key, mixed $value): self
+    {
+        $this->data[$key] = $value;
+        return $this;
     }
 }
