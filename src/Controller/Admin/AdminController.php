@@ -56,7 +56,7 @@ class AdminController extends BaseController
             $this->manager->persist($user);
             $this->manager->flush();
             $form = $this->createForm(UserType::class, $this->userFactory->createEmptyAdmin());
-            $this->addFlash('success', 'Account created successfully');
+            $this->addFlash('success', 'common.success');
             $data = [
                 'success' => true,
             ];

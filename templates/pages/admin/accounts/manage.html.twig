@@ -1,6 +1,7 @@
 {% extends 'layouts/base.html.twig' %}
 {% block body %}
-    <div class="d-flex justify-content-center w-100 pt-4">
+    <div class="container pt-4">
+        {% include 'common/alerts/display.html.twig' %}
         <div class="card bg-light mb-3 mt-5" style="width: 800px">
             <div class="card-header">{{ 'admin.accounts.form.header'|trans }}</div>
             <div class="card-body">
