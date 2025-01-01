@@ -4,6 +4,7 @@ namespace App\Migration\Dto;
 
 
 use App\Entity\Dto;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class QuestionDto
 {
@@ -17,6 +18,9 @@ class QuestionDto
         private int $sortOrder = 0,
         private ?string $label = null,
         private mixed $defaultValue = null,
+        private string $formType = TextType::class,
+        private array $formOptions = [],
+        private ?array $additionalData = null
     ) {
         if ($this->label === null) {
             $this->label = 'components.question.' . $this->questionKey;
@@ -74,5 +78,56 @@ class QuestionDto
     {
         $this->sortOrder = $sortOrder;
         return $this;
+    }
+
+    public function getFormType(): mixed
+    {
+        return $this->formType;
+    }
+
+    public function setFormType(mixed $formType): self
+    {
+        $this->formType = $formType;
+        return $this;
+    }
+
+    public function getFormOptions(): array
+    {
+        return $this->formOptions;
+    }
+
+    public function setFormOptions(array $formOptions): self
+    {
+        $this->formOptions = $formOptions;
+        return $this;
+    }
+
+    public function getAdditionalData(): ?array
+    {
+        return $this->additionalData;
+    }
+
+    public function setAdditionalData(?array $additionalData): self
+    {
+        $this->additionalData = $additionalData;
+        return $this;
+    }
+
+    public function getInsertParams(): array
+    {
+        return [
+            'question_key' => $this->getQuestionKey(),
+            'expected_type' => $this->getExpectedType(),
+            'constraints' => json_encode($this->getConstraints()),
+            'is_nullable' => (int)$this->isNullable(),
+            'label' => $this->getLabel(),
+            'force_set' => (int)$this->isForceSet(),
+            'depends_on' => json_encode($this->getDependsOn()),
+            'sort_order' => 0,
+            'default_value' => $this->getDefaultValue(),
+            'form_type' => $this->getFormType(),
+            'form_options' => json_encode($this->getFormOptions()),
+            'additional_data' => json_encode($this->getAdditionalData())
+        ];
     }
 }

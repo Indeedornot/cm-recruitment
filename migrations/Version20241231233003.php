@@ -75,20 +75,19 @@ final class Version20241231233003 extends AbstractMigration
         ];
 
         foreach ($copyTexts as $copyText) {
+            if ($this->connection->fetchAssociative(
+                'SELECT * FROM copy_text WHERE `key` = :key', [
+                'key' => $copyText->text
+            ])) {
+                continue;
+            }
+
             $this->addSql(
                 <<<SQL
                 INSERT INTO copy_text (`key`, label, default_value, required, constraints, created_at, form_type, form_options)
                 VALUES (:key, :label, :default_value, :required, :constraints, NOW(), :form_type, :form_options)
                 SQL,
-                [
-                    'key' => $copyText->text,
-                    'label' => $copyText->label,
-                    'default_value' => $copyText->defaultValue,
-                    'required' => (int)$copyText->required,
-                    'form_type' => $copyText->formType,
-                    'form_options' => json_encode($copyText->formOptions),
-                    'constraints' => json_encode(Constraint::serializeArray($copyText->constraints)),
-                ]
+                $copyText->getInsertParams()
             );
         }
     }

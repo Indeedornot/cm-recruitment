@@ -3,6 +3,7 @@
 namespace App\Migration\Dto;
 
 use App\Entity\Dto;
+use App\Entity\Dto\Constraint;
 use phpDocumentor\Reflection\Types\ClassString;
 use Symfony\Component\Form\AbstractType;
 
@@ -26,8 +27,8 @@ class CopyTextDto
         public ?string $label = null,
     ) {
         $this->constraints = Dto\Constraint::serializeArray($constraints);
-        if (!empty($label) && str_starts_with('.', $label)) {
-            $this->label = 'components.posting.copytext' . $label;
+        if (!empty($label) && str_starts_with($label, '.')) {
+            $this->label = 'components.posting.copytext.' . $text . $label;
         } else {
             $this->label = $label ?? 'components.posting.copytext.' . $text;
         }
@@ -35,5 +36,18 @@ class CopyTextDto
         if (!class_exists($formType) || !is_subclass_of($formType, AbstractType::class)) {
             throw new \InvalidArgumentException('Invalid form type');
         }
+    }
+
+    public function getInsertParams(): array
+    {
+        return [
+            'key' => $this->text,
+            'label' => $this->label,
+            'default_value' => $this->defaultValue,
+            'required' => (int)$this->required,
+            'form_type' => $this->formType,
+            'form_options' => json_encode($this->formOptions),
+            'constraints' => json_encode(Constraint::serializeArray($this->constraints)),
+        ];
     }
 }

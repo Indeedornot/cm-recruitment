@@ -50,6 +50,15 @@ class Question
     #[ORM\Column]
     private int $sortOrder = 0;
 
+    #[ORM\Column]
+    private string $formType;
+
+    #[ORM\Column(type: 'json')]
+    private array $formOptions;
+
+    #[ORM\Column(type: "json", nullable: true)]
+    private ?array $additionalData = null;
+
     public function __construct()
     {
         $this->questionnaires = new ArrayCollection();
@@ -174,6 +183,39 @@ class Question
     public function setSortOrder(int $sortOrder): self
     {
         $this->sortOrder = $sortOrder;
+        return $this;
+    }
+
+    public function getFormOptions(): array
+    {
+        return $this->formOptions ?? [];
+    }
+
+    public function setFormOptions(array $formOptions): self
+    {
+        $this->formOptions = $formOptions;
+        return $this;
+    }
+
+    public function getFormType(): string
+    {
+        return $this->formType;
+    }
+
+    public function setFormType(string $formType): self
+    {
+        $this->formType = $formType;
+        return $this;
+    }
+
+    public function getAdditionalData(): ?array
+    {
+        return $this->additionalData;
+    }
+
+    public function setAdditionalData(?array $additionalData): self
+    {
+        $this->additionalData = $additionalData;
         return $this;
     }
 }

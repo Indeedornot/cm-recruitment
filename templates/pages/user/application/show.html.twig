@@ -28,7 +28,18 @@
                             <dl class="row">
                                 {% for answer in application.answers %}
                                     <dt class="col-sm-4">{{ answer.question.label|trans }}</dt>
-                                    <dd class="col-sm-8">{{ answer.answer }}</dd>
+                                    <dd class="col-sm-8">
+                                        {% set readableAnswer = answer.readableAnswer %}
+                                        {% if readableAnswer is iterable %}
+                                            <ul>
+                                                {% for item in readableAnswer %}
+                                                    <li>{{ item }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            {{ readableAnswer }}
+                                        {% endif %}
+                                    </dd>
                                 {% endfor %}
                             </dl>
                         {% endblock %}

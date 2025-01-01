@@ -29,17 +29,18 @@ class ClientApplicationType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var ClientApplication $application */
         $application = $builder->getData();
         $posting = $application->getPosting();
         $questions = $posting->getQuestionnaire()->getQuestions();
 
         foreach ($questions as $question) {
-            $builder->add('answer_' . $question->getId(), TextType::class, [
+            $builder->add('answer_' . $question->getId(), $question->getFormType(), array_merge([
                 'label' => $question->getLabel(),
                 'required' => !$question->getIsNullable(),
                 'constraints' => $question->getConstraints(),
                 'mapped' => false,
-            ]);
+            ], $question->getFormOptions()));
         }
 
         if (!$application instanceof ClientApplication) {

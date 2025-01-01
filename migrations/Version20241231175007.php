@@ -116,16 +116,7 @@ final class Version20241231175007 extends AbstractMigration
                 INSERT INTO question (question_key, expected_type, constraints, is_nullable, label, force_set, depends_on, sort_order, created_at)
                 VALUES (:question_key, :expected_type, :constraints, :is_nullable, :label, :force_set, :depends_on, :sort_order, NOW())
                 SQL,
-                [
-                    'question_key' => $question->getQuestionKey(),
-                    'expected_type' => $question->getExpectedType(),
-                    'constraints' => json_encode($question->getConstraints()),
-                    'is_nullable' => (int)$question->isNullable(),
-                    'label' => $question->getLabel(),
-                    'force_set' => (int)$question->isForceSet(),
-                    'depends_on' => json_encode($question->getDependsOn()),
-                    'sort_order' => $question->getSortOrder(),
-                ]
+                $question->getInsertParams()
             );
         }
     }
