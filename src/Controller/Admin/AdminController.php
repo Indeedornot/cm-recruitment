@@ -47,7 +47,9 @@ class AdminController extends BaseController
     {
         $this->setErrorHandler(ErrorHandlerType::FORM);
 
-        $user = $this->userFactory->createEmptyAdmin();
+        $user = $this->userFactory
+            ->createEmptyAdmin()
+            ->setCreatedBy($this->getAdmin());
         $form = $this->createForm(UserType::class, $user, ['require_password' => false]);
         $form->handleRequest($request);
 
@@ -55,7 +57,11 @@ class AdminController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->persist($user);
             $this->manager->flush();
-            $form = $this->createForm(UserType::class, $this->userFactory->createEmptyAdmin());
+            $form = $this->createForm(UserType::class,
+                $this->userFactory
+                    ->createEmptyAdmin()
+                    ->setCreatedBy($this->getAdmin())
+            );
             $this->addFlash('success', 'common.success');
             $data = [
                 'success' => true,
