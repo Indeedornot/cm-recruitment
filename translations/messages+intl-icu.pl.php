@@ -234,6 +234,22 @@ return [
                 'questionnaire' => 'Zestaw pytań',
                 'success' => 'Zajęcia zostały zapisane',
                 'closing_date' => 'Data zakończenia rekrutacji',
+            ],
+            'copytext' => [
+                'schedule' => 'Termin zajęć',
+                'age_min' => 'Wiek min.',
+                'age_max' => 'Wiek maks.',
+                'category' => [
+                    'label' => 'Kategoria',
+                    'theatre' => 'Teatr',
+                    'singing' => 'Śpiew',
+                    'dancing' => 'Taniec',
+                    'sport' => 'Sport',
+                    'film' => 'Film',
+                    'instrument' => 'Instrument',
+                    'photography' => 'Fotografia',
+                    'creative' => 'Kreatywne',
+                ],
             ]
         ],
         'user' => [

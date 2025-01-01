@@ -25,6 +25,25 @@ class QuestionnaireAnswer
     #[ORM\Column]
     private string $answer;
 
+    #[Assert\Callback]
+    public function validateAge(ExecutionContextInterface $context): void
+    {
+        if ($this->question->getQuestionKey() !== 'age') {
+            return;
+        }
+
+        $posting = $this->application->getPosting();
+        $minAge = $posting->getCopyText('age_min')?->getValue();
+        $maxAge = $posting->getCopyText('age_max')?->getValue();
+
+        $context->getValidator()->inContext($context)->validate($this->answer, [
+            new Assert\Range([
+                'min' => $minAge,
+                'max' => $maxAge,
+            ])
+        ]);
+    }
+
     public function getAnswer(): string
     {
         return $this->answer;

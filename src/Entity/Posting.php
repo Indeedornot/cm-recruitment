@@ -46,9 +46,16 @@ class Posting
     #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $closingDate;
 
+    #[ORM\OneToMany(targetEntity: PostingText::class, mappedBy: 'posting', cascade: [
+        'persist',
+        'remove'
+    ], orphanRemoval: true)]
+    private Collection $copyTexts;
+
     public function __construct()
     {
         $this->applications = new ArrayCollection();
+        $this->copyTexts = new ArrayCollection();
     }
 
     public function getDescription(): string
@@ -126,5 +133,37 @@ class Posting
     public function isClosed(): bool
     {
         return $this->closingDate < new DateTimeImmutable();
+    }
+
+    /**
+     * @return Collection<int, PostingText>
+     */
+    public function getCopyTexts(): Collection
+    {
+        return $this->copyTexts;
+    }
+
+    public function getCopyText(string $key): ?PostingText
+    {
+        return $this->copyTexts->findFirst(static fn(int $k, PostingText $pt) => $pt->getCopyText()->getKey() === $key);
+    }
+
+    public function addCopyText(PostingText $copyText): self
+    {
+        if (!$this->copyTexts->contains($copyText)) {
+            $this->copyTexts->add($copyText);
+            $copyText->setPosting($this);
+        }
+        return $this;
+    }
+
+    public function removeCopyText(PostingText $copyText): self
+    {
+        if ($this->copyTexts->removeElement($copyText)) {
+            if ($copyText->getPosting() === $this) {
+                $copyText->setPosting(null);
+            }
+        }
+        return $this;
     }
 }

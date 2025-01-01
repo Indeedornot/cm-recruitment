@@ -10,17 +10,20 @@ use LogicException;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\ApplyQuestionnaireType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ClientApplicationType extends AbstractType
 {
     public function __construct(
         private ExtendedSecurity $security,
-        private QuestionnaireAnswerRepository $answerRepository
+        private QuestionnaireAnswerRepository $answerRepository,
+        private readonly ValidatorInterface $validator
     ) {
     }
 
@@ -67,6 +70,16 @@ class ClientApplicationType extends AbstractType
                 $answer = new QuestionnaireAnswer();
                 $answer->setQuestion($question);
                 $answer->setAnswer($form->get('answer_' . $question->getId())->getData());
+                $answer->setApplication($application);
+
+                // Validate the answer
+                $errors = $this->validator->validate($answer);
+                if (count($errors) > 0) {
+                    foreach ($errors as $error) {
+                        $form->get('answer_' . $question->getId())->addError(new FormError($error->getMessage()));
+                    }
+                }
+
                 $previousAnswer = $this->answerRepository->findOneBy([
                     'question' => $question,
                     'application' => $application,

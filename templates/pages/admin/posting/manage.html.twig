@@ -13,9 +13,16 @@
             <div class="card-body">
                 {{ form_start(form) }}
                 {{ form_row(form.title) }}
+                {#                TODO: Possibly move to coppytexts #}
                 {{ form_row(form.description) }}
                 {{ form_row(form.assignedTo) }}
+                {#                TODO: Possibly move to copytexts #}
                 {{ form_row(form.closingDate) }}
+
+                {% set copytexts = form.children|filter(field => field.vars.name starts with 'copy_') %}
+                {% for copytext in copytexts %}
+                    {{ form_row(copytext) }}
+                {% endfor %}
 
                 <div class="mb-3">
                     {% set questionnaire %}
