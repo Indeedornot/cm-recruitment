@@ -5,34 +5,42 @@
         </div>
         <div class="d-flex">
             <div>
-                <select name="limit" class="form-select" onchange="this.form.dispatchEvent(new Event('submit'))">
+                <select name="limit"
+                        class="form-select"
+                        onchange="this.form.dispatchEvent(new Event('submit'))"
+                        data-hook="pagination-limit"
+                >
                     {% for option in [10, 20, 50, 100] %}
                         <option value="{{ option }}"
                                 {% if limit == option %}selected{% endif %}>{{ option }}</option>
                     {% endfor %}
                 </select>
-                <input type="hidden" name="page" value="{{ page }}">
+                <input type="hidden" name="page" value="{{ page }}" data-hook="pagination-page">
             </div>
             {% if page > 1 %}
-                <a href="{{ path(route_name, app.request.query.all|merge({'page': 1})) }}"
-                   class="btn btn-link">
+                <button type="button"
+                        onclick="document.querySelector('[name=\'page\']').value = (1); document.querySelector('[name=\'page\']').dispatchEvent(new Event('change')); this.form.dispatchEvent(new Event('submit'))"
+                        class="btn btn-link">
                     <i class="fa-solid fa-angle-double-left"></i>
-                </a>
-                <a href="{{ path(route_name, app.request.query.all|merge({'page': page - 1})) }}"
-                   class="btn btn-link">
+                </button>
+                <button type="button"
+                        onclick="document.querySelector('[name=\'page\']').value = ({{ page - 1 }}); document.querySelector('[name=\'page\']').dispatchEvent(new Event('change')); this.form.dispatchEvent(new Event('submit'))"
+                        class="btn btn-link">
                     <i class="fa-solid fa-angle-left"></i>
-                </a>
+                </button>
             {% endif %}
             {% set end_page = total // limit + (total % limit > 0 ? 1 : 0) %}
             {% if page < end_page %}
-                <a href="{{ path(route_name, app.request.query.all|merge({'page': page + 1})) }}"
-                   class="btn btn-link">
+                <button type="button"
+                        onclick="document.querySelector('[name=\'page\']').value = ({{ page + 1 }}); document.querySelector('[name=\'page\']').dispatchEvent(new Event('change')); this.form.dispatchEvent(new Event('submit'))"
+                        class="btn btn-link">
                     <i class="fa-solid fa-angle-right"></i>
-                </a>
-                <a href="{{ path(route_name, app.request.query.all|merge({'page': end_page})) }}"
-                   class="btn btn-link">
+                </button>
+                <button type="button"
+                        onclick="document.querySelector('[name=\'page\']').value = ({{ end_page }}); document.querySelector('[name=\'page\']').dispatchEvent(new Event('change')); this.form.dispatchEvent(new Event('submit'))"
+                        class="btn btn-link">
                     <i class="fa-solid fa-angle-double-right"></i>
-                </a>
+                </button>
             {% endif %}
         </div>
     </div>
@@ -47,6 +55,18 @@
             const submitButtons = form.querySelectorAll('button[type="submit"]');
             const toggleButtons = (disabled) => {
                 submitButtons.forEach(button => button.disabled = disabled);
+            };
+
+            const addEventListeners = (form) => {
+                postings.querySelectorAll('input, select').forEach(e =>
+                    e.addEventListener('change', () => {
+                        const hook = e.dataset.hook;
+                        if (hook) {
+                            const targets = form.querySelectorAll(`[data-hook="${hook}"]`);
+                            targets.forEach(target => target.value = e.value);
+                        }
+                        return form.dispatchEvent(new Event('submit'));
+                    }));
             };
 
             form.addEventListener('submit', function (event) {
@@ -72,6 +92,7 @@
                     .then(() => {
                         form.dataset.oldValues = newValues;
                         toggleButtons(false);
+                        addEventListeners(form);
                     });
             });
 

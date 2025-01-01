@@ -13,22 +13,6 @@ import './views/views';
 import './app.scss';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const inputSyncElements = document.querySelectorAll('[data-hook^="inputSync"]');
-  console.log({inputSyncElements})
-  const groupedElements = {};
-  inputSyncElements.forEach((element) => {
-    const hook = element.getAttribute('data-hook');
-    (groupedElements[hook] ??= []).push(element);
-  });
-
-  Object.entries(groupedElements).forEach(([hook, elements]) => {
-    window.inputSync(elements);
-  });
-
-  console.log({groupedElements})
-})
-
-document.addEventListener('DOMContentLoaded', () => {
   const createHiddenInput = (element) => {
     const hiddenInput = document.createElement('input');
     hiddenInput.type = 'hidden';
