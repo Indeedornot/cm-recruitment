@@ -48,7 +48,7 @@ class PostingRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('p')
             ->andWhere('p.disabledAt IS NULL')
             ->andWhere('p.completedAt IS NULL')
-            ->orderBy('p.title', 'DESC');
+            ->orderBy('p.title', 'ASC');
 
         if (isset($filters['title']) && $filters['title']) {
             $qb
@@ -72,7 +72,7 @@ class PostingRepository extends ServiceEntityRepository
             ->andWhere('p.completedAt IS NULL')
             ->andWhere('p.closingDate > :now')
             ->setParameter('now', new \DateTime())
-            ->orderBy('p.title', 'DESC');
+            ->orderBy('p.title', 'ASC');
 
         if (isset($filters['title']) && $filters['title']) {
             $qb
