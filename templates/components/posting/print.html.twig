@@ -1,0 +1,81 @@
+{% extends 'layouts/base.html.twig' %}
+{% form_theme form 'common/forms/bundle.html.twig' %}
+
+{# Remove navbar and footer for print #}
+{% block navbar %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block title %}
+    {{ posting.title }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Ensure white background and black text */
+        body {
+            background: white !important;
+            color: black !important;
+        }
+
+        /* Remove card shadows and borders for cleaner print */
+        .card {
+            border: none !important;
+        }
+
+        /* Ensure content fits page width */
+        .container {
+            width: 100% !important;
+            max-width: none !important;
+        }
+
+
+        /* Add page breaks where needed */
+        .card-flush {
+            page-break-inside: avoid;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="card card-flush">
+        <div class="card-header">
+            <div class="d-flex justify-content-between flex-wrap">
+                <div class="d-flex align-items-end pe-2 flex-wrap">
+                    <h2 class="mb-0 pe-2">{{ posting.title }}</h2>
+                    <span class="text-secondary fs-4">
+                            {{ 'components.posting.assigned_to'|trans({'name': posting.assignedTo.name}) }}
+                        </span>
+                </div>
+                <span class="text-secondary fs-4 d-flex align-items-end flex-wrap">
+                        <span class="text-muted pe-1">
+                            {{ 'components.posting.closing_date'|trans }}:
+                        </span>
+                        {{ posting.closingDate|date('Y-m-d') }}
+                    </span>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <p class="px-4 py-2">{{ posting.description }}</p>
+            {{ form_start(form) }}
+            <div class="mb-3">
+                <div class="card card-flush">
+                    <div class="card-header">
+                        Odpowiedzi
+                    </div>
+                    <div class="card-body">
+                        {% for field in form.children|filter(field => field.vars.name starts with 'answer_') %}
+                            <div class="mb-3">
+                                {{ form_row(field) }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

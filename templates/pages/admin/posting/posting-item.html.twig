@@ -5,6 +5,9 @@
 {% set actionRow %}
     {% set canEdit = posting.canEdit(app.user) %}
     <div class="d-flex justify-content-end gap-1">
+        <a href="{{ path('app_user_posting_print', {'id': posting.id}) }}" class="btn btn-outline-secondary btn-sm">
+            <i class="fa fa-print"></i>
+        </a>
         <a class="btn-sm btn-outline-secondary btn"
            href="{{ path('app_admin_posting_show', {'id': posting.id}) }}"
         >

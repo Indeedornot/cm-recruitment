@@ -44,9 +44,14 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12 mb-3">
-                        {{ form_button(form, {variant: 'primary', icon: 'user', label: 'common.save'|trans}) }}
-                        {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'common.cancel'|trans, href: path('app_user_index')}) }}
+                    <div class="col-md-12 mb-3 d-flex justify-content-between">
+                        <div>
+                            {{ form_button(form, {variant: 'primary', icon: 'user', label: 'common.save'|trans}) }}
+                            {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'Back', href: path('app_admin_posting_index')}) }}
+                        </div>
+                        <a href="{{ path('app_user_posting_print', {'id': posting.id}) }}" class="btn btn-secondary">
+                            <i class="fa fa-print"></i>
+                        </a>
                     </div>
                 </div>
 

@@ -149,6 +149,22 @@ class UserController extends BaseController
         ]);
     }
 
+    #[Route("/posting/{id}/print", name: "posting_print")]
+    public function postingPrint(Request $request, int $id): Response
+    {
+        $posting = $this->postingRepository->find($id);
+        if (!$posting || $posting->isClosed()) {
+            throw $this->createNotFoundException();
+        }
+
+        $clientApplication = (new ClientApplication())->setPosting($posting);
+        $form = $this->createForm(ClientApplicationType::class, $clientApplication);
+        return $this->render('components/posting/print.html.twig', [
+            'posting' => $posting,
+            'form' => $form->createView(),
+        ]);
+    }
+
     #[Route("/posting/{id}/application/{applicationId}", name: "posting_application")]
     public function postingApplication(Request $request, int $id, int $applicationId): Response
     {

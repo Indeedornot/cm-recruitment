@@ -51,21 +51,7 @@
                 {% endif %}
 
                 {{ form_start(form) }}
-                <div class="row px-lg-4 px-md-3 px-2">
-                    <div class="col-lg-4 col-md-4 col-12">
-                        {{ form_row(form.title) }}
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-12">
-                        {{ form_row(form.assignedTo) }}
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-12 d-flex align-items-center pt-md-3">
-                        <button type="submit" class="btn btn-primary w-100 text-nowrap">
-                            <i class="fas fa-search me-1"></i>
-                            {{ 'common.search'|trans }}
-                        </button>
-                    </div>
-                </div>
-
+                {% include 'components/posting/posting-display-form.html.twig' %}
                 <div class="postings pt-md-0 pt-3"></div>
                 {{ form_end(form) }}
             </div>

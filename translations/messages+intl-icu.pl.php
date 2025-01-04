@@ -140,7 +140,9 @@ return [
         'posting_list' => [
             'filter' => [
                 'assigned_to' => 'Prowadzący',
-                'title' => 'Tytuł',
+                'text' => 'Szukaj',
+                'age' => 'Wiek',
+                'schedule' => 'Termin zajęć',
             ],
             'no_postings_found' => 'Nie znaleziono żadnych zajęć spełniających kryteria wyszukiwania.',
         ]
@@ -340,6 +342,15 @@ return [
         'items_per_page' => 'Elementów na stronie',
         'search' => 'Szukaj',
         'preview' => 'Podgląd',
+        'weekday' => [
+            'monday' => 'Poniedziałek',
+            'tuesday' => 'Wtorek',
+            'wednesday' => 'Środa',
+            'thursday' => 'Czwartek',
+            'friday' => 'Piątek',
+            'saturday' => 'Sobota',
+            'sunday' => 'Niedziela',
+        ],
     ],
     'emails' => [
         'security' => [

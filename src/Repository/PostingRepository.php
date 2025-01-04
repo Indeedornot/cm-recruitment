@@ -3,8 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Posting;
+use App\Entity\PostingText;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -13,7 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PostingRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private PostingTextRepository $ptRepository)
     {
         parent::__construct($registry, Posting::class);
     }
@@ -43,29 +46,7 @@ class PostingRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    public function getAdminDisplayPostingsQb(array $filters = []): QueryBuilder
-    {
-        $qb = $this->createQueryBuilder('p')
-            ->andWhere('p.disabledAt IS NULL')
-            ->andWhere('p.completedAt IS NULL')
-            ->orderBy('p.title', 'ASC');
-
-        if (isset($filters['title']) && $filters['title']) {
-            $qb
-                ->andWhere('p.title LIKE :title')
-                ->setParameter('title', '%' . $filters['title'] . '%');
-        }
-
-        if (isset($filters['assignedTo']) && $filters['assignedTo']) {
-            $qb
-                ->andWhere('p.assignedTo = :assignedTo')
-                ->setParameter('assignedTo', $filters['assignedTo']);
-        }
-
-        return $qb;
-    }
-
-    public function getDisplayedPostingsQb(array $filters = []): QueryBuilder
+    public function getDisplayPostingsBaseQb(array $filters = []): QueryBuilder
     {
         $qb = $this->createQueryBuilder('p')
             ->andWhere('p.disabledAt IS NULL')
@@ -74,18 +55,60 @@ class PostingRepository extends ServiceEntityRepository
             ->setParameter('now', new \DateTime())
             ->orderBy('p.title', 'ASC');
 
-        if (isset($filters['title']) && $filters['title']) {
+        if (!empty($filters['text'])) {
             $qb
-                ->andWhere('p.title LIKE :title')
-                ->setParameter('title', '%' . $filters['title'] . '%');
+                ->join('p.assignedTo', 'u')
+                ->andWhere('p.title LIKE :text OR p.description LIKE :text OR u.name LIKE :text')
+                ->setParameter('text', '%' . $filters['text'] . '%');
         }
 
-        if (isset($filters['assignedTo']) && $filters['assignedTo']) {
+        if (!empty($filters['assignedTo'])) {
             $qb
                 ->andWhere('p.assignedTo = :assignedTo')
                 ->setParameter('assignedTo', $filters['assignedTo']);
         }
 
+        if (!empty($filters['age'])) {
+            $minAge = $this->ptRepository->getPostingIdsByTextFilter('Min', 'age_min', $filters['age'], '<=');
+            $maxAge = $this->ptRepository->getPostingIdsByTextFilter('Max', 'age_max', $filters['age'], '>=');
+
+            $qb->andWhere('p.id IN (' . $minAge->getDQL() . ')')
+                ->andWhere('p.id IN (' . $maxAge->getDQL() . ')')
+                ->setParameters(new ArrayCollection(array_merge(
+                    $minAge->getParameters()->toArray(),
+                    $maxAge->getParameters()->toArray(),
+                    $qb->getParameters()->toArray()
+                )));
+        }
+
+        if (!empty($filters['schedule'])) {
+            $schedule = $this->ptRepository->getPostingIdsByTextFilter(
+                'Schedule',
+                'schedule',
+                $filters['schedule'],
+                'LIKE'
+            );
+
+            $qb->andWhere('p.id IN (' . $schedule->getDQL() . ')')
+                ->setParameters(new ArrayCollection(array_merge(
+                    $schedule->getParameters()->toArray(),
+                    $qb->getParameters()->toArray()
+                )));
+        }
+    }
+
+    public function getAdminDisplayPostingsQb(array $filters = []): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->andWhere('p.disabledAt IS NULL')
+            ->andWhere('p.completedAt IS NULL')
+            ->orderBy('p.title', 'ASC');
+
+        return $qb;
+    }
+
+    public function getDisplayedPostingsQb(array $filters = []): QueryBuilder
+    {
         return $qb;
     }
 
