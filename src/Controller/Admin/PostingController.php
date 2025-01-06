@@ -90,7 +90,7 @@ class PostingController extends BaseController
         $posting = $this->postingRepository->find($id);
 
         if (!$posting->canEdit($this->getAdmin())) {
-            throw $this->createAccessDeniedException("You are not allowed to edit this posting");
+            throw $this->createAccessDeniedException();
         }
 
         return $this->handlePostingForm($posting, $request, ['recreate_form' => true]);
@@ -109,7 +109,15 @@ class PostingController extends BaseController
             return $this->redirectToRoute('app_admin_posting_index');
         }
 
-        $this->em->remove($posting);
+        if (!$request->getSession()->get("confirm_delete_$id")) {
+            $request->getSession()->set("confirm_delete_$id", true);
+            $this->addFlash('warning', new TranslatableMessage('common.are_you_sure'));
+            $referer = $request->headers->get('referer');
+            return $this->redirect($referer);
+        }
+
+        $posting->disable();
+
         $this->em->flush();
         $this->addFlash('success', new TranslatableMessage('components.posting.form.success'));
         return $this->redirectToRoute('app_admin_posting_index');

@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Controller\Base\BaseController;
 use App\Controller\Base\ErrorHandlerType;
+use App\Repository\PostingRepository;
 use App\Security\Entity\Admin;
 use App\Security\Entity\Client;
 use App\Security\Entity\User;
@@ -21,6 +22,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Translation\TranslatableMessage;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted(UserRoles::ADMIN->value)]
 #[Route("/admin", name: "app_admin_")]
@@ -31,7 +34,9 @@ class AdminController extends BaseController
         private readonly ExtendedSecurity $security,
         private readonly UserFactory $userFactory,
         private readonly UserRepository $userRepository,
-        private readonly PaginationService $pagination
+        private readonly PaginationService $pagination,
+        private readonly TranslatorInterface $translator,
+        private readonly PostingRepository $postingRepository
     ) {
     }
 
@@ -126,8 +131,8 @@ class AdminController extends BaseController
 
 
     #[IsGranted(UserRoles::SUPER_ADMIN->value)]
-    #[Route("/disable-account", name: "disable_account")]
-    public function disableAccount(Request $request, #[MapQueryParameter] int $id): Response
+    #[Route("/delete-account", name: "disable_account")]
+    public function deleteAccount(Request $request, #[MapQueryParameter] int $id): Response
     {
         /** @var User $user */
         $user = $this->userRepository->find($id);
@@ -135,43 +140,37 @@ class AdminController extends BaseController
             throw $this->createNotFoundException();
         }
 
-        if ($user->isDisabled()) {
-            $this->addFlash('error', 'admin.manage.flashes.disable.already_disabled');
+        if ($user->getId() === $this->getAdmin()->getId()) {
+            $this->addFlash('error', new TranslatableMessage('admin.accounts.manage.disable.cannot_disable_self'));
             $from = $request->headers->get('referer');
             return $this->redirect($from);
+        }
+
+        if ($user->isDisabled()) {
+            $this->addFlash('error', new TranslatableMessage('admin.accounts.manage.disable.already_disabled'));
+            $from = $request->headers->get('referer');
+            return $this->redirect($from);
+        }
+
+        if ($user instanceof Admin) {
+            $postings = $this->postingRepository->findBy(['assignedTo' => $user]);
+            if (!empty($postings)) {
+                $this->addFlash('error', new TranslatableMessage('admin.accounts.manage.disable.has_postings'));
+                $from = $request->headers->get('referer');
+                return $this->redirect($from);
+            }
+        }
+
+        if ($request->getSession()->get("confirm_disable_$id")) {
+            $request->getSession()->remove("confirm_disable_$id");
+            $this->addFlash('success', new TranslatableMessage('common.success'));
         }
 
         $user->disable();
         $this->manager->persist($user);
         $this->manager->flush();
 
-        $this->addFlash('success', 'admin.manage.flashes.disable.success');
-
-        $from = $request->headers->get('referer');
-        return $this->redirect($from);
-    }
-
-    #[IsGranted(UserRoles::SUPER_ADMIN->value)]
-    #[Route("/restore-account", name: "restore_account")]
-    public function restoreAccount(Request $request, #[MapQueryParameter] int $id): Response
-    {
-        /** @var User $user */
-        $user = $this->userRepository->find($id);
-        if (empty($user)) {
-            throw $this->createNotFoundException();
-        }
-
-        if (!$user->isDisabled()) {
-            $this->addFlash('error', 'This account is already enabled');
-            $from = $request->headers->get('referer');
-            return $this->redirect($from);
-        }
-
-        $user->enable();
-        $this->manager->persist($user);
-        $this->manager->flush();
-
-        $this->addFlash('success', 'Account enabled successfully');
+        $this->addFlash('success', new TranslatableMessage('common.success'));
 
         $from = $request->headers->get('referer');
         return $this->redirect($from);
