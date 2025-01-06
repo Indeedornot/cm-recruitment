@@ -43,16 +43,23 @@ final class Version20250101090334 extends AbstractMigration
         ];
 
         foreach ($questions as $dto) {
-            $exists = $this->connection->fetchAssociative('SELECT * FROM question WHERE question_key = :question_key',
-                ['question_key' => $dto->getQuestionKey()]);
-            if ($exists) {
-                continue;
+            $questionId = $this->connection->fetchOne(
+                'SELECT id FROM question WHERE question_key = :question_key',
+                ['question_key' => $dto->getQuestionKey()]
+            );
+            if (!$questionId) {
+                $this->addSql('INSERT INTO question (question_key, expected_type, constraints, force_set, is_nullable, depends_on, sort_order, label, default_value, form_type, form_options, created_at)
+                                            VALUES (:question_key, :expected_type, :constraints, :force_set, :is_nullable, :depends_on, :sort_order, :label, :default_value, :form_type, :form_options, NOW())',
+                    $dto->getInsertParams()
+                );
+                $this->addSql('SET @questionId = LAST_INSERT_ID()');
+            } else {
+                $this->addSql('SET @questionId = :questionId', ['questionId' => $questionId]);
             }
 
-            $this->addSql('INSERT INTO question (question_key, expected_type, constraints, force_set, is_nullable, depends_on, sort_order, label, default_value, form_type, form_options, created_at)
-                                            VALUES (:question_key, :expected_type, :constraints, :force_set, :is_nullable, :depends_on, :sort_order, :label, :default_value, :form_type, :form_options, NOW())',
-                $dto->getInsertParams()
-            );
+            if ($dto->isForceSet()) {
+                $this->addSql('INSERT INTO questionnaire_question (questionnaire_id, question_id) SELECT id, @questionId FROM questionnaire');
+            }
         }
     }
 
