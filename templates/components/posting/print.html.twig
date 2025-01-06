@@ -34,7 +34,7 @@
 
 
         /* Add page breaks where needed */
-        .card-flush {
+        .question-row {
             page-break-inside: avoid;
         }
     </style>
@@ -68,7 +68,7 @@
                     </div>
                     <div class="card-body">
                         {% for field in form.children|filter(field => field.vars.name starts with 'answer_') %}
-                            <div class="mb-3">
+                            <div class="mb-3 question-row">
                                 {{ form_row(field) }}
                             </div>
                         {% endfor %}
