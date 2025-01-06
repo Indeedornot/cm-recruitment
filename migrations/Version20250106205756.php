@@ -44,7 +44,8 @@ final class Version20250106205756 extends AbstractMigration
             new QuestionDto(
                 questionKey: 'candidate_comment',
                 expectedType: 'string',
-                forceSet: true
+                forceSet: true,
+                isNullable: true,
             )
         ];
 
