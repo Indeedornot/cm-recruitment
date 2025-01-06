@@ -26,3 +26,7 @@ services:
     acalvino4\embed\Extension:
         class: acalvino4\embed\Extension
         tags: [ 'twig.extension' ]
+
+    App\Contract\Patterns\Factory\FactoryResolver:
+        arguments:
+            $container: '@service_container'
