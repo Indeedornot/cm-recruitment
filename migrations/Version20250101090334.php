@@ -30,7 +30,6 @@ final class Version20250101090334 extends AbstractMigration
                 expectedType: 'array',
                 constraints: [],
                 forceSet: true,
-                label: 'Kryteria dodatkowe',
                 formType: ChoiceType::class,
                 formOptions: [
                     'choice_factory' => [

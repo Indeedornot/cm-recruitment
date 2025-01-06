@@ -21,10 +21,11 @@ class QuestionDto
         private mixed $defaultValue = null,
         private string $formType = TextType::class,
         private array $formOptions = [],
-        private ?array $additionalData = null
     ) {
         if ($this->label === null) {
             $this->label = 'components.question.' . $this->questionKey;
+        } elseif (str_starts_with($this->label, '.')) {
+            $this->label = 'components.question.' . $this->questionKey . $this->label;
         }
 
         Assert::classExists($this->formType);
