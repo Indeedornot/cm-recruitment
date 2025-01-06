@@ -1,44 +1,61 @@
 {% extends 'layouts/base.html.twig' %}
 
 {% block body %}
-    <i>Zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. w sprawie
-        ochrony osób fizycznych w związku z przetwarzaniem danych osobowych i w sprawie swobodnego przepływu takich
-        danych oraz uchylenia dyrektywy 95/46/WE (Ogólne rozporządzenie o ochronie danych) informujemy, iż:</i>
+    <div class="container container-y">
 
-    <ol>
-        <li>
-            I. Administratorem Państwa danych osobowych i danych osobowych Państwa dziecka jest Centrum Młodzieży im.
-            dr. H. Jordana, ul. Krupnicza 38, 31-123 Kraków, e-mail: sekretariat@cmjordan.krakow.pl.
-        </li>
-        <li>
-            II. Dane osobowe przetwarzane są zgodnie z prawem oświatowym i przepisami RODO.
-        </li>
-        <li>
-            III. W związku z przetwarzaniem danych osobowych, przysługują Państwu następujące prawa:
-            <ol>
-                <li>
-                    1. prawo dostępu do treści danych, prawo do sprostowania danych, prawo do usunięcia danych, prawo do
-                    ograniczenia przetwarzania danych, prawo do wniesienia sprzeciwu,
-                </li>
-                <li>
-                    2. prawo do wniesienia skargi do organu nadzorczego (Prezesa Urzędu Ochrony Danych Osobowych) w
-                    przypadku uznania, że przetwarzanie danych osobowych narusza przepisy Ogólnego rozporządzenia o
-                    ochronie danych.
-                </li>
-            </ol>
-        </li>
-        <li>
-            IV. Podanie przez Państwa danych osobowych jest dobrowolne, lecz niezbędne do realizacji celu, jakim jest
-            uczestnictwo dziecka w zajęciach, organizowanych przez Centrum Młodzieży.
-        </li>
-    </ol>
+        <div class="card">
+            <div class="card-body">
+                <i>Zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. w
+                    sprawie
+                    ochrony osób fizycznych w związku z przetwarzaniem danych osobowych i w sprawie swobodnego przepływu
+                    takich
+                    danych oraz uchylenia dyrektywy 95/46/WE (Ogólne rozporządzenie o ochronie danych) informujemy,
+                    iż:</i>
 
-    <i>Dane kontaktowe inspektora ochrony danych:</i>
-    <i>Dominik Strzebak, UMK, e-mail: inspektor6@mjo.krakow.pl</i>
-    <br/>
+                <ol>
+                    <li>
+                        I. Administratorem Państwa danych osobowych i danych osobowych Państwa dziecka jest Centrum
+                        Młodzieży im.
+                        dr. H. Jordana, ul. Krupnicza 38, 31-123 Kraków, e-mail: sekretariat@cmjordan.krakow.pl.
+                    </li>
+                    <li>
+                        II. Dane osobowe przetwarzane są zgodnie z prawem oświatowym i przepisami RODO.
+                    </li>
+                    <li>
+                        III. W związku z przetwarzaniem danych osobowych, przysługują Państwu następujące prawa:
+                        <ol>
+                            <li>
+                                1. prawo dostępu do treści danych, prawo do sprostowania danych, prawo do usunięcia
+                                danych,
+                                prawo do
+                                ograniczenia przetwarzania danych, prawo do wniesienia sprzeciwu,
+                            </li>
+                            <li>
+                                2. prawo do wniesienia skargi do organu nadzorczego (Prezesa Urzędu Ochrony Danych
+                                Osobowych) w
+                                przypadku uznania, że przetwarzanie danych osobowych narusza przepisy Ogólnego
+                                rozporządzenia o
+                                ochronie danych.
+                            </li>
+                        </ol>
+                    </li>
+                    <li>
+                        IV. Podanie przez Państwa danych osobowych jest dobrowolne, lecz niezbędne do realizacji celu,
+                        jakim
+                        jest
+                        uczestnictwo dziecka w zajęciach, organizowanych przez Centrum Młodzieży.
+                    </li>
+                </ol>
 
-    <a href="{{ path('app_index_index') }}" class="btn btn-primary">
-        <i class="fa-solid fa-home"></i>
-        {{ 'common.back_to_main_page'|trans }}
-    </a>
+                <i>Dane kontaktowe inspektora ochrony danych:</i>
+                <i>Dominik Strzebak, UMK, e-mail: inspektor6@mjo.krakow.pl</i>
+            </div>
+            <div class="card-footer">
+                <a href="{{ path('app_index_index') }}" class="btn btn-primary">
+                    <i class="fa-solid fa-home"></i>
+                    {{ 'common.back_to_main_page'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
