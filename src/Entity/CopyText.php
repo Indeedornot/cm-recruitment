@@ -23,7 +23,7 @@ class CopyText
     #[ORM\Column]
     private string $label;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', nullable: true)]
     private ?string $defaultValue;
 
     #[ORM\Column]
