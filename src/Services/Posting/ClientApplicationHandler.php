@@ -21,8 +21,9 @@ class ClientApplicationHandler
     {
         $applications = $this->postingRepository->find($postingId)->getApplications();
         $applicationPhase = $this->globalConfigRepository->getValue('application_phase');
-        
-        $sorted = [];
+
+        $phases = [
+        ];
         foreach ($applications as $application) {
             $points = 0;
             $bonusCriteria = $application->getValueByKey('bonus_criteria');
@@ -31,13 +32,19 @@ class ClientApplicationHandler
                 $points += array_sum($values);
             }
 
-            $sorted[] = [
+            $phase = $application->getDataByKey('application_phase');
+            $phases[$phase][] = [
                 'application' => $application,
                 'points' => $points
             ];
         }
 
-        usort($sorted, fn($a, $b) => $b['points'] <=> $a['points']);
-        return $sorted;
+        foreach ($phases as $phase => $data) {
+            usort($phases[$phase], function ($a, $b) {
+                return $b['points'] <=> $a['points'];
+            });
+        }
+
+        return array_merge(...array_values($phases));
     }
 }
