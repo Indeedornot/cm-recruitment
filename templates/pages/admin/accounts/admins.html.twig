@@ -24,53 +24,55 @@
                 </a>
             </div>
             <div class="card-body p-0 py-2">
-                <div class="px-2">
-                    {{ pagination.pagination('app_admin_admins', page, total, limit) }}
-                </div>
-                <table class="table table-striped overflow-hidden border table-cells-vertical m-0 my-2">
-                    <thead>
-                    <tr>
-                        <th>{{ 'common.row_number'|trans }}</th>
-                        <th>{{ 'components.user.name'|trans }}</th>
-                        <th>{{ 'components.user.email'|trans }}</th>
-                        <th>{{ 'components.user.status'|trans }}</th>
-                        <th>{{ 'common.actions'|trans }}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for user in users %}
-                        {% set disabled = user.isDisabled %}
+                <form data-hook="paginated" data-action="{{ url('app_admin_admins') }}">
+                    <div class="px-2">
+                        {{ pagination.pagination('app_admin_admins', page, total, limit) }}
+                    </div>
+                    <table class="table table-striped overflow-hidden border table-cells-vertical m-0 my-2">
+                        <thead>
                         <tr>
-                            <td>{{ loop.index + (page - 1) * 10 }}
-                            </td>
-                            <td {% if disabled %} class="text-muted"{% endif %}>{{ user.name }}</td>
-                            <td {% if disabled %} class="text-muted"{% endif %}>{{ user.email }}</td>
-                            <td {% if disabled %} class="text-muted"{% endif %}>{{ 'components.user.account_status'|trans({status: disabled ? 'inactive' : 'active'}) }}</td>
-                            <td>
-                                {% if is_super_admin() %}
-                                    <a type="button"
-                                       class="btn icon-link link-danger disable-user-btn toggle-user-btn"
-                                       href="{{ path('app_admin_disable_account', {'id': user.id}) }}"
-                                       title="{{ 'common.delete'|trans }}"
-                                    >
-                                        <i class="fa-solid fa-user-xmark"></i>
-                                    </a>
-                                    <a
-                                        class="btn icon-link link-primary"
-                                        title="{{ 'common.edit'|trans }}"
-                                        href="{{ path('app_admin_edit_account', {'id': user.id}) }}"
-                                    >
-                                        <i class="fa-solid fa-user-edit"></i>
-                                    </a>
-                                {% endif %}
-                            </td>
+                            <th>{{ 'common.row_number'|trans }}</th>
+                            <th>{{ 'components.user.name'|trans }}</th>
+                            <th>{{ 'components.user.email'|trans }}</th>
+                            <th>{{ 'components.user.status'|trans }}</th>
+                            <th>{{ 'common.actions'|trans }}</th>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-                <div class="px-2">
-                    {{ pagination.pagination('app_admin_admins', page, total, limit) }}
-                </div>
+                        </thead>
+                        <tbody>
+                        {% for user in users %}
+                            {% set disabled = user.isDisabled %}
+                            <tr>
+                                <td>{{ loop.index + (page - 1) * 10 }}
+                                </td>
+                                <td {% if disabled %} class="text-muted"{% endif %}>{{ user.name }}</td>
+                                <td {% if disabled %} class="text-muted"{% endif %}>{{ user.email }}</td>
+                                <td {% if disabled %} class="text-muted"{% endif %}>{{ 'components.user.account_status'|trans({status: disabled ? 'inactive' : 'active'}) }}</td>
+                                <td>
+                                    {% if is_super_admin() %}
+                                        <a type="button"
+                                           class="btn icon-link link-danger disable-user-btn toggle-user-btn"
+                                           href="{{ path('app_admin_disable_account', {'id': user.id}) }}"
+                                           title="{{ 'common.delete'|trans }}"
+                                        >
+                                            <i class="fa-solid fa-user-xmark"></i>
+                                        </a>
+                                        <a
+                                            class="btn icon-link link-primary"
+                                            title="{{ 'common.edit'|trans }}"
+                                            href="{{ path('app_admin_edit_account', {'id': user.id}) }}"
+                                        >
+                                            <i class="fa-solid fa-user-edit"></i>
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="px-2">
+                        {{ pagination.pagination('app_admin_admins', page, total, limit) }}
+                    </div>
+                </form>
             </div>
         </div>
     </div>
