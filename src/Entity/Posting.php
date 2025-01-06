@@ -85,6 +85,9 @@ class Posting
         return $this;
     }
 
+    /**
+     * @return Collection<int, ClientApplication>
+     */
     public function getApplications(): Collection
     {
         return $this->applications;
