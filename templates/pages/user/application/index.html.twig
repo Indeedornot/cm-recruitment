@@ -3,6 +3,7 @@
 
 {% block body %}
     <div class="container container-y">
+        {% include 'common/alerts/display.html.twig' %}
 
         <div class="card">
             <div class="card-header">
@@ -24,11 +25,6 @@
             <div class="card-body">
                 <p>{{ posting.description }}</p>
                 {{ form_start(form) }}
-                {% for message in app.flashes('error') %}
-                    <div class="alert alert-danger">
-                        {{ message|raw }}
-                    </div>
-                {% endfor %}
                 <div class="mb-3">
                     <div class="card">
                         <div class="card-header">
