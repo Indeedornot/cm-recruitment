@@ -50,4 +50,15 @@ class CopyTextDto
             'constraints' => json_encode(Constraint::serializeArray($this->constraints)),
         ];
     }
+
+    public function getText(): string
+    {
+        return $this->text;
+    }
+
+    public function setText(string $text): self
+    {
+        $this->text = $text;
+        return $this;
+    }
 }
