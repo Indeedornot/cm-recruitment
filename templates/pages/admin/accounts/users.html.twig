@@ -43,33 +43,17 @@
                             <td {% if disabled %} class="text-muted"{% endif %}>{{ 'components.user.account_status'|trans({status: disabled ? 'inactive' : 'active'}) }}</td>
                             <td>
                                 {% if is_super_admin() %}
-                                    {% if not disabled %}
-                                        <button type="button"
-                                                class="btn icon-link link-danger disable-user-btn toggle-user-btn"
-                                                data-user-id="{{ user.id }}"
-                                                data-user-name="{{ user.name }}"
-                                                data-path="{{ path('app_admin_disable_account', {'id': user.id}) }}"
-                                                data-type="client"
-                                                title="{{ 'common.delete'|trans }}"
-                                        >
-                                            <i class="fa-solid fa-user-xmark"></i>
-                                        </button>
-                                    {% else %}
-                                        <button type="button"
-                                                class="btn icon-link link-success restore-user-btn toggle-user-btn"
-                                                data-user-id="{{ user.id }}"
-                                                data-user-name="{{ user.name }}"
-                                                data-type="client"
-                                                data-path="{{ path('app_admin_restore_account', {'id': user.id}) }}"
-                                                title="{{ 'common.restore'|trans }}"
-                                        >
-                                            <i class="fa-solid fa-user-slash"></i>
-                                        </button>
-                                    {% endif %}
+                                    <a type="button"
+                                       class="btn icon-link link-danger disable-user-btn toggle-user-btn"
+                                       href="{{ path('app_admin_disable_account', {'id': user.id}) }}"
+                                       title="{{ 'common.delete'|trans }}"
+                                    >
+                                        <i class="fa-solid fa-user-xmark"></i>
+                                    </a>
                                     <a
-                                            class="btn icon-link link-primary"
-                                            title="{{ 'common.edit'|trans }}"
-                                            href="{{ path('app_admin_edit_account', {'id': user.id}) }}"
+                                        class="btn icon-link link-primary"
+                                        title="{{ 'common.edit'|trans }}"
+                                        href="{{ path('app_admin_edit_account', {'id': user.id}) }}"
                                     >
                                         <i class="fa-solid fa-user-edit"></i>
                                     </a>
