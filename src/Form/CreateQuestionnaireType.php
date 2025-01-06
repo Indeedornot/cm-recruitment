@@ -72,6 +72,7 @@ class CreateQuestionnaireType extends AbstractType
                 'choice_label' => function (?Question $question): string {
                     return $question ? $question->getLabel() : '';
                 },
+                'label_html' => true,
                 'by_reference' => true,
                 'choice_value' => 'id',
                 'multiple' => true,
