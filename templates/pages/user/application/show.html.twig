@@ -29,15 +29,15 @@
                                 {% for answer in application.answers %}
                                     <dt class="col-sm-4">{{ answer.question.label|trans }}</dt>
                                     <dd class="col-sm-8">
-                                        {% set readableAnswer = answer.readableAnswer %}
+                                        {% set readableAnswer = questionService.answerLabel(answer) %}
                                         {% if readableAnswer is iterable %}
                                             <ul>
                                                 {% for item in readableAnswer %}
-                                                    <li>{{ item }}</li>
+                                                    <li>{{ item|trans }}</li>
                                                 {% endfor %}
                                             </ul>
                                         {% else %}
-                                            {{ readableAnswer }}
+                                            {{ readableAnswer|trans }}
                                         {% endif %}
                                     </dd>
                                 {% endfor %}

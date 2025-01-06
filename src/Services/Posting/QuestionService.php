@@ -6,8 +6,10 @@ use App\Contract\Patterns\Factory\FactoryResolver;
 use App\Contract\Patterns\Factory\InvokableFactory;
 use App\Contract\Patterns\Factory\ParametrizedFactory;
 use App\Entity\ClientApplication;
+use App\Entity\Posting;
 use App\Entity\Question;
 use App\Entity\QuestionnaireAnswer;
+use App\Repository\BonusCriteriaRepository;
 use App\Repository\GlobalConfigRepository;
 use App\Repository\PostingRepository;
 use App\Repository\PostingTextRepository;
@@ -15,6 +17,7 @@ use App\Repository\QuestionnaireAnswerRepository;
 use App\Security\Services\ExtendedSecurity;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -29,6 +32,7 @@ class QuestionService
         private readonly ExtendedSecurity $security,
         private readonly QuestionnaireAnswerRepository $answerRepository,
         private readonly ValidatorInterface $validator,
+        private readonly BonusCriteriaRepository $bonusCriteriaRepository,
     ) {
     }
 
@@ -37,24 +41,11 @@ class QuestionService
     {
         $application = $builder->getData();
         Assert::isInstanceOf($application, ClientApplication::class);
-        $posting = $application->getPosting();
 
         foreach ($questions as $question) {
-            $formOptions = $question->getFormOptions();
-            if (array_key_exists('choice_factory', $formOptions)) {
-                $choiceFactory = $formOptions['choice_factory'];
-                $factory = $choiceFactory['factory'];
-                $params = array_merge([
-                    'postingId' => $posting->getId(),
-                    'applicationId' => $application->getId(),
-                    'question_key' => $question->getQuestionKey(),
-                ], $choiceFactory['params']);
-                $choices = $this->factoryResolver->resolveFactory($factory)($params);
-                if ($choices === false) {
-                    continue;
-                }
-                $formOptions['choices'] = $choices;
-                unset($formOptions['choice_factory']);
+            $formOptions = $this->getFormOptions($question, $application);
+            if ($formOptions === false) {
+                continue;
             }
 
             $builder->add('answer_' . $question->getId(), $question->getFormType(), array_merge([
@@ -119,5 +110,38 @@ class QuestionService
                 }
             }
         });
+    }
+
+    public function getFormOptions(Question $question, ClientApplication $application): array|false
+    {
+        $posting = $application->getPosting();
+
+        $formOptions = $question->getFormOptions();
+        if (array_key_exists('choice_factory', $formOptions)) {
+            $choiceFactory = $formOptions['choice_factory'];
+            $factory = $choiceFactory['factory'];
+            $params = array_merge([
+                'postingId' => $posting->getId(),
+                'applicationId' => $application->getId(),
+                'question_key' => $question->getQuestionKey(),
+            ], $choiceFactory['params']);
+            $choices = $this->factoryResolver->resolveFactory($factory)($params);
+            if ($choices === false) {
+                return false;
+            }
+            $formOptions['choices'] = $choices;
+            unset($formOptions['choice_factory']);
+        }
+        return $formOptions;
+    }
+
+    public function getAnswerLabel(QuestionnaireAnswer $answer): array|string
+    {
+        $question = $answer->getQuestion();
+        $answer = $answer->getAnswer();
+        if (is_array($answer) && $question->getQuestionKey() === 'bonus_criteria') {
+            return $this->bonusCriteriaRepository->findLabelsByKeys($answer);
+        }
+        return (string)$answer;
     }
 }

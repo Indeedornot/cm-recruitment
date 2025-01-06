@@ -15,6 +15,7 @@ use App\Security\Entity\UserRoles;
 use App\Security\Factory\UserFactory;
 use App\Security\Services\ExtendedSecurity;
 use App\Services\Form\PaginationService;
+use App\Services\Posting\QuestionService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -37,6 +38,7 @@ class UserController extends BaseController
         private readonly TranslatorInterface $translator,
         private readonly PaginationService $pagination,
         private readonly ClientApplicationRepository $applicationRepository,
+        private readonly QuestionService $questionService
     ) {
     }
 
@@ -185,6 +187,7 @@ class UserController extends BaseController
         return $this->render('pages/user/application/show.html.twig', [
             'posting' => $posting,
             'application' => $application,
+            'questionService' => $this->questionService,
         ]);
     }
 

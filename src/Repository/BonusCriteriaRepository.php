@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\BonusCriteria;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -28,5 +30,17 @@ class BonusCriteriaRepository extends ServiceEntityRepository
             ->orderBy('b.sortOrder', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findLabelsByKeys(array $keys): array
+    {
+        $result = $this->createQueryBuilder('b')
+            ->select('b.key, b.label')
+            ->where('b.key IN (:keys)')
+            ->setParameter('keys', $keys, ArrayParameterType::STRING)
+            ->getQuery()
+            ->execute();
+
+        return array_merge(array_map(fn($row) => [$row['key'] => $row['label']], $result));
     }
 }
