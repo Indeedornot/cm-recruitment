@@ -297,6 +297,7 @@ return [
             'house_no' => 'Numer domu',
             'postal_code' => 'Kod pocztowy',
             'address' => 'Adres',
+            'bonus_criteria' => 'Kryteria dodatkowe',
             'criteria' => [
                 'additional_docs' => 'Przewodniczący komisji rekrutacyjnej może żądać dokumentów potwierdzających spełnianie kryteriów dodatkowych przez kandydata',
                 'big_family' => 'Rodzina wielodzietna',
@@ -312,7 +313,14 @@ return [
                 'related_achievement' => 'Kandydat posiada udokumentowane osiągnięcia w dziedzinie/dyscyplinie, w której zajęcia organizowane są w placówce',
                 'volunteer' => 'Kandydat prowadzi / realizuje działalność społeczną, w tym na rzecz środowiska szkolnego, w szczególności w formie wolontariatu',
                 'closest_facility' => 'Placówka, o przyjęcie do której ubiega się kandydat, jest najbliżej położoną od miejsca zamieszkania kandydata publiczną placówką oświatowo-wychowawczą, prowadzącą wybrane zajęcia',
-            ]
+            ],
+            'accept_terms' => [
+                'label' => 'Akceptuję <a href="/regulamin">regulamin</a>',
+            ],
+            'plays_instrument' => 'Jak długo grasz na instrumencie? Na jakim?',
+            'plays_sport' => 'Jak długo uprawiasz sport? Jaki?',
+            'dances' => 'Jak długo tańczysz? Jaki rodzaj tańca?',
+            'candidate_comment' => 'Uwagi kandydata',
         ],
         'global_config' => [
             'application_phase' => [
