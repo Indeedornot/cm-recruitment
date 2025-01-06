@@ -28,7 +28,7 @@ class ClientApplication
     #[ORM\OneToMany(targetEntity: QuestionnaireAnswer::class, mappedBy: 'application', cascade: ['persist', 'remove'])]
     private Collection $answers;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     private array $data = [];
 
     public function __construct()
