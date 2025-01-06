@@ -60,7 +60,8 @@
                                 </div>
                             {% else %}
                                 <ul class="list-group list-group-flush">
-                                    {% for application in clientApplicationHandler.sortedApplications(posting.id) %}
+                                    {% for sortedApplication in clientApplicationHandler.sortedApplications(posting.id) %}
+                                        {% set application = sortedApplication.application %}
                                         <li class="list-group-item justify-content-between d-flex flex-wrap align-items-center">
                                             <div class="col-12 col-sm-auto">
                                                 {{ application.getValueByKey('first_name') }} {{ application.getValueByKey('last_name') }}
