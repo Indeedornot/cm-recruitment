@@ -41,7 +41,7 @@ final class Version20241231233003 extends AbstractMigration
                 true,
                 NumberType::class,
                 [
-                    'row_class' => ['class' => 'col-2 col-lg-1 d-inline-block']
+                    'row_attr' => ['class' => 'mb-3 col-2 col-lg-1 d-inline-block']
                 ]
             ),
             new CopyTextDto(
@@ -50,7 +50,7 @@ final class Version20241231233003 extends AbstractMigration
                 true,
                 NumberType::class,
                 [
-                    'row_attr' => ['class' => 'col-2 col-lg-1 d-inline-block ms-3']
+                    'row_attr' => ['class' => 'mb-3 col-2 col-lg-1 d-inline-block ms-3']
                 ]
             ),
             new CopyTextDto(
