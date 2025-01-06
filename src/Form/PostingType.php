@@ -63,10 +63,16 @@ class PostingType extends AbstractType
             ])
             ->add('closingDate', DateTimeType::class, [
                 'label' => 'components.posting.form.closing_date',
-            ])
-            ->add('questionnaire', CreateQuestionnaireType::class, [
-                'label' => 'components.posting.form.questionnaire',
             ]);
+
+        /** @var Posting|null $posting */
+        $posting = $builder->getData();
+        if (empty($posting) || $posting->getApplications()->isEmpty()) {
+            $builder
+                ->add('questionnaire', CreateQuestionnaireType::class, [
+                    'label' => 'components.posting.form.questionnaire',
+                ]);
+        }
 
         $this->addCopyTextFields($builder);
 

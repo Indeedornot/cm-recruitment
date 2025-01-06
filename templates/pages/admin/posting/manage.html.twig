@@ -24,23 +24,25 @@
                     {{ form_row(copytext) }}
                 {% endfor %}
 
-                <div class="mb-3">
-                    {% set questionnaire %}
-                        {{ form_row(form.questionnaire.questions, {row_class: 'mb-0', attr: {class: 'd-flex flex-column gap-2', 'data-hook': 'dependent-questions'}}) }}
-                    {% endset %}
-                    {% embed 'common/list-accordion/accordion.html.twig' %}
-                        {% embed 'common/list-accordion/accordion-item.html.twig' %}
-                            {% block button %}
-                                {{ form_label(form.questionnaire, null, {element: 'a', 'label_attr': attrs.all}) }}
-                            {% endblock %}
-                            {% block body %}
-                                <div class="px-2 py-2" style="max-height: 200px; overflow-y: auto">
-                                    {{ questionnaire }}
-                                </div>
-                            {% endblock %}
+                {% if form.questionnaire is defined %}
+                    <div class="mb-3">
+                        {% set questionnaire %}
+                            {{ form_row(form.questionnaire.questions, {row_class: 'mb-0', attr: {class: 'd-flex flex-column gap-2', 'data-hook': 'dependent-questions'}}) }}
+                        {% endset %}
+                        {% embed 'common/list-accordion/accordion.html.twig' %}
+                            {% embed 'common/list-accordion/accordion-item.html.twig' %}
+                                {% block button %}
+                                    {{ form_label(form.questionnaire, null, {element: 'a', 'label_attr': attrs.all}) }}
+                                {% endblock %}
+                                {% block body %}
+                                    <div class="px-2 py-2" style="max-height: 200px; overflow-y: auto">
+                                        {{ questionnaire }}
+                                    </div>
+                                {% endblock %}
+                            {% endembed %}
                         {% endembed %}
-                    {% endembed %}
-                </div>
+                    </div>
+                {% endif %}
                 <div class="col-md-12 mb-3">
                     {{ form_button(form, {variant: 'primary', icon: 'user', label: 'common.save'|trans}) }}
                     {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'Back', href: path('app_admin_posting_index')}) }}
