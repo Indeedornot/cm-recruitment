@@ -371,6 +371,7 @@ return [
             'saturday' => 'Sobota',
             'sunday' => 'Niedziela',
         ],
+        'back_to_main_page' => 'Wróć na stronę główną',
     ],
     'emails' => [
         'security' => [
