@@ -34,6 +34,12 @@ trait Timestampable
         return $this;
     }
 
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
     #[ORM\PreUpdate]
     public function setUpdatedAtValue(): void
     {
