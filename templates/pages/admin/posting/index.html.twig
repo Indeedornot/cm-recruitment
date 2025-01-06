@@ -5,23 +5,22 @@
 {% block body %}
 
     <div class="container-y container">
-        <div class="gap-2 d-grid">
-            <div class="card">
-                <div class="card-header">
-                    <h1 class="fs-5 mb-0">{{ 'admin.posting.header'|trans }}</h1>
-                </div>
-                <div class="card-body">
-                    {{ form_start(form) }}
-                    {% include 'components/posting/posting-display-form.html.twig' %}
-                    <div class="postings"></div>
-                    {{ form_end(form) }}
-                </div>
-                <div class="card-footer">
-                    <div class="d-flex w-100 justify-content-center">
-                        <a class="btn btn-primary" href="{{ url('app_admin_posting_create') }}">
-                            {{ 'components.posting.create.create_new'|trans }}
-                        </a>
-                    </div>
+        {% include 'common/alerts/display.html.twig' %}
+        <div class="card">
+            <div class="card-header">
+                <h1 class="fs-5 mb-0">{{ 'admin.posting.header'|trans }}</h1>
+            </div>
+            <div class="card-body">
+                {{ form_start(form) }}
+                {% include 'components/posting/posting-display-form.html.twig' %}
+                <div class="postings"></div>
+                {{ form_end(form) }}
+            </div>
+            <div class="card-footer">
+                <div class="d-flex w-100 justify-content-center">
+                    <a class="btn btn-primary" href="{{ url('app_admin_posting_create') }}">
+                        {{ 'components.posting.create.create_new'|trans }}
+                    </a>
                 </div>
             </div>
         </div>
