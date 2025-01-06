@@ -12,7 +12,7 @@ class QuestionDto
     public function __construct(
         private string $questionKey,
         private string $expectedType,
-        private array $constraints,
+        private array $constraints = [],
         private bool $forceSet = false,
         private bool $isNullable = false,
         private array $dependsOn = [],
@@ -112,17 +112,6 @@ class QuestionDto
     public function setFormOptions(array $formOptions): self
     {
         $this->formOptions = $formOptions;
-        return $this;
-    }
-
-    public function getAdditionalData(): ?array
-    {
-        return $this->additionalData;
-    }
-
-    public function setAdditionalData(?array $additionalData): self
-    {
-        $this->additionalData = $additionalData;
         return $this;
     }
 
