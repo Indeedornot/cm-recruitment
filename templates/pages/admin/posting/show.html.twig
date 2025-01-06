@@ -23,6 +23,7 @@
 
 
     <div class="container container-y">
+        {% include 'common/alerts/display.html.twig' %}
         <div class="card">
             <h4 class="card-header fw-bold">
                 {{ posting.title }}
@@ -42,7 +43,7 @@
                             {% else %}
                                 {% for question in posting.questionnaire.questions %}
                                     <div class="list-group-item">
-                                        {{ loop.index }}. {{ question.label|trans }}
+                                        {{ loop.index }}. {{ question.label|trans|raw }}
                                     </div>
                                 {% endfor %}
                             {% endif %}
@@ -68,6 +69,14 @@
                                             </div>
                                             <div
                                                 class="col-12 col-sm-auto d-flex justify-content-between align-items-center">
+                                                <span class="me-2 badge bg-secondary">
+                                                    {{ application.createdAt.format('Y-m-d H:i:s') }}
+                                                </span>
+                                                <span class="me-2 badge bg-secondary">
+                                                    {{ 'components.posting.points'|trans }}
+                                                    {{ sortedApplication.points }}
+                                                </span>
+
                                                 {% set applicationPhase = application.getDataByKey('application_phase') %}
                                                 {% if applicationPhase %}
                                                     <span class="me-2 badge bg-secondary">
