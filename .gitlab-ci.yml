@@ -30,3 +30,8 @@ deploy_to_test:
             chmod +x docker-start.sh &&
             ./docker-start.sh
             "
+
+        - for i in {1..10}; do
+            curl -s -o /dev/null -w "%{http_code}" http://$DROPLET_IP && break
+            sleep 15
+            done
