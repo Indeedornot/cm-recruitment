@@ -43,4 +43,17 @@ class BonusCriteriaRepository extends ServiceEntityRepository
 
         return array_merge(array_map(fn($row) => [$row['key'] => $row['label']], $result));
     }
+
+    public function getValuesByKeys(string $phase, array $keys): array
+    {
+        $result = $this->createQueryBuilder('b')
+            ->select('b.key, JSON_UNQUOTE(JSON_EXTRACT(b.value, :phase)) as value')
+            ->where('b.key IN (:keys) AND JSON_CONTAINS_PATH(b.value, \'one\', :phase) = 1')
+            ->setParameter('keys', $keys, ArrayParameterType::STRING)
+            ->setParameter('phase', "$.$phase")
+            ->getQuery()
+            ->execute();
+
+        return array_merge(array_map(fn($row) => [$row['key'] => $row['value']], $result));
+    }
 }

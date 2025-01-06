@@ -14,6 +14,7 @@ use App\Security\Entity\Client;
 use App\Security\Entity\UserRoles;
 use App\Security\Services\ExtendedSecurity;
 use App\Services\Form\PaginationService;
+use App\Services\Posting\ClientApplicationHandler;
 use App\Services\Posting\QuestionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +36,8 @@ class PostingController extends BaseController
         private readonly ExtendedSecurity $extendedSecurity,
         private readonly PaginationService $pagination,
         private readonly ClientApplicationRepository $applicationRepository,
-        private readonly QuestionService $questionService
+        private readonly QuestionService $questionService,
+        private readonly ClientApplicationHandler $clientApplicationHandler
     ) {
     }
 
@@ -45,7 +47,8 @@ class PostingController extends BaseController
         $posting = $this->postingRepository->find($id);
         return $this->render('pages/admin/posting/show.html.twig', [
             'posting' => $posting,
-            'questionService' => $this->questionService
+            'questionService' => $this->questionService,
+            'clientApplicationHandler' => $this->clientApplicationHandler,
         ]);
     }
 

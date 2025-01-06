@@ -62,6 +62,8 @@ return [
                 'disable' => [
                     'success' => 'Konto zostało wyłączone.',
                     'already_disabled' => 'To konto jest już wyłączone.',
+                    'has_postings' => 'Nie można wyłączyć konta, które ma przypisane zajęcia.',
+                    'cannot_disable_self' => 'Nie można wyłączyć własnego konta.',
                 ]
             ]
         ],
