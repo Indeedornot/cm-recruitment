@@ -30,10 +30,10 @@ class GlobalConfig
     #[ORM\Column]
     private string $formType = TextType::class;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     private array $formOptions = [];
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', options: ['default' => '[]'])]
     private array $constraints = [];
 
     public function getKey(): ?string

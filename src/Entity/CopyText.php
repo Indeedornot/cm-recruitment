@@ -29,13 +29,13 @@ class CopyText
     #[ORM\Column]
     private bool $required;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', options: ['default' => '[]'])]
     private array $constraints;
 
     #[ORM\Column(type: 'text')]
     private string $formType;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     private array $formOptions;
 
     public function getKey(): string

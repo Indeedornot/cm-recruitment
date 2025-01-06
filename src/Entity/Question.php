@@ -53,11 +53,8 @@ class Question
     #[ORM\Column]
     private string $formType;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     private array $formOptions;
-
-    #[ORM\Column(type: "json", nullable: true)]
-    private ?array $additionalData = null;
 
     public function __construct()
     {
@@ -205,17 +202,6 @@ class Question
     public function setFormType(string $formType): self
     {
         $this->formType = $formType;
-        return $this;
-    }
-
-    public function getAdditionalData(): ?array
-    {
-        return $this->additionalData;
-    }
-
-    public function setAdditionalData(?array $additionalData): self
-    {
-        $this->additionalData = $additionalData;
         return $this;
     }
 }

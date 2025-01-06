@@ -21,10 +21,10 @@ class EmailReport
     #[ORM\Column(type: 'text')]
     private string $body;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', options: ['default' => '[]'])]
     private array $recipients;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', options: ['default' => '[]'])]
     private array $recipientIds;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
