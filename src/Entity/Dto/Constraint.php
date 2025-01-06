@@ -22,6 +22,9 @@ class Constraint
         } else {
             $type = $constraint[0];
         }
+        if (!class_exists($type)) {
+            throw new \InvalidArgumentException("Class $type does not exist");
+        }
 
         if (array_key_exists('options', $constraint)) {
             $options = $constraint['options'];

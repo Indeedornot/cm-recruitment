@@ -40,7 +40,7 @@ final class Version20241231190242 extends AbstractMigration
             $dto = new QuestionDto(
                 $this->newQuestionKey,
                 'string',
-                [[new Assert\NotBlank()]],
+                [[Assert\NotBlank::class]],
                 false
             );
 
