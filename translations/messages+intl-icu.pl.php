@@ -243,6 +243,9 @@ return [
                 'questionnaire' => 'Zestaw pytań',
                 'success' => 'Zajęcia zostały zapisane',
                 'closing_date' => 'Data zakończenia rekrutacji',
+                'error' => [
+                    'delete_with_candidates' => 'Nie można usunąć zajęć, które mają zgłoszonych kandydatów.',
+                ]
             ],
             'copytext' => [
                 'schedule' => 'Termin zajęć',

@@ -14,6 +14,7 @@ use App\Security\Entity\Client;
 use App\Security\Entity\UserRoles;
 use App\Security\Services\ExtendedSecurity;
 use App\Services\Form\PaginationService;
+use App\Services\Posting\QuestionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,7 +34,8 @@ class PostingController extends BaseController
         private EntityManagerInterface $em,
         private readonly ExtendedSecurity $extendedSecurity,
         private readonly PaginationService $pagination,
-        private readonly ClientApplicationRepository $applicationRepository
+        private readonly ClientApplicationRepository $applicationRepository,
+        private readonly QuestionService $questionService
     ) {
     }
 
@@ -43,6 +45,7 @@ class PostingController extends BaseController
         $posting = $this->postingRepository->find($id);
         return $this->render('pages/admin/posting/show.html.twig', [
             'posting' => $posting,
+            'questionService' => $this->questionService
         ]);
     }
 
@@ -88,6 +91,25 @@ class PostingController extends BaseController
         }
 
         return $this->handlePostingForm($posting, $request, ['recreate_form' => true]);
+    }
+
+    #[Route("/delete/{id}", name: "delete", requirements: ['id' => '\d+'])]
+    public function delete(Request $request, int $id): Response
+    {
+        $posting = $this->postingRepository->find($id);
+        if (!$posting->canEdit($this->getAdmin())) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (!$posting->getApplications()->isEmpty()) {
+            $this->addFlash('error', new TranslatableMessage('components.posting.form.error.delete_with_candidates'));
+            return $this->redirectToRoute('app_admin_posting_index');
+        }
+
+        $this->em->remove($posting);
+        $this->em->flush();
+        $this->addFlash('success', new TranslatableMessage('components.posting.form.success'));
+        return $this->redirectToRoute('app_admin_posting_index');
     }
 
     #[Route("/", name: "index")]
