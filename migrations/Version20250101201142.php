@@ -20,12 +20,17 @@ final class Version20250101201142 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql(<<<SQL
+        $exists = $this->connection->fetchAssociative('SELECT * FROM global_config WHERE `key` = :key',
+            ['key' => 'closing_date']);
+
+        if ($exists) {
+            $this->addSql(<<<SQL
                 UPDATE global_config
                 SET value = JSON_QUOTE('2025-06-21 23:59:59')
                 WHERE `key` = 'closing_date'
             SQL
-        );
+            );
+        }
     }
 
     public function down(Schema $schema): void

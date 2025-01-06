@@ -3,8 +3,10 @@
 namespace DoctrineMigrations;
 
 use App\Migration\Dto\GlobalConfigDto;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -13,14 +15,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class Version20250101101950 extends AbstractMigration
 {
-    public function getDescription(): string
-    {
-        return 'Creates initial global configuration settings';
-    }
+    private array $configs = [];
 
-    public function up(Schema $schema): void
+    public function __construct(Connection $connection, LoggerInterface $logger)
     {
-        $configs = [
+        $this->configs = [
 //            new GlobalConfigDto(
 //                key: 'site_name',
 //                defaultValue: 'My Site',
@@ -41,7 +40,6 @@ final class Version20250101101950 extends AbstractMigration
 //            )
             new GlobalConfigDto(
                 key: 'application_phase',
-                label: '.label',
                 defaultValue: 'continuation',
                 formType: ChoiceType::class,
                 formOptions: [
@@ -52,7 +50,8 @@ final class Version20250101101950 extends AbstractMigration
                     ],
                     'help' => 'components.global_config.application_phase.help',
                     'help_html' => true
-                ]
+                ],
+                label: '.label'
             ),
             new GlobalConfigDto(
                 key: 'closing_date',
@@ -72,8 +71,23 @@ final class Version20250101101950 extends AbstractMigration
                 label: '.label'
             )
         ];
+        parent::__construct($connection, $logger);
+    }
 
-        foreach ($configs as $config) {
+    public function getDescription(): string
+    {
+        return 'Creates initial global configuration settings';
+    }
+
+    public function up(Schema $schema): void
+    {
+        foreach ($this->configs as $config) {
+            $exists = $this->connection->fetchAssociative('SELECT * FROM global_config WHERE `key` = :key',
+                ['key' => $config->getKey()]);
+            if ($exists) {
+                continue;
+            }
+
             $this->addSql(
                 'INSERT INTO global_config (`key`, label, value, form_type, form_options, constraints)
                     VALUES (:key, :label, :value, :form_type, :form_options, :constraints)',
@@ -84,6 +98,7 @@ final class Version20250101101950 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->addSql('DELETE FROM global_config WHERE `key` IN ("application_phase", "closing_date")');
+        $keys = array_map(fn(GlobalConfigDto $dto) => $dto->getKey(), $this->configs);
+        $this->addSql('DELETE FROM global_config WHERE `key` IN (:keys)', ['keys' => $keys]);
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DoctrineMigrations;
 
 use App\Migration\Dto\QuestionDto;
+use App\Services\Posting\QuestionService;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -22,40 +23,22 @@ final class Version20250101090334 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE question ADD additional_data JSON DEFAULT NULL');
-
         $questions = [
             new QuestionDto(
                 questionKey: 'bonus_criteria',
                 expectedType: 'array',
                 constraints: [],
+                forceSet: true,
                 label: 'Kryteria dodatkowe',
                 formType: ChoiceType::class,
                 formOptions: [
-                    'choices' => [
-                        'Krakowska Karta Rodzinna 3+' => 'kk3plus',
-                        'Nadzór kuratorski/wsparcie asystenta rodziny' => 'curator',
-                        'Oboje rodziców pracujących/studiujących' => 'working_parents',
-                        'Udokumentowane osiągnięcia' => 'achievements',
-                        'Działalność społeczna/wolontariat' => 'volunteer',
-                        'Najbliższa placówka' => 'closest',
-                        'Jestem świadomy, że komisja może wymagać dodatkowych dokumentów' => 'additional_docs'
+                    'choice_factory' => [
+                        'factory' => QuestionService::class,
+                        'params' => [],
                     ],
                     'multiple' => true,
                     'expanded' => true
-                ],
-//                TODO: Remove
-                additionalData: [
-                    'points' => [
-                        'kk3plus' => 15,
-                        'curator' => 10,
-                        'working_parents' => 10,
-                        'achievements' => 5,
-                        'volunteer' => 5,
-                        'closest' => 5
-                    ]
-                ],
-                forceSet: true
+                ]
             )
         ];
 
@@ -66,7 +49,8 @@ final class Version20250101090334 extends AbstractMigration
                 continue;
             }
 
-            $this->addSql('INSERT INTO question (question_key, expected_type, constraints, force_set, is_nullable, depends_on, sort_order, label, default_value, form_type, form_options, additional_data, created_at) VALUES (:question_key, :expected_type, :constraints, :force_set, :is_nullable, :depends_on, :sort_order, :label, :default_value, :form_type, :form_options, :additional_data, NOW())',
+            $this->addSql('INSERT INTO question (question_key, expected_type, constraints, force_set, is_nullable, depends_on, sort_order, label, default_value, form_type, form_options, created_at)
+                                            VALUES (:question_key, :expected_type, :constraints, :force_set, :is_nullable, :depends_on, :sort_order, :label, :default_value, :form_type, :form_options, NOW())',
                 $dto->getInsertParams()
             );
         }
@@ -74,7 +58,5 @@ final class Version20250101090334 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE question DROP additional_data');
     }
 }
