@@ -63,7 +63,11 @@ class PostingController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($posting);
             $this->em->flush();
-            $form = $this->createForm(PostingType::class);
+            if ($params['recreate_form']) {
+                $form = $this->createForm(PostingType::class, $posting);
+            } else {
+                $form = $this->createForm(PostingType::class);
+            }
 
             $this->addFlash('success', new TranslatableMessage('components.posting.form.success'));
         }
@@ -83,9 +87,7 @@ class PostingController extends BaseController
             throw $this->createAccessDeniedException("You are not allowed to edit this posting");
         }
 
-        return $this->handlePostingForm($posting, $request, [
-            'form' => $this->createForm(PostingType::class, $this->postingRepository->find($id))->createView(),
-        ]);
+        return $this->handlePostingForm($posting, $request, ['recreate_form' => true]);
     }
 
     #[Route("/", name: "index")]
