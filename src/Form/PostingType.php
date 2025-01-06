@@ -79,6 +79,22 @@ class PostingType extends AbstractType
                 }
             }
         });
+    }
+
+    private function addCopyTextFields(FormBuilderInterface $builder): void
+    {
+        /** @var ?Posting $data */
+        $data = $builder->getData();
+        foreach ($this->copyTextRepository->findAll() as $copyText) {
+            $text = $data?->getCopyText($copyText->getKey());
+            $builder->add('copy_' . $copyText->getKey(), $copyText->getFormType(), array_merge([
+                'label' => $copyText->getLabel(),
+                'required' => $copyText->isRequired(),
+                'constraints' => $copyText->getConstraints(),
+                'data' => $text ? $text->getValue() : $copyText->getDefaultValue(),
+                'mapped' => false,
+            ], $copyText->getFormOptions()));
+        }
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             $form = $event->getForm();
@@ -97,22 +113,6 @@ class PostingType extends AbstractType
                 }
             }
         });
-    }
-
-    private function addCopyTextFields(FormBuilderInterface $builder): void
-    {
-        /** @var ?Posting $data */
-        $data = $builder->getData();
-        foreach ($this->copyTextRepository->findAll() as $copyText) {
-            $text = $data?->getCopyText($copyText->getKey());
-            $builder->add('copy_' . $copyText->getKey(), $copyText->getFormType(), array_merge([
-                'label' => $copyText->getLabel(),
-                'required' => $copyText->isRequired(),
-                'constraints' => $copyText->getConstraints(),
-                'data' => $text ? $text->getValue() : $copyText->getDefaultValue(),
-                'mapped' => false,
-            ], $copyText->getFormOptions()));
-        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

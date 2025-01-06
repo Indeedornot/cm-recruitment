@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DoctrineMigrations;
 
 use App\Migration\Dto\QuestionDto;
+use App\Services\Posting\BonusCriteriaFactory;
 use App\Services\Posting\QuestionService;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
@@ -33,7 +34,7 @@ final class Version20250101090334 extends AbstractMigration
                 formType: ChoiceType::class,
                 formOptions: [
                     'choice_factory' => [
-                        'factory' => QuestionService::class,
+                        'factory' => BonusCriteriaFactory::class,
                         'params' => [],
                     ],
                     'multiple' => true,

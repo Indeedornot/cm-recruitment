@@ -96,7 +96,6 @@ return [
             Proszę zalogować się na swoje konto przy użyciu nowego hasła i ponownie spróbować aplikować na ogłoszenie.',
         'email_taken' => 'Podany adres email jest już zajęty.
             <br/>
-            <br/>
             &bull; Spróbuj zalogować się na swoje konto lub skorzystać z opcji "Zapomniałem hasła".',
         'apply_without_account' => [
             'header' => 'Aplikuj bez konta',
@@ -231,6 +230,10 @@ return [
                 'admin' => [
                     'list_header' => 'Pytania do zajęć:',
                     'list_empty' => 'Brak jeszcze pytań specjalnych. Dodaj pytanie, aby zobaczyć je tutaj.',
+                ],
+                'bonus_criteria' => [
+                    'label' => 'Kryteria dodatkowe',
+                    'kk3plus' => 'Krakowska Karta Rodzinna 3+'
                 ]
             ],
             'form' => [
@@ -256,6 +259,7 @@ return [
                     'photography' => 'Fotografia',
                     'creative' => 'Kreatywne',
                 ],
+                'limit' => 'Limit miejsc',
             ]
         ],
         'user' => [
@@ -290,6 +294,22 @@ return [
             'house_no' => 'Numer domu',
             'postal_code' => 'Kod pocztowy',
             'address' => 'Adres',
+            'criteria' => [
+                'additional_docs' => 'additional_docs',
+                'big_family' => 'big_family',
+                'disability' => 'disability',
+                'disabled_parent' => 'disabled_parent',
+                'disabled_parents' => 'disabled_parents',
+                'disabled_sibling' => 'disabled_sibling',
+                'one_parent' => 'one_parent',
+                'foster_family' => 'foster_family',
+                'big_krakow_family' => 'big_krakow_family',
+                'curatorship' => 'curatorship',
+                'both_working_parents' => 'both_working_parents',
+                'related_achievement' => 'related_achievement',
+                'volunteer' => 'volunteer',
+                'closest_facility' => 'closest_facility',
+            ]
         ],
         'global_config' => [
             'application_phase' => [

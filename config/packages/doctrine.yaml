@@ -32,6 +32,9 @@ doctrine:
                 alias: Users
         controller_resolver:
             auto_mapping: false
+        dql:
+            string_functions:
+                JSON_CONTAINS_PATH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonContainsPath
 
 when@test:
     doctrine:

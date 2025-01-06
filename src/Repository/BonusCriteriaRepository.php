@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Repository;
+
+use App\Entity\BonusCriteria;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+
+/**
+ * @extends ServiceEntityRepository<BonusCriteria>
+ */
+class BonusCriteriaRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, BonusCriteria::class);
+    }
+
+    /**
+     * @param string $key
+     * @return BonusCriteria[]
+     */
+    public function findByPhase(string $key): array
+    {
+        return $this->createQueryBuilder('b')
+            ->where('JSON_CONTAINS_PATH(b.value, \'one\', :key) = 1')
+            ->setParameter('key', "$.$key")
+            ->orderBy('b.sortOrder', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+}

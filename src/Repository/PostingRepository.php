@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Posting;
 use App\Entity\PostingText;
 use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Expr;
@@ -114,7 +115,7 @@ class PostingRepository extends ServiceEntityRepository
         return $this->getDisplayPostingsBaseQb();
     }
 
-    public function updateActiveClosingDates(DateTimeImmutable $date): void
+    public function updateActiveClosingDates(DateTimeInterface $date): void
     {
         $this->createQueryBuilder('p')
             ->update()

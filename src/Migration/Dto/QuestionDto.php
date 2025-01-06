@@ -5,6 +5,7 @@ namespace App\Migration\Dto;
 
 use App\Entity\Dto;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Webmozart\Assert\Assert;
 
 class QuestionDto
 {
@@ -24,6 +25,17 @@ class QuestionDto
     ) {
         if ($this->label === null) {
             $this->label = 'components.question.' . $this->questionKey;
+        }
+
+        Assert::classExists($this->formType);
+        Assert::isArray($this->formOptions);
+        if (array_key_exists('choice_factory', $this->formOptions)) {
+            Assert::isArray($this->formOptions['choice_factory']);
+            $choiceFactory = $this->formOptions['choice_factory'];
+            if (array_key_exists('factory', $choiceFactory)) {
+                Assert::classExists($choiceFactory['factory']);
+                Assert::nullOrIsArray($choiceFactory['params']);
+            }
         }
 
         $this->constraints = Dto\Constraint::serializeArray($constraints);
@@ -126,8 +138,7 @@ class QuestionDto
             'sort_order' => 0,
             'default_value' => $this->getDefaultValue(),
             'form_type' => $this->getFormType(),
-            'form_options' => json_encode($this->getFormOptions()),
-            'additional_data' => json_encode($this->getAdditionalData())
+            'form_options' => json_encode($this->getFormOptions())
         ];
     }
 }
