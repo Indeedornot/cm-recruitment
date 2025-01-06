@@ -37,6 +37,7 @@ doctrine:
                 JSON_CONTAINS_PATH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonContainsPath
                 JSON_UNQUOTE: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonUnquote
                 JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
+                JSON_SET: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonSet
 
 when@test:
     doctrine:
