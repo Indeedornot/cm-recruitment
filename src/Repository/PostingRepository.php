@@ -102,7 +102,7 @@ class PostingRepository extends ServiceEntityRepository
 
     public function getAdminDisplayPostingsQb(array $filters = []): QueryBuilder
     {
-        $qb = $this->getDisplayPostingsBaseQb()
+        $qb = $this->getDisplayPostingsBaseQb($filters)
             ->andWhere('p.disabledAt IS NULL')
             ->andWhere('p.completedAt IS NULL')
             ->orderBy('p.title', 'ASC');
@@ -112,7 +112,7 @@ class PostingRepository extends ServiceEntityRepository
 
     public function getDisplayedPostingsQb(array $filters = []): QueryBuilder
     {
-        return $this->getDisplayPostingsBaseQb();
+        return $this->getDisplayPostingsBaseQb($filters);
     }
 
     public function updateActiveClosingDates(DateTimeInterface $date): void
