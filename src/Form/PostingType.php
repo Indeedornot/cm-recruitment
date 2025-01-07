@@ -38,6 +38,10 @@ class PostingType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $data = $builder->getData();
+        $t = $data->getApplications()->toArray();
+        $subPostings = $data->getSubPostings()->toArray();
+
         $builder
             ->add('title', TextType::class, [
                 'label' => 'components.posting.form.title'

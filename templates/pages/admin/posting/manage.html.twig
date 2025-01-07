@@ -19,13 +19,14 @@
                 {#                TODO: Possibly move to copytexts #}
                 {{ form_row(form.closingDate) }}
 
+                {% set subPostings = form.subPostings %}
                 <div class="mb-3 subpostings-wrapper"
-                     data-prototype="{{ form_widget(form.subPostings.vars.prototype)|e('html_attr') }}"
+                     data-prototype="{{ form_widget(subPostings.vars.prototype)|e('html_attr') }}"
                      data-item-selector=".subposting-item"
                      data-add-selector=".add-subposting"
                      data-remove-selector=".remove-subposting"
                      data-item-wrapper-selector="#subposting-wrapper"
-                     data-index="{{ form.subPostings|length }}"
+                     data-index="{{ subPostings|length }}"
                      data-hook="collection-type"
                 >
                     <template id="subposting-wrapper">
@@ -38,26 +39,32 @@
                     </template>
                     {{ form_label(form.subPostings) }}
                     <div>
-                        {% for subPosting in form.subPostings %}
-                            {% embed 'common/list-accordion/accordion.html.twig' %}
-                                {% block content %}
-                                    {% embed 'common/list-accordion/accordion-item.html.twig' %}
-                                        {% block content %}
-                                            {{ form_row(subPosting.datetime) }}
-                                            {{ form_row(subPosting.personLimit) }}
-                                            <button type="button" class="btn btn-danger btn-sm remove-subposting">
-                                                <i class="fa fa-trash"></i> Remove
-                                            </button>
-                                        {% endblock %}
-                                    {% endembed %}
-                                {% endblock %}
-                            {% endembed %}
-                        {% endfor %}
+                        {% embed 'common/list-accordion/accordion.html.twig' %}
+                            {% for subPosting in subPostings %}
+                                {% set body %}
+                                    {{ form_row(subPosting.time) }}
+                                    {{ form_row(subPosting.personLimit) }}
+                                    <button type="button" class="btn btn-danger btn-sm remove-subposting">
+                                        <i class="fa fa-trash"></i> Remove
+                                    </button>
+                                {% endset %}
+
+                                {% embed 'common/list-accordion/accordion-item.html.twig' %}
+                                    {% block buttonText %}
+                                        <i class="fas fa-clock me-2"></i> Time Slot
+                                    {% endblock %}
+                                    {% block body %}
+                                        {{ body }}
+                                    {% endblock %}
+                                {% endembed %}
+                            {% endfor %}
+                        {% endembed %}
                     </div>
                     <button type="button" class="btn btn-secondary btn-sm add-subposting">
                         <i class="fa fa-plus"></i> Add Time Slot
                     </button>
                 </div>
+                {% do form.subPostings.setRendered(true) %}
 
                 {% set copytexts = form.children|filter(field => field.vars.name starts with 'copy_') %}
                 {% for copytext in copytexts %}
