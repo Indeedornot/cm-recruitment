@@ -69,7 +69,7 @@ class PostingController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($posting);
             $this->em->flush();
-            if ($params['recreate_form']) {
+            if (!empty($params['recreate_form'])) {
                 $form = $this->createForm(PostingType::class, $posting);
             } else {
                 $form = $this->createForm(PostingType::class);
