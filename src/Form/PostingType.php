@@ -63,6 +63,15 @@ class PostingType extends AbstractType
             ])
             ->add('closingDate', DateTimeType::class, [
                 'label' => 'components.posting.form.closing_date',
+            ])
+            ->add('subPostings', CollectionType::class, [
+                'entry_type' => SubPostingType::class,
+                'entry_options' => ['label' => false],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'prototype' => true,
+                'label' => 'components.sub_posting.form.label',
             ]);
 
         /** @var Posting|null $posting */

@@ -268,6 +268,14 @@ return [
                 'limit' => 'Limit miejsc',
             ]
         ],
+        'sub_posting' => [
+            'form' => [
+                'title' => 'Tytuł',
+                'time' => 'Termin zajęć',
+                'person_limit' => 'Limit miejsc',
+                'label' => 'Podzajęcia',
+            ]
+        ],
         'user' => [
             'email' => 'Adres email',
             'name' => 'Imię i nazwisko',
