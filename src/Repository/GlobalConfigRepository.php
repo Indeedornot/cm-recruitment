@@ -3,9 +3,15 @@
 namespace App\Repository;
 
 use App\Entity\GlobalConfig;
+use App\Entity\Posting;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @method GlobalConfig|null find($id, $lockMode = null, $lockVersion = null)
+ * @method GlobalConfig|null findOneBy(array $criteria, array $orderBy = null)
+ * @method GlobalConfig[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class GlobalConfigRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -13,6 +19,9 @@ class GlobalConfigRepository extends ServiceEntityRepository
         parent::__construct($registry, GlobalConfig::class);
     }
 
+    /**
+     * @return GlobalConfig[]
+     */
     public function findAll(): array
     {
         return $this->findBy(['disabledAt' => null]);

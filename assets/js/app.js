@@ -1,5 +1,4 @@
-import {debounce} from "./debounce";
-import {throttle} from "./throttle";
-
-window.debounce = debounce;
-window.throttle = throttle;
+import './hooks/collection-type';
+import './hooks/readonlyInput';
+import './hooks/paginated';
+import './hooks/dependent-questions';

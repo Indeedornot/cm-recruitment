@@ -3,11 +3,15 @@
 namespace App\Repository;
 
 use App\Entity\ClientApplication;
+use App\Entity\CopyText;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<ClientApplication>
+ * @method ClientApplication|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ClientApplication|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ClientApplication[] findAll()
+ * @method ClientApplication[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ClientApplicationRepository extends ServiceEntityRepository
 {

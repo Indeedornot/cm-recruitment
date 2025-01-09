@@ -35,6 +35,27 @@
                 {% embed 'common/list-accordion/accordion.html.twig' %}
                     {% embed 'common/list-accordion/accordion-item.html.twig' %}
                         {% block buttonText %}
+                            <span class="fw-semibold">{{ 'components.posting.schedule.admin.list_header'|trans }}</span>
+                        {% endblock %}
+                        {% block body %}
+                            {% if posting.schedules.empty %}
+                                <p class="list-group-item">{{ 'components.posting.schedule.admin.list_empty'|trans }}</p>
+                            {% else %}
+                                {% for schedule in posting.schedules %}
+                                    <div class="list-group-item">
+                                        {{ loop.index }}.
+                                        <b>{{ 'components.posting.schedule.admin.time'|trans }}:</b>
+                                        {{ schedule.time }}
+                                        -
+                                        <b>{{ 'components.posting.schedule.admin.limit'|trans }}:</b>
+                                        {{ schedule.personLimit }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endblock %}
+                    {% endembed %}
+                    {% embed 'common/list-accordion/accordion-item.html.twig' with { index: 1 } %}
+                        {% block buttonText %}
                             <span class="fw-semibold">{{ 'components.posting.question.admin.list_header'|trans }}</span>
                         {% endblock %}
                         {% block body %}
@@ -49,7 +70,7 @@
                             {% endif %}
                         {% endblock %}
                     {% endembed %}
-                    {% embed 'common/list-accordion/accordion-item.html.twig' with { index: 1 } %}
+                    {% embed 'common/list-accordion/accordion-item.html.twig' with { index: 2 } %}
                         {% block buttonText %}
                             <span
                                 class="fw-semibold">{{ 'components.posting.candidate.admin.list_header'|trans }} {{ posting.applications|length }}</span>

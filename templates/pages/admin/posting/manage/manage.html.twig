@@ -1,0 +1,56 @@
+{% extends 'layouts/base.html.twig' %}
+{% form_theme form 'common/forms/bundle.html.twig' %}
+
+{% block body %}
+    <div class="w-100 pt-4  container">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message|trans|raw }}
+            </div>
+        {% endfor %}
+        <div class="card bg-light mb-3">
+            <div class="card-header">{{ 'components.posting.create.header'|trans }}</div>
+            <div class="card-body">
+                {{ form_start(form) }}
+                {{ form_row(form.title) }}
+                {#                TODO: Possibly move to coppytexts #}
+                {{ form_row(form.description) }}
+                {{ form_row(form.assignedTo) }}
+                {#                TODO: Possibly move to copytexts #}
+                {{ form_row(form.closingDate) }}
+
+                {% include 'pages/admin/posting/manage/schedule-form.html.twig' with {form: form, prototype: true} %}
+
+                {% set copytexts = form.children|filter(field => field.vars.name starts with 'copy_') %}
+                {% for copytext in copytexts %}
+                    {{ form_row(copytext) }}
+                {% endfor %}
+
+                {% if form.questionnaire is defined %}
+                    <div class="mb-3">
+                        {% set questionnaire %}
+                            {{ form_row(form.questionnaire.questions, {row_class: 'mb-0', attr: {class: 'd-flex flex-column gap-2', 'data-hook': 'dependent-questions'}}) }}
+                        {% endset %}
+                        {% embed 'common/list-accordion/accordion.html.twig' %}
+                            {% embed 'common/list-accordion/accordion-item.html.twig' %}
+                                {% block button %}
+                                    {{ form_label(form.questionnaire, null, {element: 'a', 'label_attr': attrs.all}) }}
+                                {% endblock %}
+                                {% block body %}
+                                    <div class="px-2 py-2" style="max-height: 200px; overflow-y: auto">
+                                        {{ questionnaire }}
+                                    </div>
+                                {% endblock %}
+                            {% endembed %}
+                        {% endembed %}
+                    </div>
+                {% endif %}
+                <div class="col-md-12 mb-3">
+                    {{ form_button(form, {variant: 'primary', icon: 'user', label: 'common.save'|trans}) }}
+                    {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'Back', href: path('app_admin_posting_index')}) }}
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

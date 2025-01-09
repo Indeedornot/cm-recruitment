@@ -1,0 +1,24 @@
+{% set schedules = form.schedules %}
+<div class="mb-3 schedules-wrapper"
+     data-hook="collection-type"
+     data-prototype="{{ include('pages/admin/posting/manage/schedule-item.html.twig', {schedule: schedules.vars.prototype})|e('html_attr') }}"
+     data-item-selector=".schedule-item"
+     data-items-list-selector=".schedules-accordion"
+     data-add-selector=".add-schedule"
+     data-remove-selector=".remove-schedule"
+     data-index="{{ schedules|length }}"
+     data-hook="collection-type"
+>
+    {{ form_label(form.schedules) }}
+    <div class="mb-3">
+        <div class="list-group schedules-accordion">
+            {% for schedule in schedules %}
+                {% include 'pages/admin/posting/manage/schedule-item.html.twig' %}
+            {% endfor %}
+        </div>
+    </div>
+    <button type="button" class="btn btn-secondary btn-sm add-schedule">
+        <i class="fa fa-plus"></i> Dodaj termin zajęć
+    </button>
+</div>
+{% do form.schedules.setRendered(true) %}

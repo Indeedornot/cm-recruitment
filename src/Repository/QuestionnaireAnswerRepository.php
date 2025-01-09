@@ -2,12 +2,16 @@
 
 namespace App\Repository;
 
+use App\Entity\Questionnaire;
 use App\Entity\QuestionnaireAnswer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<QuestionnaireAnswer>
+ * @method QuestionnaireAnswer|null find($id, $lockMode = null, $lockVersion = null)
+ * @method QuestionnaireAnswer|null findOneBy(array $criteria, array $orderBy = null)
+ * @method QuestionnaireAnswer[] findAll()
+ * @method QuestionnaireAnswer[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class QuestionnaireAnswerRepository extends ServiceEntityRepository
 {

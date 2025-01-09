@@ -1,0 +1,26 @@
+{% if prototype is defined and prototype %}
+    {% set accordionId = '__name__' %}
+{% endif %}
+
+
+<div class="list-group-item d-flex align-items-center schedule-item">
+    <div class="d-flex flex-grow-1 row px-2">
+        <div class="col-12 col-md-8 d-inline-block pe-2">
+            {{ form_widget(schedule.time, {
+                attr: {
+                    placeholder: schedule.time.vars.label
+                }
+            }) }}
+        </div>
+        <div class="col-12 col-md-4 d-inline-block">
+            {{ form_widget(schedule.personLimit, {
+                attr: {
+                    placeholder: schedule.personLimit.vars.label
+                }
+            }) }}
+        </div>
+    </div>
+    <button type="button" class="btn btn-danger btn-sm remove-schedule">
+        <i class="fa fa-trash"></i>
+    </button>
+</div>

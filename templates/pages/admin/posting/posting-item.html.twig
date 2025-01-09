@@ -30,7 +30,7 @@
     buttonClasses: posting.isClosed ? 'bg-light' : '',
 } %}
     {% block buttonText %}
-        <div class="d-flex justify-content-between flex-wrap">
+        <div class="d-flex justify-content-between flex-wrap flex-column flex-lg-row">
             <div>
                 <span class="text-muted">
                     {{ loop.index }}.
@@ -39,25 +39,31 @@
                     {{ posting.title }}
                 </span>
             </div>
-            <span class="d-flex flex-wrap">
-                <span class="text-secondary px-1">{{ posting.assignedTo.name }}</span>
+            <span class="d-flex flex-wrap flex-column flex-md-row">
+                <span>
+                    <span class="text-secondary px-1">{{ posting.assignedTo.name }}</span>
                     |
-                <span class="gap-1 d-flex px-1">
-                    <span class="text-muted">
-                        {{ 'components.posting.closing_date'|trans }}:
-                    </span>
-                    {{ posting.closingDate|date('Y-m-d') }}
-                    <div>
-                        {% if posting.isClosed %}
-                            <i class="fa-solid fa-lock text-muted"></i>
-                        {% else %}
-                            <i class="fa-solid fa-unlock"></i>
-                        {% endif %}
-                    </div>
                 </span>
+                <span class="d-flex">
+                    <span class="gap-1 d-flex px-1">
+                        <span class="text-muted">
+                            {{ 'components.posting.closing_date'|trans }}:
+                        </span>
+                        {{ posting.closingDate|date('Y-m-d') }}
+                        <div>
+                            {% if posting.isClosed %}
+                                <i class="fa-solid fa-lock text-muted"></i>
+                            {% else %}
+                                <i class="fa-solid fa-unlock"></i>
+                            {% endif %}
+                        </div>
+                    </span>
                     |
-                <span class="ps-1">
-                    {{ 'components.posting.candidates_count'|trans({count: posting.applications|length})|raw }}
+                </span>
+                <span>
+                    <span class="ps-1">
+                        {{ 'components.posting.candidates_count'|trans({count: posting.applications|length})|raw }}
+                    </span>
                 </span>
             </span>
         </div>

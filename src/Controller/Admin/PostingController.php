@@ -69,7 +69,7 @@ class PostingController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($posting);
             $this->em->flush();
-            if ($params['recreate_form']) {
+            if (!empty($params['recreate_form'])) {
                 $form = $this->createForm(PostingType::class, $posting);
             } else {
                 $form = $this->createForm(PostingType::class);
@@ -78,7 +78,7 @@ class PostingController extends BaseController
             $this->addFlash('success', new TranslatableMessage('components.posting.form.success'));
         }
 
-        return $this->render('pages/admin/posting/manage.html.twig', array_merge([
+        return $this->render('pages/admin/posting/manage/manage.html.twig', array_merge([
             'form' => $form->createView(),
         ], $params));
     }

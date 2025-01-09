@@ -36,14 +36,13 @@ Encore
   .setPublicPath(process.env.PUBLIC_DIR)
   // only needed for CDN's or subdirectory deploy
   .setManifestKeyPrefix('build/')
-
   /*
    * ENTRY CONFIG
    *
    * Each entry will result in one JavaScript file (e.g. app.js)
    * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
    */
-  .addEntry('app', './assets/app.js')
+  .addEntry('app', './assets/app.ts')
 
   .copyFiles({
     from: './assets/images',
@@ -88,7 +87,7 @@ Encore
   .enableSassLoader()
 
   // uncomment if you use TypeScript
-  //.enableTypeScriptLoader()
+  .enableTypeScriptLoader()
 
   // uncomment if you use React
   //.enableReactPreset()
