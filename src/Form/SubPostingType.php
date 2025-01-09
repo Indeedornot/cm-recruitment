@@ -17,27 +17,18 @@ class SubPostingType extends AbstractType
         $builder
             ->add('title', TextType::class, [
                 'label' => 'components.sub_posting.form.title',
-                'required' => true,
-                'row_attr' => [
-                    'class' => 'col-12 col-md-4 d-inline-block pe-2 mb-3',
-                ],
+                'required' => true
             ])
             ->add('time', TextType::class, [
                 'label' => 'components.sub_posting.form.time',
-                'required' => true,
-                'row_attr' => [
-                    'class' => 'col-12 col-md-4 d-inline-block pe-2 mb-3',
-                ],
+                'required' => true
             ])
             ->add('personLimit', IntegerType::class, [
                 'label' => 'components.sub_posting.form.person_limit',
                 'required' => true,
                 'attr' => [
                     'min' => 1,
-                ],
-                'row_attr' => [
-                    'class' => 'col-12 col-md-4 d-inline-block mb-3',
-                ],
+                ]
             ]);
     }
 

@@ -39,12 +39,12 @@
     {% endblock %}
 {% endset %}
 
-<div class="list-group-item p-0 overflow-hidden">
+<div class="list-group-item p-0 overflow-hidden {{ containerClass|default('') }}">
     {{ header }}
     {% if hasContent %}
         <div id="{{ itemId }}"
              class="collapse{% if open %} show{% endif %} border-top"
-             data-bs-parent="#{{ accordionId }}"
+             data-bs-parent="{% if not parent|default(false) %}#{{ accordionId }}{% else %}{{ parent }}{% endif %}"
         >
             {% block collapse %}
                 {% block body %}

@@ -78,7 +78,7 @@ class PostingController extends BaseController
             $this->addFlash('success', new TranslatableMessage('components.posting.form.success'));
         }
 
-        return $this->render('pages/admin/posting/manage.html.twig', array_merge([
+        return $this->render('pages/admin/posting/manage/manage.html.twig', array_merge([
             'form' => $form->createView(),
         ], $params));
     }

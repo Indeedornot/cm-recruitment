@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Entity\Trait\Identified;
 use App\Entity\Trait\Timestampable;
 use App\Repository\SubPostingRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
 
@@ -18,6 +20,9 @@ class SubPosting
     #[ORM\ManyToOne(targetEntity: Posting::class, inversedBy: 'subPostings')]
     private Posting $posting;
 
+    #[ORM\OneToMany(targetEntity: ClientApplication::class, mappedBy: 'subPosting')]
+    private Collection $applications;
+
     #[ORM\Column(type: 'string')]
     private string $title;
 
@@ -26,6 +31,11 @@ class SubPosting
 
     #[ORM\Column(type: 'integer')]
     private int $personLimit;
+
+    public function __construct()
+    {
+        $this->applications = new ArrayCollection();
+    }
 
     public function getPersonLimit(): int
     {

@@ -25,6 +25,9 @@ class ClientApplication
     #[ORM\ManyToOne(targetEntity: Posting::class, inversedBy: 'applications')]
     private Posting $posting;
 
+    #[ORM\ManyToOne(targetEntity: SubPosting::class, inversedBy: 'applications')]
+    private ?SubPosting $subPosting;
+
     #[ORM\OneToMany(targetEntity: QuestionnaireAnswer::class, mappedBy: 'application', cascade: ['persist', 'remove'])]
     private Collection $answers;
 
@@ -101,6 +104,17 @@ class ClientApplication
     public function setDataByKey(string $key, mixed $value): self
     {
         $this->data[$key] = $value;
+        return $this;
+    }
+
+    public function getSubPosting(): ?SubPosting
+    {
+        return $this->subPosting;
+    }
+
+    public function setSubPosting(?SubPosting $subPosting): self
+    {
+        $this->subPosting = $subPosting;
         return $this;
     }
 }

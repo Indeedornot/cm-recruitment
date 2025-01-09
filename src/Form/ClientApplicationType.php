@@ -3,20 +3,14 @@
 namespace App\Form;
 
 use App\Entity\ClientApplication;
-use App\Entity\QuestionnaireAnswer;
+use App\Entity\SubPosting;
 use App\Repository\QuestionnaireAnswerRepository;
 use App\Security\Services\ExtendedSecurity;
 use App\Services\Posting\QuestionService;
-use LogicException;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Form\ApplyQuestionnaireType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Webmozart\Assert\Assert;
 
@@ -39,6 +33,17 @@ class ClientApplicationType extends AbstractType
 
         Assert::isInstanceOf($application, ClientApplication::class);
 
+        if (!$posting->getSubPostings()->isEmpty()) {
+            $builder->add('subPosting', ChoiceType::class, [
+                'choices' => $posting->getSubPostings()->toArray(),
+                'choice_label' => function (SubPosting $subPosting) {
+                    return $subPosting->getTitle() . ' ' . $subPosting->getTime();
+                },
+                'choice_name' => 'title',
+                'label' => 'Wybierz podzajęcia',
+                'required' => true,
+            ]);
+        }
         $this->questionService->addQuestions($builder, $questions);
         $this->questionService->fillPreviousAnswers($builder, $questions, $application->getAnswers());
         $this->questionService->addAnswerSubmitHandler($builder);
