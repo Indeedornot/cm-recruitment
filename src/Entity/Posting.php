@@ -51,6 +51,12 @@ class Posting
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?DateTimeImmutable $completedAt = null;
 
+    #[ORM\OneToMany(targetEntity: Schedule::class, mappedBy: 'posting', cascade: [
+        'persist',
+        'remove'
+    ], orphanRemoval: true)]
+    private Collection $schedules;
+
     #[ORM\OneToMany(targetEntity: PostingText::class, mappedBy: 'posting', cascade: [
         'persist',
         'remove'
@@ -61,6 +67,7 @@ class Posting
     {
         $this->applications = new ArrayCollection();
         $this->copyTexts = new ArrayCollection();
+        $this->schedules = new ArrayCollection();
     }
 
     public function getDescription(): string
@@ -193,5 +200,34 @@ class Posting
                 ->atPath('disabledAt')
                 ->addViolation();
         }
+    }
+
+    /**
+     * @return Collection<int, Schedule>
+     */
+    public function getSchedules(): Collection
+    {
+        return $this->schedules;
+    }
+
+    public function setSchedules(Collection $schedules): self
+    {
+        $this->schedules = $schedules;
+        return $this;
+    }
+
+    public function addSchedule(Schedule $schedule): self
+    {
+        if (!$this->schedules->contains($schedule)) {
+            $this->schedules->add($schedule);
+            $schedule->setPosting($this);
+        }
+        return $this;
+    }
+
+    public function removeSchedule(Schedule $schedule): self
+    {
+        $this->schedules->removeElement($schedule);
+        return $this;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Posting;
 use App\Entity\PostingText;
+use App\Entity\QuestionnaireAnswer;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\ParameterType;
@@ -12,7 +13,10 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<PostingText>
+ * @method PostingText|null find($id, $lockMode = null, $lockVersion = null)
+ * @method PostingText|null findOneBy(array $criteria, array $orderBy = null)
+ * @method PostingText[] findAll()
+ * @method PostingText[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class PostingTextRepository extends ServiceEntityRepository
 {

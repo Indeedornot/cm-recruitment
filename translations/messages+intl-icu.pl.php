@@ -239,6 +239,14 @@ return [
                     'kk3plus' => 'Krakowska Karta Rodzinna 3+'
                 ]
             ],
+            'schedule' => [
+                'admin' => [
+                    'list_header' => 'Terminy zajęć:',
+                    'list_empty' => 'Brak jeszcze żadnych terminów zajęć. Dodaj termin, aby zobaczyć je tutaj.',
+                    'limit' => 'Limit miejsc',
+                    'time' => 'Termin zajęć',
+                ]
+            ],
             'form' => [
                 'title' => 'Tytuł',
                 'description' => 'Dodatkowe informacje',
@@ -248,10 +256,10 @@ return [
                 'closing_date' => 'Data zakończenia rekrutacji',
                 'error' => [
                     'delete_with_candidates' => 'Nie można usunąć zajęć, które mają zgłoszonych kandydatów.',
-                ]
+                ],
+                'limit' => 'Limit miejsc:',
             ],
             'copytext' => [
-                'schedule' => 'Termin zajęć',
                 'age_min' => 'Wiek min.',
                 'age_max' => 'Wiek maks.',
                 'category' => [
@@ -265,7 +273,13 @@ return [
                     'photography' => 'Fotografia',
                     'creative' => 'Kreatywne',
                 ],
-                'limit' => 'Limit miejsc',
+            ]
+        ],
+        'schedule' => [
+            'form' => [
+                'time' => 'Termin zajęć',
+                'person_limit' => 'Limit miejsc',
+                'label' => 'Terminy zajęć',
             ]
         ],
         'user' => [

@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Posting;
 use App\Entity\PostingText;
+use App\Entity\Schedule;
 use App\Repository\GlobalConfigRepository;
 use App\Security\Entity\Admin;
 use App\Security\Repository\UserRepository;
@@ -38,6 +39,15 @@ class PostingType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var Posting $data */
+        $data = $builder->getData();
+        $t = $data->getApplications()->toArray();
+        $schedules = $data->getSchedules()->toArray();
+        // Ensure at least one Schedule is present
+        if ($data->getSchedules()->isEmpty()) {
+            $data->addSchedule(new Schedule());
+        }
+
         $builder
             ->add('title', TextType::class, [
                 'label' => 'components.posting.form.title'
@@ -63,6 +73,15 @@ class PostingType extends AbstractType
             ])
             ->add('closingDate', DateTimeType::class, [
                 'label' => 'components.posting.form.closing_date',
+            ])
+            ->add('schedules', CollectionType::class, [
+                'entry_type' => ScheduleType::class,
+                'entry_options' => ['label' => false],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'prototype' => true,
+                'label' => 'components.schedule.form.label',
             ]);
 
         /** @var Posting|null $posting */

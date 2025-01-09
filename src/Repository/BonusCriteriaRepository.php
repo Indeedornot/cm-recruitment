@@ -3,13 +3,17 @@
 namespace App\Repository;
 
 use App\Entity\BonusCriteria;
+use App\Entity\ClientApplication;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<BonusCriteria>
+ * @method BonusCriteria|null find($id, $lockMode = null, $lockVersion = null)
+ * @method BonusCriteria|null findOneBy(array $criteria, array $orderBy = null)
+ * @method BonusCriteria[] findAll()
+ * @method BonusCriteria[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class BonusCriteriaRepository extends ServiceEntityRepository
 {
