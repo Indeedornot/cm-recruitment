@@ -28,6 +28,8 @@
             </div>
             <div class="card-body">
                 <p>{{ posting.description }}</p>
+                <p><b>{{ 'components.posting.copytext.schedule'|trans }}:</b> {{ posting.copyText('schedule').value }}
+                </p>
 
                 {#                {% if hasApplied %} #}
                 {#                    {% embed 'common/collapse/collapse.html.twig' with {type: 'a'} %} #}

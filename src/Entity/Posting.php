@@ -51,11 +51,11 @@ class Posting
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?DateTimeImmutable $completedAt = null;
 
-    #[ORM\OneToMany(targetEntity: SubPosting::class, mappedBy: 'posting', cascade: [
+    #[ORM\OneToMany(targetEntity: Schedule::class, mappedBy: 'posting', cascade: [
         'persist',
         'remove'
     ], orphanRemoval: true)]
-    private Collection $subPostings;
+    private Collection $schedules;
 
     #[ORM\OneToMany(targetEntity: PostingText::class, mappedBy: 'posting', cascade: [
         'persist',
@@ -67,7 +67,7 @@ class Posting
     {
         $this->applications = new ArrayCollection();
         $this->copyTexts = new ArrayCollection();
-        $this->subPostings = new ArrayCollection();
+        $this->schedules = new ArrayCollection();
     }
 
     public function getDescription(): string
@@ -203,31 +203,31 @@ class Posting
     }
 
     /**
-     * @return Collection<int, SubPosting>
+     * @return Collection<int, Schedule>
      */
-    public function getSubPostings(): Collection
+    public function getSchedules(): Collection
     {
-        return $this->subPostings;
+        return $this->schedules;
     }
 
-    public function setSubPostings(Collection $subPostings): self
+    public function setSchedules(Collection $schedules): self
     {
-        $this->subPostings = $subPostings;
+        $this->schedules = $schedules;
         return $this;
     }
 
-    public function addSubPosting(SubPosting $subPosting): self
+    public function addSchedule(Schedule $schedule): self
     {
-        if (!$this->subPostings->contains($subPosting)) {
-            $this->subPostings->add($subPosting);
-            $subPosting->setPosting($this);
+        if (!$this->schedules->contains($schedule)) {
+            $this->schedules->add($schedule);
+            $schedule->setPosting($this);
         }
         return $this;
     }
 
-    public function removeSubPosting(SubPosting $subPosting): self
+    public function removeSchedule(Schedule $schedule): self
     {
-        $this->subPostings->removeElement($subPosting);
+        $this->schedules->removeElement($schedule);
         return $this;
     }
 }

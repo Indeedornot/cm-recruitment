@@ -47,8 +47,7 @@ const useCollectionType = (wrapper: HTMLElement): void => {
   const addCollectionItem = (): void => {
     try {
       const newForm = config.prototype
-        .replace(/__name__/g, config.index.toString())
-        .replace(/__name1__/g, (config.index + 1).toString());
+        .replace(/__name__/g, config.index.toString());
       const temp = document.createElement('template');
       temp.innerHTML = newForm;
       const item = temp.content.cloneNode(true);
@@ -67,7 +66,6 @@ const useCollectionType = (wrapper: HTMLElement): void => {
   const removeCollectionItem = (event: Event): void => {
     const target = event.target as HTMLElement;
     const removeButton = target.closest(config.removeSelector);
-
     if (removeButton) {
       const item = removeButton.closest(config.itemSelector);
       item?.remove();
@@ -77,6 +75,7 @@ const useCollectionType = (wrapper: HTMLElement): void => {
   // Event listeners
   elements.addButton.addEventListener('click', addCollectionItem);
   wrapper.addEventListener('click', removeCollectionItem);
+  console.log('Collection type initialized', {config, elements, wrapper});
 };
 
 document.addEventListener('DOMContentLoaded', () => {

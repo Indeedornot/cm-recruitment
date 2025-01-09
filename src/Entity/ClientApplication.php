@@ -25,8 +25,8 @@ class ClientApplication
     #[ORM\ManyToOne(targetEntity: Posting::class, inversedBy: 'applications')]
     private Posting $posting;
 
-    #[ORM\ManyToOne(targetEntity: SubPosting::class, inversedBy: 'applications')]
-    private ?SubPosting $subPosting;
+    #[ORM\ManyToOne(targetEntity: Schedule::class, inversedBy: 'applications')]
+    private ?Schedule $schedule;
 
     #[ORM\OneToMany(targetEntity: QuestionnaireAnswer::class, mappedBy: 'application', cascade: ['persist', 'remove'])]
     private Collection $answers;
@@ -107,14 +107,14 @@ class ClientApplication
         return $this;
     }
 
-    public function getSubPosting(): ?SubPosting
+    public function getSchedule(): ?Schedule
     {
-        return $this->subPosting;
+        return $this->schedule;
     }
 
-    public function setSubPosting(?SubPosting $subPosting): self
+    public function setSchedule(?Schedule $schedule): self
     {
-        $this->subPosting = $subPosting;
+        $this->schedule = $schedule;
         return $this;
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\ClientApplication;
-use App\Entity\SubPosting;
+use App\Entity\Schedule;
 use App\Repository\QuestionnaireAnswerRepository;
 use App\Security\Services\ExtendedSecurity;
 use App\Services\Posting\QuestionService;
@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Webmozart\Assert\Assert;
 
 class ClientApplicationType extends AbstractType
@@ -20,7 +21,8 @@ class ClientApplicationType extends AbstractType
         private ExtendedSecurity $security,
         private QuestionnaireAnswerRepository $answerRepository,
         private readonly ValidatorInterface $validator,
-        private QuestionService $questionService
+        private QuestionService $questionService,
+        private TranslatorInterface $translator
     ) {
     }
 
@@ -33,17 +35,21 @@ class ClientApplicationType extends AbstractType
 
         Assert::isInstanceOf($application, ClientApplication::class);
 
-        if (!$posting->getSubPostings()->isEmpty()) {
-            $builder->add('subPosting', ChoiceType::class, [
-                'choices' => $posting->getSubPostings()->toArray(),
-                'choice_label' => function (SubPosting $subPosting) {
-                    return $subPosting->getTitle() . ' ' . $subPosting->getTime();
-                },
-                'choice_name' => 'title',
-                'label' => 'Wybierz podzajęcia',
-                'required' => true,
-            ]);
+        $scheduleCount = $posting->getSchedules()->count();
+        $builder->add('schedule', ChoiceType::class, [
+            'choices' => $posting->getSchedules()->toArray(),
+            'choice_label' => function (Schedule $schedule) {
+                return $schedule->getTime() . ' (' . $this->translator->trans('components.posting.form.limit') . ' ' . $schedule->getPersonLimit() . ')';
+            },
+            'label_html' => true,
+            'label' => 'Wybierz termin',
+            'required' => true,
+            'disabled' => $scheduleCount === 1,
+        ]);
+        if ($scheduleCount === 1) {
+            $application->setSchedule($posting->getSchedules()->first());
         }
+
         $this->questionService->addQuestions($builder, $questions);
         $this->questionService->fillPreviousAnswers($builder, $questions, $application->getAnswers());
         $this->questionService->addAnswerSubmitHandler($builder);

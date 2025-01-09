@@ -19,7 +19,7 @@
                 {#                TODO: Possibly move to copytexts #}
                 {{ form_row(form.closingDate) }}
 
-                {% include 'pages/admin/posting/manage/subposting-form.html.twig' with {form: form, prototype: true} %}
+                {% include 'pages/admin/posting/manage/schedule-form.html.twig' with {form: form, prototype: true} %}
 
                 {% set copytexts = form.children|filter(field => field.vars.name starts with 'copy_') %}
                 {% for copytext in copytexts %}

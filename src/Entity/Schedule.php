@@ -4,27 +4,24 @@ namespace App\Entity;
 
 use App\Entity\Trait\Identified;
 use App\Entity\Trait\Timestampable;
-use App\Repository\SubPostingRepository;
+use App\Repository\ScheduleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
 
-#[ORM\Entity(repositoryClass: SubPostingRepository::class)]
+#[ORM\Entity(repositoryClass: ScheduleRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class SubPosting
+class Schedule
 {
     use Identified;
     use Timestampable;
 
-    #[ORM\ManyToOne(targetEntity: Posting::class, inversedBy: 'subPostings')]
+    #[ORM\ManyToOne(targetEntity: Posting::class, inversedBy: 'schedules')]
     private Posting $posting;
 
-    #[ORM\OneToMany(targetEntity: ClientApplication::class, mappedBy: 'subPosting')]
+    #[ORM\OneToMany(targetEntity: ClientApplication::class, mappedBy: 'schedule')]
     private Collection $applications;
-
-    #[ORM\Column(type: 'string')]
-    private string $title;
 
     #[ORM\Column(type: 'string')]
     private string $time;
@@ -56,17 +53,6 @@ class SubPosting
     public function setTime(string $time): self
     {
         $this->time = $time;
-        return $this;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
         return $this;
     }
 
