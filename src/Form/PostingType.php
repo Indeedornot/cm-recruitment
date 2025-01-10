@@ -41,8 +41,10 @@ class PostingType extends AbstractType
     {
         /** @var Posting $data */
         $data = $builder->getData();
-        $t = $data->getApplications()->toArray();
-        $schedules = $data->getSchedules()->toArray();
+        if (empty($data->getAssignedTo())) {
+            $data->setAssignedTo($this->security->getUser());
+        }
+
         // Ensure at least one Schedule is present
         if ($data->getSchedules()->isEmpty()) {
             $data->addSchedule(new Schedule());
