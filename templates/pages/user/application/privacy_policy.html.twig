@@ -1,59 +1,59 @@
 {% extends 'layouts/base.html.twig' %}
 
 {% block body %}
-    <div class="card card-flush">
-        <h1 class="card-header bg-transparent">
-            {{ 'privacy_policy.header'|trans|raw }}
-        </h1>
+    <div class="container container-y">
+        <div class="card">
+            <h1 class="card-header">
+                {{ 'privacy_policy.header'|trans|raw }}
+            </h1>
 
-        <div class="card-body">
-            {% embed 'common/accordion.html.twig' %}
-                {% embed 'common/accordion-item.html.twig' with { index: 0 } %}
-                    {% block buttonText %}
-                        {% do attrs.append('class', 'test', true) %}
-                        {{ 'privacy_policy.apply_without_account.header'|trans }}
-                    {% endblock %}
-                    {% block body %}
-                        <p>
+            <div class="card-body">
+                {% embed 'common/accordion.html.twig' with { classes: 'shadow-sm' } %}
+                    {% embed 'common/accordion-item.html.twig' with { index: 0 } %}
+                        {% block buttonText %}
+                            {% do attrs.append('class', 'test', true) %}
+                            {{ 'privacy_policy.apply_without_account.header'|trans }}
+                        {% endblock %}
+                        {% block body %}
+                            <p>
                             <span>
                                 {{ 'privacy_policy.apply_without_account.text'|trans|raw }}
                             </span>
 
-                            <br/><br/>
-
-                            {#                            TODO: Privacy policy #}
-                            <span>
+                                <br/><br/>
+                                <span>
                             &bull; Kontynuując, zgadzasz się na naszą <a href="{{ url('app_user_privacy_policy') }}">politykę prywatności</a>.
                             </span>
-                        </p>
+                            </p>
 
-                        <div>
-                            <form method="post">
-                                <input type="hidden" name="ACCEPT_PRIVACY_POLICY" value="1"/>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa-solid fa-user-plus"></i>
-                                    {{ 'privacy_policy.apply_without_account.submit'|trans }}
-                                </button>
-                            </form>
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-                {% embed 'common/accordion-item.html.twig' with { index: 1 } %}
-                    {% block buttonText %}
-                        {{ 'privacy_policy.apply_with_account.header'|trans }}
-                    {% endblock %}
-                    {% block body %}
-                        <p>
-                            {{ 'privacy_policy.apply_with_account.text'|trans|raw }}
-                        </p>
+                            <div>
+                                <form method="post">
+                                    <input type="hidden" name="ACCEPT_PRIVACY_POLICY" value="1"/>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa-solid fa-user-plus"></i>
+                                        {{ 'privacy_policy.apply_without_account.submit'|trans }}
+                                    </button>
+                                </form>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
+                    {% embed 'common/accordion-item.html.twig' with { index: 1 } %}
+                        {% block buttonText %}
+                            {{ 'privacy_policy.apply_with_account.header'|trans }}
+                        {% endblock %}
+                        {% block body %}
+                            <p>
+                                {{ 'privacy_policy.apply_with_account.text'|trans|raw }}
+                            </p>
 
-                        <a href="{{ path('app_login') }}" class="btn btn-primary">
-                            <i class="fa-solid fa-door-open"></i>
-                            {{ 'privacy_policy.apply_with_account.submit'|trans }}
-                        </a>
-                    {% endblock %}
+                            <a href="{{ path('app_login') }}" class="btn btn-primary">
+                                <i class="fa-solid fa-door-open"></i>
+                                {{ 'privacy_policy.apply_with_account.submit'|trans }}
+                            </a>
+                        {% endblock %}
+                    {% endembed %}
                 {% endembed %}
-            {% endembed %}
+            </div>
         </div>
     </div>
 {% endblock %}

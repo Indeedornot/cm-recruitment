@@ -62,10 +62,6 @@ class ExtendedSecurity
         return $this->isGranted(UserRoles::CLIENT->value);
     }
 
-    public function isAcceptedPrivacyPolicy(): bool
-    {
-        return $this->isLoggedIn() || !empty($_SESSION['PRIVACY_POLICY_ACCEPTED']);
-    }
 
     public function isLoggedIn(): bool
     {
@@ -75,12 +71,6 @@ class ExtendedSecurity
     public function getUser(): ?User
     {
         return $this->security->getUser();
-    }
-
-    public function setAcceptedPrivacyPolicy(bool $val): self
-    {
-        $_SESSION['PRIVACY_POLICY_ACCEPTED'] = $val;
-        return $this;
     }
 
     public function login(

@@ -15,6 +15,7 @@ use App\Security\Entity\UserRoles;
 use App\Security\Factory\UserFactory;
 use App\Security\Services\ExtendedSecurity;
 use App\Services\Form\PaginationService;
+use App\Services\Posting\PostingService;
 use App\Services\Posting\QuestionService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,7 +39,8 @@ class UserController extends BaseController
         private readonly TranslatorInterface $translator,
         private readonly PaginationService $pagination,
         private readonly ClientApplicationRepository $applicationRepository,
-        private readonly QuestionService $questionService
+        private readonly QuestionService $questionService,
+        private readonly PostingService $postingService
     ) {
     }
 
@@ -94,7 +96,7 @@ class UserController extends BaseController
             throw $this->createNotFoundException();
         }
 
-        if (!$this->security->isAcceptedPrivacyPolicy()) {
+        if (!$this->postingService->isAcceptedPrivacyPolicy($id)) {
             return $this->redirectToRoute('app_user_posting_privacy_policy', ['id' => $id]);
         }
 
@@ -202,7 +204,7 @@ class UserController extends BaseController
         }
 
         if ($request->get('ACCEPT_PRIVACY_POLICY')) {
-            $this->security->setAcceptedPrivacyPolicy(true);
+            $this->postingService->setAcceptedPrivacyPolicy($id);
             return $this->redirectToRoute('app_user_posting_apply', [
                 'id' => $posting->getId(),
             ]);
