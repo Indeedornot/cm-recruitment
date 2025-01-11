@@ -75,7 +75,7 @@ class ClientApplication
         return $this;
     }
 
-    public function getValueByKey(string $key): ?string
+    public function getValueByKey(string $key): mixed
     {
         foreach ($this->answers as $answer) {
             if ($answer->getQuestion()->getQuestionKey() === $key) {
