@@ -58,6 +58,6 @@ class BonusCriteriaRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
 
-        return array_merge(array_map(fn($row) => [$row['key'] => $row['value']], $result));
+        return array_merge(...array_map(fn($row) => [$row['key'] => $row['value']], $result));
     }
 }
