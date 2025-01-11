@@ -27,8 +27,13 @@ use App\Repository\CopyTextRepository;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\FormError;
 
+/**
+ * @template-implements BaseFormTypeTrait<Posting>
+ */
 class PostingType extends AbstractType
 {
+    use BaseFormTypeTrait;
+
     public function __construct(
         private ExtendedSecurity $security,
         private UserRepository $userRepository,
@@ -39,8 +44,7 @@ class PostingType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var Posting $data */
-        $data = $builder->getData();
+        $data = $this->getData($builder);
         if (empty($data->getAssignedTo())) {
             $data->setAssignedTo($this->security->getUser());
         }
@@ -110,8 +114,8 @@ class PostingType extends AbstractType
 
     private function addCopyTextFields(FormBuilderInterface $builder): void
     {
-        /** @var ?Posting $data */
-        $data = $builder->getData();
+        /** @var Posting $data */
+        $data = $this->getData($builder);
         foreach ($this->copyTextRepository->findAll() as $copyText) {
             $text = $data?->getCopyText($copyText->getKey());
             $builder->add('copy_' . $copyText->getKey(), $copyText->getFormType(), array_merge([
@@ -125,11 +129,11 @@ class PostingType extends AbstractType
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             $form = $event->getForm();
-            /** @var Posting $posting */
-            $posting = $event->getData();
+            $posting = $this->getData($event);
 
             foreach ($this->copyTextRepository->findAll() as $copyText) {
-                $value = $form->get('copy_' . $copyText->getKey())->getData();
+                $formField = $form->get('copy_' . $copyText->getKey());
+                $value = $this->getIData($formField, PostingText::class);
 
                 $previous = $posting->getCopyText($copyText->getKey());
                 $postingText = $previous ?? new PostingText();
