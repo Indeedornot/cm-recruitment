@@ -19,8 +19,8 @@
 {% block buttons %}
     {% block default %}
         <div class="col-md-12">
-            {{ form_button(form, {variant: 'primary', icon: 'user', label: 'Save'}) }}
-            {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'Back', href: path('app_admin_admins')}) }}
+            {{ form_button(form, {variant: 'primary', icon: 'user', label: 'common.save'|trans}) }}
+            {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'common.back'|trans, href: path('app_admin_admins')}) }}
         </div>
     {% endblock %}
 {% endblock %}

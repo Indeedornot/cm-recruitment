@@ -44,7 +44,7 @@
                     <div class="col-md-12 mb-3 d-flex justify-content-between">
                         <div>
                             {{ form_button(form, {variant: 'primary', icon: 'user', label: 'common.save'|trans}) }}
-                            {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'Back', href: path('app_admin_posting_index')}) }}
+                            {{ form_button(form, {variant: 'secondary', icon: 'door-open', label: 'common.back'|trans, href: path('app_user_index')}) }}
                         </div>
                         <a href="{{ path('app_user_posting_print', {'id': posting.id}) }}" class="btn btn-secondary">
                             <i class="fa fa-print"></i>
