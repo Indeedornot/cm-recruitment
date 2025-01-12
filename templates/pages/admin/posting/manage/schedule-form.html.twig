@@ -9,7 +9,7 @@
      data-index="{{ schedules|length }}"
      data-hook="collection-type"
 >
-    {{ form_label(form.schedules) }}
+    {{ form_label(schedules) }}
     <div class="mb-3">
         <div class="list-group schedules-accordion">
             {% for schedule in schedules %}
@@ -21,4 +21,4 @@
         <i class="fa fa-plus"></i> Dodaj termin zajęć
     </button>
 </div>
-{% do form.schedules.setRendered(true) %}
+{% do schedules.setRendered(true) %}

@@ -12,6 +12,9 @@
             <div class="card-header">{{ 'components.posting.create.header'|trans }}</div>
             <div class="card-body">
                 {{ form_start(form) }}
+                <div class="control-errors">
+                    {{ form_errors(form) }}
+                </div>
                 {{ form_row(form.title) }}
                 {#                TODO: Possibly move to coppytexts #}
                 {{ form_row(form.description) }}

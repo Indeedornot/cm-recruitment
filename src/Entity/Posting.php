@@ -200,6 +200,30 @@ class Posting
                 ->atPath('disabledAt')
                 ->addViolation();
         }
+
+        $ageMin = $this->getCopyText('age_min');
+        $ageMax = $this->getCopyText('age_max');
+        if ($ageMin !== null && $ageMax !== null) {
+            $ageMin = (int)$ageMin->getValue();
+            $ageMax = (int)$ageMax->getValue();
+
+            if ($ageMin > $ageMax) {
+                $context->buildViolation('components.posting.question.age.age_min_max_invalid')
+                    ->atPath('copy_age_min')
+                    ->addViolation();
+
+                $context->buildViolation('components.posting.question.age.age_min_max_invalid')
+                    ->atPath('copy_age_max')
+                    ->addViolation();
+            }
+        }
+
+        $schedules = $this->getSchedules();
+        if ($schedules->isEmpty()) {
+            $context->buildViolation('components.posting.schedule.empty')
+                ->atPath('schedules')
+                ->addViolation();
+        }
     }
 
     /**

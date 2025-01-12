@@ -8,7 +8,7 @@ use App\Repository\ScheduleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use DateTimeImmutable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ScheduleRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -23,9 +23,11 @@ class Schedule
     #[ORM\OneToMany(targetEntity: ClientApplication::class, mappedBy: 'schedule')]
     private Collection $applications;
 
+    #[Assert\NotBlank]
     #[ORM\Column(type: 'string')]
     private string $time;
 
+    #[Assert\GreaterThan(0)]
     #[ORM\Column(type: 'integer')]
     private int $personLimit;
 

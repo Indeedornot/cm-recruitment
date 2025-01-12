@@ -29,7 +29,14 @@ trait BaseFormTypeTrait
     protected function getIData(FormBuilderInterface|FormEvent|FormInterface $builder, ?string $class = null)
     {
         $data = $this->getData($builder);
-        Assert::isInstanceOf($data, $class);
+        match ($class) {
+            'string' => Assert::string($data),
+            'int' => Assert::integer($data),
+            'float' => Assert::float($data),
+            null => '',
+            default => Assert::isInstanceOf($data, $class),
+        };
+
         return $data;
     }
 }
