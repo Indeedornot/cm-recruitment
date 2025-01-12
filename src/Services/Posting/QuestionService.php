@@ -85,6 +85,9 @@ class QuestionService
             $form = $event->getForm();
 
             foreach ($application->getPosting()->getQuestionnaire()->getQuestions() as $question) {
+                if (!$form->has('answer_' . $question->getId())) {
+                    continue;
+                }
                 $answer = new QuestionnaireAnswer();
                 $answer->setQuestion($question);
                 $answer->setAnswer($form->get('answer_' . $question->getId())->getData());
