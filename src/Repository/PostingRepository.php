@@ -100,6 +100,21 @@ class PostingRepository extends ServiceEntityRepository
                 )));
         }
 
+        if (!empty($filters['category'])) {
+            $category = $this->ptRepository->getPostingIdsByTextFilter(
+                'Category',
+                'category',
+                $filters['category'],
+                'LIKE'
+            );
+
+            $qb->andWhere('p.id IN (' . $category->getDQL() . ')')
+                ->setParameters(new ArrayCollection(array_merge(
+                    $category->getParameters()->toArray(),
+                    $qb->getParameters()->toArray()
+                )));
+        }
+
         return $qb;
     }
 

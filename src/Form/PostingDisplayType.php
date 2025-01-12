@@ -5,11 +5,13 @@ namespace App\Form;
 use App\Contract\PhoneNumber\Form\Type\PhoneNumberType;
 use App\Entity\Question;
 use App\Entity\Questionnaire;
+use App\Repository\CopyTextRepository;
 use App\Repository\QuestionnaireRepository;
 use App\Repository\QuestionRepository;
 use App\Security\Entity\Admin;
 use App\Security\Entity\User;
 use App\Security\Repository\UserRepository;
+use App\Services\Posting\CopyTextService;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
@@ -24,8 +26,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class PostingDisplayType extends AbstractType
 {
-    public function __construct(private UserRepository $userRepository)
-    {
+    public function __construct(
+        private UserRepository $userRepository,
+        private CopyTextRepository $copyTextRepository,
+        private CopyTextService $copyTextService
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -54,15 +59,26 @@ class PostingDisplayType extends AbstractType
                     'common.weekday.sunday' => 'niedziela',
                 ],
                 'label' => 'user.posting_list.filter.schedule',
-            ])
-            ->add('assignedTo', ChoiceType::class, [
-                'choices' => $this->userRepository->findAdminsAll(),
-                'choice_label' => function (?Admin $user): string {
-                    return $user->getName();
-                },
-                'label' => 'user.posting_list.filter.assigned_to',
-                'required' => false,
             ]);
+
+        $categoryCp = $this->copyTextRepository->findOneBy(['key' => 'category', 'disabledAt' => null]);
+        if (!empty($categoryCp)) {
+            $choices = $this->copyTextService->getFormOptions($categoryCp);
+
+            $builder->add('category', ChoiceType::class, array_merge($choices, [
+                'label' => 'user.posting_list.filter.category',
+                'required' => false,
+            ]));
+        }
+
+        $builder->add('assignedTo', ChoiceType::class, [
+            'choices' => $this->userRepository->findAdminsAll(),
+            'choice_label' => function (?Admin $user): string {
+                return $user->getName();
+            },
+            'label' => 'user.posting_list.filter.assigned_to',
+            'required' => false,
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

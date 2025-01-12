@@ -144,6 +144,7 @@ return [
                 'text' => 'Szukaj',
                 'age' => 'Wiek',
                 'schedule' => 'Termin zajęć',
+                'category' => 'Kategoria',
             ],
             'no_postings_found' => 'Nie znaleziono żadnych zajęć spełniających kryteria wyszukiwania.',
         ]
