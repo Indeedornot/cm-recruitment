@@ -58,7 +58,7 @@ class PhoneNumber extends Constraint
 
         return match ($this->type) {
             self::FIXED_LINE => 'This value is not a valid fixed-line number.',
-            self::MOBILE => 'This value is not a valid mobile number.',
+            self::MOBILE => 'validators.phone_number.mobile.invalid',
             self::PAGER => 'This value is not a valid pager number.',
             self::PERSONAL_NUMBER => 'This value is not a valid personal number.',
             self::PREMIUM_RATE => 'This value is not a valid premium-rate number.',

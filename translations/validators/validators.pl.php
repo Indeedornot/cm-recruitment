@@ -18,4 +18,11 @@ return [
             ]
         ],
     ],
+    'validators' => [
+        'phone_number' => [
+            'mobile' => [
+                'invalid' => 'Ten numer telefonu jest nieprawidłowy',
+            ]
+        ],
+    ]
 ];

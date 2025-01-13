@@ -14,9 +14,14 @@ use libphonenumber\PhoneNumberUtil;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PhoneNumberValidator extends ConstraintValidator
 {
+    public function __construct(private TranslatorInterface $translator)
+    {
+    }
+
     public function validate($value, Constraint $constraint): void
     {
         if (null === $value || '' === $value) {
@@ -89,9 +94,12 @@ class PhoneNumberValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, PhoneNumber::class);
         }
 
+        $message = $constraint->getMessage();
+        $message = $this->translator->trans($message, [], 'validators');
         $this->context->buildViolation($constraint->getMessage())
-            ->setParameter('{{ type }}', $constraint->getType())
-            ->setParameter('{{ value }}', $this->formatValue($value))
+//            TODO:
+//            ->setParameter('{{ type }}', $constraint->getType())
+//            ->setParameter('{{ value }}', $this->formatValue($value))
             ->setCode(PhoneNumber::INVALID_PHONE_NUMBER_ERROR)
             ->addViolation();
     }
