@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class Client extends User
 {
-    #[ORM\OneToMany(targetEntity: ClientApplication::class, mappedBy: 'client')]
+    #[ORM\OneToMany(targetEntity: ClientApplication::class, mappedBy: 'client', cascade: ['persist', 'remove'])]
     private Collection $applications;
 
     public function __construct()

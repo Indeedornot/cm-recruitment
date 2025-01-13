@@ -170,7 +170,6 @@ class AdminController extends BaseController
         $request->getSession()->remove("confirm_disable_$id");
 
         $this->manager->remove($user);
-        $this->manager->persist($user);
         $this->manager->flush();
 
         $this->addFlash('success', 'common.success');
