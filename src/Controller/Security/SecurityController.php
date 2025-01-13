@@ -58,6 +58,7 @@ class SecurityController extends BaseController
             $this->em->flush();
             return $this->redirectToRoute('app_index_index');
         }
+        $this->addFlash('warning', 'security.form.force_password_change.alert');
 
         return $this->render('security/login/reset-password.html.twig', [
             'form' => $form->createView(),

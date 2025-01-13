@@ -125,8 +125,8 @@ return [
             ',
             'submit' => 'Zaloguj się'
         ],
-        'success_auto_login' => 'Stworzyliśmy dla Ciebie konto. <br/></br>
-            &bull; Na twój adres email zostały wysłane dane logowania. <br/>
+        'success_auto_login' => 'Stworzyliśmy dla Ciebie konto na podstawie danych z formularza. <br/></br>
+            &bull; Sprawdź swój adres email w celu zalogowania się na konto. <br/>
         '
     ],
     'index' => [
@@ -198,6 +198,9 @@ return [
                     <i class="fas fa-key"></i>
                     Reset password
                     ',
+            ],
+            'force_password_change' => [
+                'alert' => 'Wymagana jest zmiana hasła.',
             ],
             'email' => 'Adres email',
             'name' => 'Imię i nazwisko',
