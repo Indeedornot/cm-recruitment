@@ -30,3 +30,7 @@ services:
     App\Contract\Patterns\Factory\FactoryResolver:
         arguments:
             $container: '@service_container'
+
+    App\Contract\Validator\ContainerAwareConstraintValidator:
+        arguments:
+            $container: '@service_container'

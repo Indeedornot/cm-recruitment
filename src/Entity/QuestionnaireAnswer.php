@@ -2,10 +2,13 @@
 
 namespace App\Entity;
 
+use App\Contract\Validator\ContainerAwareConstraint;
 use App\Entity\Trait\Identified;
 use App\Entity\Trait\Timestampable;
+use App\Repository\GlobalConfigRepository;
 use App\Repository\QuestionnaireAnswerRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -26,14 +29,17 @@ class QuestionnaireAnswer
     #[ORM\Column(type: 'json')]
     private mixed $answer;
 
-    #[Assert\Callback]
-    public function validate(ExecutionContextInterface $context): void
-    {
-        $this->validateAge($context);
-        $this->validateBonusCriteria($context);
+    #[ContainerAwareConstraint]
+    public function validate(
+        ExecutionContextInterface $context,
+        mixed $group,
+        ContainerInterface $container
+    ): void {
+        $this->validateAge($context, $container);
+        $this->validateBonusCriteria($context, $container);
     }
 
-    private function validateBonusCriteria(ExecutionContextInterface $context): void
+    private function validateBonusCriteria(ExecutionContextInterface $context, ContainerInterface $container): void
     {
         if ($this->question->getQuestionKey() !== 'bonus_criteria') {
             return;
@@ -49,9 +55,15 @@ class QuestionnaireAnswer
         }
     }
 
-    private function validateAge(ExecutionContextInterface $context): void
+    private function validateAge(ExecutionContextInterface $context, ContainerInterface $container): void
     {
         if ($this->question->getQuestionKey() !== 'age') {
+            return;
+        }
+
+//        $applicationPhase = $this->getApplication()->getDataByKey('application_phase');
+        $applicationPhase = $container->get(GlobalConfigRepository::class)->getValue('application_phase');
+        if ($applicationPhase === 'continuation') {
             return;
         }
 
@@ -80,16 +92,6 @@ class QuestionnaireAnswer
     public function getAnswer(): mixed
     {
         return $this->answer;
-    }
-
-    public function getReadableAnswer(): array|string
-    {
-        if (is_array($this->answer) && $this->question->getFormType() === ChoiceType::class) {
-            $choices = array_flip($this->question->getFormOptions()['choices']);
-            return array_map(fn($value) => $choices[$value] ?? $value, $this->answer);
-        }
-
-        return (string)$this->answer;
     }
 
     public function setAnswer(mixed $answer): self
