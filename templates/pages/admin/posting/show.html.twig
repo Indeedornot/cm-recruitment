@@ -54,22 +54,22 @@
                             {% endif %}
                         {% endblock %}
                     {% endembed %}
-                    {% embed 'common/list-accordion/accordion-item.html.twig' with { index: 1 } %}
-                        {% block buttonText %}
-                            <span class="fw-semibold">{{ 'components.posting.question.admin.list_header'|trans }}</span>
-                        {% endblock %}
-                        {% block body %}
-                            {% if posting.questionnaire.questions.empty %}
-                                <p class="list-group-item">{{ 'components.posting.question.admin.list_empty'|trans }}</p>
-                            {% else %}
-                                {% for question in posting.questionnaire.questions %}
-                                    <div class="list-group-item">
-                                        {{ loop.index }}. {{ question.label|trans|raw }}
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-                        {% endblock %}
-                    {% endembed %}
+                    {#                    {% embed 'common/list-accordion/accordion-item.html.twig' with { index: 1 } %} #}
+                    {#                        {% block buttonText %} #}
+                    {#                            <span class="fw-semibold">{{ 'components.posting.question.admin.list_header'|trans }}</span> #}
+                    {#                        {% endblock %} #}
+                    {#                        {% block body %} #}
+                    {#                            {% if posting.questionnaire.questions.empty %} #}
+                    {#                                <p class="list-group-item">{{ 'components.posting.question.admin.list_empty'|trans }}</p> #}
+                    {#                            {% else %} #}
+                    {#                                {% for question in posting.questionnaire.questions %} #}
+                    {#                                    <div class="list-group-item"> #}
+                    {#                                        {{ loop.index }}. {{ question.label|trans|raw }} #}
+                    {#                                    </div> #}
+                    {#                                {% endfor %} #}
+                    {#                            {% endif %} #}
+                    {#                        {% endblock %} #}
+                    {#                    {% endembed %} #}
                     {% embed 'common/list-accordion/accordion-item.html.twig' with { index: 2 } %}
                         {% block buttonText %}
                             <span

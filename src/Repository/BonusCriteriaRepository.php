@@ -45,7 +45,7 @@ class BonusCriteriaRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
 
-        return array_merge(array_map(fn($row) => [$row['key'] => $row['label']], $result));
+        return array_merge(...array_map(fn($row) => [$row['key'] => $row['label']], $result));
     }
 
     public function getValuesByKeys(string $phase, array $keys): array
