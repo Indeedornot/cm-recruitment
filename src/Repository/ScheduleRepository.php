@@ -18,4 +18,15 @@ class ScheduleRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Schedule::class);
     }
+
+    public function getPostingIdsBySchedule(string $time): array
+    {
+        return $this->createQueryBuilder('s')
+            ->select('p.id')
+            ->join('s.posting', 'p')
+            ->where('s.time LIKE :time')
+            ->setParameter('time', '%' . $time . '%')
+            ->getQuery()
+            ->getSingleColumnResult();
+    }
 }

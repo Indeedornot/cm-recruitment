@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Posting;
 use App\Entity\PostingText;
+use App\Repository\ScheduleRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -20,8 +21,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PostingRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry, private PostingTextRepository $ptRepository)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        private PostingTextRepository $ptRepository,
+        private readonly ScheduleRepository $scheduleRepository
+    ) {
         parent::__construct($registry, Posting::class);
     }
 
@@ -86,18 +90,9 @@ class PostingRepository extends ServiceEntityRepository
         }
 
         if (!empty($filters['schedule'])) {
-            $schedule = $this->ptRepository->getPostingIdsByTextFilter(
-                'Schedule',
-                'schedule',
-                $filters['schedule'],
-                'LIKE'
-            );
-
-            $qb->andWhere('p.id IN (' . $schedule->getDQL() . ')')
-                ->setParameters(new ArrayCollection(array_merge(
-                    $schedule->getParameters()->toArray(),
-                    $qb->getParameters()->toArray()
-                )));
+            $postingIds = $this->scheduleRepository->getPostingIdsBySchedule($filters['schedule']);
+            $qb->andWhere('p.id IN (:postingIds)')
+                ->setParameter('postingIds', $postingIds);
         }
 
         if (!empty($filters['category'])) {
