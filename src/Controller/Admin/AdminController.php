@@ -161,16 +161,19 @@ class AdminController extends BaseController
             }
         }
 
-        if ($request->getSession()->get("confirm_disable_$id")) {
-            $request->getSession()->remove("confirm_disable_$id");
-            $this->addFlash('success', new TranslatableMessage('common.success'));
+        if (!$request->getSession()->get("confirm_disable_$id")) {
+            $request->getSession()->set("confirm_disable_$id", true);
+            $this->addFlash('warning', new TranslatableMessage('common.are_you_sure'));
+            $from = $request->headers->get('referer');
+            return $this->redirect($from);
         }
+        $request->getSession()->remove("confirm_disable_$id");
 
-        $user->disable();
+        $this->manager->remove($user);
         $this->manager->persist($user);
         $this->manager->flush();
 
-        $this->addFlash('success', new TranslatableMessage('common.success'));
+        $this->addFlash('success', 'common.success');
 
         $from = $request->headers->get('referer');
         return $this->redirect($from);
