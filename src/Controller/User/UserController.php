@@ -125,11 +125,11 @@ class UserController extends BaseController
                 }
 
                 try {
-                    $this->security->login($client);
+                    $this->addFlash('success', 'privacy_policy.success_auto_login');
                 } catch (Exception $e) {
                     $this->addFlash(
                         'error',
-                        message: $this->translator->trans('privacy_policy.failed_auto_login')
+                        'privacy_policy.failed_auto_login'
                     );
 
                     return $this->render('pages/user/application/index.html.twig', [

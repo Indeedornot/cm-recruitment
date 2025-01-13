@@ -125,6 +125,9 @@ return [
             ',
             'submit' => 'Zaloguj się'
         ],
+        'success_auto_login' => 'Stworzyliśmy dla Ciebie konto. <br/></br>
+            &bull; Na twój adres email zostały wysłane dane logowania. <br/>
+        '
     ],
     'index' => [
         'header' => '&bull; Zapisz się na zajęcia',

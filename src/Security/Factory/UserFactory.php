@@ -50,9 +50,10 @@ class UserFactory
                 $name = $email;
             }
 
+            $password = $this->generatePassword();
             $client
                 ->setEmail($email)
-                ->setPassword($this->generatePassword())
+                ->setPlainPassword($password)
                 ->setName($name);
 
             $this->em->persist($client);
