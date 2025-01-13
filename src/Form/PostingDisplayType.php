@@ -59,6 +59,7 @@ class PostingDisplayType extends AbstractType
                     'common.weekday.sunday' => 'niedziela',
                 ],
                 'label' => 'user.posting_list.filter.schedule',
+                'required' => false
             ]);
 
         $categoryCp = $this->copyTextRepository->findOneBy(['key' => 'category', 'disabledAt' => null]);
