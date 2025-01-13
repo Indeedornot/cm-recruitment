@@ -41,6 +41,8 @@
                 {% set answersBody %}
                     {{ form_start(form) }}
                     <dl class="row mb-0">
+                        {#                        TODO: Export into a common? #}
+                        {{ form_row(form.schedule) }}
                         {% set answers = form.children|filter(field => field.vars.name starts with 'answer_') %}
                         {% for field in answers %}
                             <div class="mb-3">
