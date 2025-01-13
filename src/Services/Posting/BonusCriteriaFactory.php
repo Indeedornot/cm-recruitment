@@ -61,6 +61,6 @@ class BonusCriteriaFactory implements ParametrizedFactory
             return [$criteria->getLabel() => $criteria->getKey()];
         }, $bonusCriteria));
 
-        return empty($choices) ? false : $choices;
+        return empty($choices) ? false : ['choices' => $choices];
     }
 }

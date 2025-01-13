@@ -120,20 +120,20 @@ class QuestionService
         $posting = $application->getPosting();
 
         $formOptions = $question->getFormOptions();
-        if (array_key_exists('choice_factory', $formOptions)) {
-            $choiceFactory = $formOptions['choice_factory'];
-            $factory = $choiceFactory['factory'];
+        if (array_key_exists('factory', $formOptions)) {
+            $questionFactory = $formOptions['factory'];
+            $factory = $questionFactory['factory'];
             $params = array_merge([
                 'postingId' => $posting->getId(),
                 'applicationId' => $application->getId(),
                 'question_key' => $question->getQuestionKey(),
-            ], $choiceFactory['params']);
-            $choices = $this->factoryResolver->resolveFactory($factory)($params);
-            if ($choices === false) {
+            ], $questionFactory['params']);
+            $options = $this->factoryResolver->resolveFactory($factory)($params);
+            if ($options === false) {
                 return false;
             }
-            $formOptions['choices'] = $choices;
-            unset($formOptions['choice_factory']);
+            $formOptions = array_merge($formOptions, $options);
+            unset($formOptions['factory']);
         }
         return $formOptions;
     }
