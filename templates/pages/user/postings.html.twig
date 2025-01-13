@@ -23,7 +23,11 @@
                                 {% set alreadyApplied = (app.user.applications|filter(x => x.posting.id == posting.id)|length) %}
                             {% endif %}
                             <i class="fas fa-plus-circle me-1"></i>
-                            {{ alreadyApplied ? 'components.posting.sign_up_again'|trans : 'components.posting.sign_up'|trans }}
+                            {% if getGlobalConfig('application_phase') == 'continuation' %}
+                                {{ 'components.posting.sign_up_continue'|trans }}
+                            {% else %}
+                                {{ alreadyApplied ? 'components.posting.sign_up_again'|trans : 'components.posting.sign_up'|trans }}
+                            {% endif %}
                         </a>
                     </div>
                 {% endfor %}

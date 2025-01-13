@@ -61,7 +61,11 @@
                 <a href="{{ path('app_user_posting_apply', {id: posting.id}) }}"
                    class="btn btn-primary"
                 >
-                    {{ 'components.posting.sign_up'|trans({again: hasApplied|default(false)}) }}
+                    {% if getGlobalConfig('application_phase') == 'continuation' %}
+                        {{ 'components.posting.sign_up_continue'|trans }}
+                    {% else %}
+                        {{ alreadyApplied ? 'components.posting.sign_up_again'|trans : 'components.posting.sign_up'|trans }}
+                    {% endif %}
                 </a>
             </div>
         </div>
