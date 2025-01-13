@@ -211,6 +211,7 @@ return [
         'posting' => [
             'sign_up' => 'Zapisz się',
             'sign_up_again' => 'Zapisz się ponownie',
+            'sign_up_continue' => 'Kontynuuj',
             'assigned_to' => 'Prowadzi: {name}',
             'create' => [
                 'header' => 'Utwórz nowe zajęcia',
