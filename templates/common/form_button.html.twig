@@ -43,11 +43,11 @@
 {% endfor %}
 
 {% if attrs.href is defined and attrs.href is not empty %}
-    <a {{ attributes|raw }}>
+    <a {{ attributes|raw }} data-hook="submit-button">
         {{ content }}
     </a>
 {% else %}
-    <button {{ attributes|raw }}>
+    <button {{ attributes|raw }} data-hook="submit-button">
         {{ content }}
     </button>
 {% endif %}
