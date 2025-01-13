@@ -9,14 +9,7 @@
             <div class="card-body">
                 <div class="px-2">
                     <h4>{{ 'user.application.details.header'|trans }}</h4>
-                    <dl class="row">
-                        <dt class="col-sm-4">{{ 'user.application.details.posting'|trans }}</dt>
-                        <dd class="col-sm-8">{{ application.posting.title }}</dd>
-                        <dt class="col-sm-4">{{ 'user.application.details.date_applied'|trans }}</dt>
-                        <dd class="col-sm-8">{{ application.createdAt|date('Y-m-d H:i') }}</dd>
-                        <dt class="col-sm-4">{{ 'user.application.details.managed_by'|trans }}</dt>
-                        <dd class="col-sm-8">{{ application.posting.assignedTo.name }}</dd>
-                    </dl>
+                    {% include 'components/posting/application_details.html.twig' %}
                 </div>
 
                 {% embed 'common/accordion.html.twig' %}
@@ -27,7 +20,7 @@
                         {% block body %}
                             <dl class="row">
                                 {% for answer in application.answers %}
-                                    <dt class="col-sm-4">{{ answer.question.label|trans }}</dt>
+                                    <dt class="col-sm-4">{{ answer.question.label|trans|raw }}</dt>
                                     <dd class="col-sm-8">
                                         {% set readableAnswer = questionService.answerLabel(answer) %}
                                         {% if readableAnswer is iterable %}
@@ -37,7 +30,11 @@
                                                 {% endfor %}
                                             </ul>
                                         {% else %}
-                                            {{ readableAnswer|trans }}
+                                            {% if not readableAnswer is empty %}
+                                                {{ readableAnswer|trans }}
+                                            {% else %}
+                                                {{ 'components.posting.question.empty_answer'|trans }}
+                                            {% endif %}
                                         {% endif %}
                                     </dd>
                                 {% endfor %}

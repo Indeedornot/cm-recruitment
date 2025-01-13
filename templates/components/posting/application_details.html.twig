@@ -1,0 +1,21 @@
+<dl class="row">
+    <dt class="col-sm-4">{{ 'user.application.details.posting'|trans }}</dt>
+    <dd class="col-sm-8">{{ application.posting.title }}</dd>
+    <dt class="col-sm-4">{{ 'user.application.details.date_applied'|trans }}</dt>
+    <dd class="col-sm-8">{{ application.createdAt|date('Y-m-d H:i') }}</dd>
+    <dt class="col-sm-4">{{ 'user.application.details.managed_by'|trans }}</dt>
+    <dd class="col-sm-8">{{ application.posting.assignedTo.name }}</dd>
+    <dt class="col-sm-4">{{ 'user.application.details.schedule'|trans }}</dt>
+    <dd class="col-sm-8">
+        {% if application.schedule %}
+            {{ application.schedule.time }}
+        {% else %}
+            {{ 'components.posting.question.empty_answer'|trans }}
+        {% endif %}
+    </dd>
+    {% set applicationPhase = application.dataByKey('application_phase') %}
+    {% if applicationPhase %}
+        <dt class="col-sm-4">{{ 'components.global_config.application_phase.label'|trans }}</dt>
+        <dd class="col-sm-8">{{ ('components.global_config.application_phase.'~applicationPhase)|trans }}</dd>
+    {% endif %}
+</dl>
