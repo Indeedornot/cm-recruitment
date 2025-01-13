@@ -12,7 +12,7 @@
 
 {% set header %}
     {% set attrs = attrs_object({
-        'class': ('w-100 list-group-item border-0 mb-0 shadow-sm' ~ ' ' ~ (open ? '' : 'collapsed') ~ ' ' ~ (hasContent ? '' : 'empty-accordion'))|trim,
+        'class': ('w-100 list-group-item border-0 mb-0 shadow-sm d-flex justify-content-between align-items-center' ~ ' ' ~ (open ? '' : 'collapsed') ~ ' ' ~ (hasContent ? '' : 'empty-accordion'))|trim,
         'type': 'button',
         'aria-expanded': open ? 'true' : 'false',
         'aria-controls': itemId,
@@ -33,9 +33,12 @@
             {% do attrs.append('class', ' ' ~ buttonClasses, true) %}
         {% endif %}
 
-        <a {{ attrs|raw }}>
-            {{ buttonContent }}
-        </a>
+        <div class="w-100 d-flex align-items-center">
+            <a {{ attrs|raw }}>
+                {{ buttonContent }}
+                <i class="fas fa-chevron-down float-end"></i>
+            </a>
+        </div>
     {% endblock %}
 {% endset %}
 
