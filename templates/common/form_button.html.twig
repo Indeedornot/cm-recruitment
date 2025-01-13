@@ -31,10 +31,10 @@
 {% set label = label|default('') %}
 
 {% set content %}
-    {% if icon %}
+    {% if icon is defined %}
         <i class="{{ icon }}"></i>
     {% endif %}
-    {{ label }}
+    {{ label|raw }}
 {% endset %}
 
 {% set attributes = '' %}
