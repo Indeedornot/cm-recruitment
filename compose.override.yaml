@@ -26,8 +26,12 @@ services:
   mailer:
     image: axllent/mailpit
     ports:
-      - "1025"
-      - "8025"
+      - target: 1025
+        published: ${MAILER_PORT:-1025}
+        protocol: tcp
+      - target: 8025
+        published: ${MAILER_WEB_PORT:-8025}
+        protocol: tcp
     environment:
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
