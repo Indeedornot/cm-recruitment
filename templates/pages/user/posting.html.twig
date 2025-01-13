@@ -27,10 +27,16 @@
                 </div>
             </div>
             <div class="card-body">
-                <p>{{ posting.description }}</p>
-                <p><b>{{ 'components.posting.copytext.schedule'|trans }}:</b> {{ posting.copyText('schedule').value }}
+                <p>
+                    <b>{{ 'components.posting.schedule.label'|trans }}:</b>
+                <ul>
+                    {% for schedule in posting.schedules %}
+                        <li>{{ schedule }}</li>
+                    {% endfor %}
+                </ul>
                 </p>
-
+                <p>{{ posting.description }}</p>
+                {#                <p><b>{{ 'components.posting.copytext.schedule'|trans }}:</b> {{ posting.copyText('schedule').value }} #}
                 {#                {% if hasApplied %} #}
                 {#                    {% embed 'common/collapse/collapse.html.twig' with {type: 'a'} %} #}
                 {#                        {% block trigger %} #}
