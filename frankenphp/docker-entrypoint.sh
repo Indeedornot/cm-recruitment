@@ -66,7 +66,9 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 fi
 
 if [ -f package.json ]; then
-	npm install
+    if [ ! -d node_modules ]; then
+        npm ci
+    fi
 fi
 
 if [ -f webpack.config.js ]; then
