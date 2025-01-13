@@ -21,7 +21,7 @@
                 <li>
                     Email: {{ user.email }}
                 </li>
-                {% if user.plainPassword is defined and user.isPasswordChangeRequired %}
+                {% if user.plainPassword is defined %}
                     <li>
                         Hasło: {{ user.plainPassword }}
                     </li>
@@ -55,7 +55,7 @@
     </div>
     <br/>
 
-    {% if user.plainPassword is defined and user.isPasswordChangeRequired %}
+    {% if user.plainPassword is defined %}
         <div>
             Po pierwszym zalogowaniu zostaniesz poproszony o zmianę hasła.
         </div>
