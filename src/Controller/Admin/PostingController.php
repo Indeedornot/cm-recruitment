@@ -181,4 +181,32 @@ class PostingController extends BaseController
             'posting' => $application->getPosting(),
         ]);
     }
+
+//    delete application
+    #[Route('/{id}/application/{applicationId}/delete', name: 'application_delete', requirements: [
+        'id' => '\d+',
+        'applicationId' => '\d+'
+    ])]
+    public function deleteApplication(
+        Request $request,
+        int $id,
+        int $applicationId
+    ): Response {
+        $application = $this->applicationRepository->find($applicationId);
+        if (!$application || $application->getPosting()->getId() !== $id) {
+            throw $this->createNotFoundException();
+        }
+
+        if (!$request->getSession()->get("confirm_delete_application_$applicationId")) {
+            $request->getSession()->set("confirm_delete_application_$applicationId", true);
+            $this->addFlash('warning', 'common.are_you_sure');
+            $referer = $request->headers->get('referer');
+            return $this->redirect($referer);
+        }
+
+        $this->manager->remove($application);
+        $this->manager->flush();
+        $this->addFlash('success', 'common.success');
+        return $this->redirectToRoute('app_admin_posting_show', ['id' => $id]);
+    }
 }

@@ -56,6 +56,13 @@
                         {% endblock %}
                     {% endembed %}
                 {% endembed %}
+                <div class="mt-3">
+                    <a href="{{ path('app_admin_posting_application_delete', {applicationId: application.id, id: application.posting.id}) }}"
+                       class="btn btn-danger">
+                        <i class="fa-solid fa-trash"></i>
+                        {{ 'common.delete'|trans }}
+                    </a>
+                </div>
             </div>
             <div class="card-footer">
                 {{ 'user.application.help'|trans({'email': application.posting.assignedTo.email })|raw }}
