@@ -131,6 +131,7 @@ return [
                 'posting' => 'Zajęcia',
                 'date_applied' => 'Data zgłoszenia',
                 'managed_by' => 'Zarządzane przez',
+                'schedule' => 'Termin zajęć',
             ],
             'help' => 'W przypadku pytań lub zmiany danych prosimy o kontakt z
                 <a href="mailto:{email}">{email}</a>',
@@ -237,8 +238,8 @@ return [
                 ],
                 'bonus_criteria' => [
                     'label' => 'Kryteria dodatkowe',
-                    'kk3plus' => 'Krakowska Karta Rodzinna 3+'
-                ]
+                ],
+                'empty_answer' => '-- Brak odpowiedzi --',
             ],
             'schedule' => [
                 'admin' => [
@@ -246,7 +247,8 @@ return [
                     'list_empty' => 'Brak jeszcze żadnych terminów zajęć. Dodaj termin, aby zobaczyć je tutaj.',
                     'limit' => 'Limit miejsc',
                     'time' => 'Termin zajęć',
-                ]
+                ],
+                'label' => 'Terminy zajęć',
             ],
             'form' => [
                 'title' => 'Tytuł',
