@@ -54,7 +54,8 @@ class UserFactory
             $client
                 ->setEmail($email)
                 ->setPlainPassword($password)
-                ->setName($name);
+                ->setName($name)
+                ->disable();
 
             $this->em->persist($client);
             $this->em->flush();

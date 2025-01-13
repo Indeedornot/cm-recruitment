@@ -47,6 +47,7 @@ class UserEntityHandlerListener
         $user = $event->getUser();
         if ($user->getPlainPassword() && empty($user->getPassword())) {
             $user->setPassword($this->userFactory->hashPassword($user, $user->getPlainPassword()));
+            $user->forcePasswordChange();
         }
 
         if (empty($user->getLastPasswordChange())) {

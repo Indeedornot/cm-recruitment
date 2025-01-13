@@ -166,22 +166,6 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\PostPersist]
-    public function postPersist(): void
-    {
-        $this->lastPasswordChange = new DateTimeImmutable();
-    }
-
-    #[ORM\PreUpdate]
-    public function preUpdate(): void
-    {
-    }
-
-    #[ORM\PostUpdate]
-    public function postUpdate(): void
-    {
-    }
-
     public function getReadableRoles(): array
     {
         $roles = $this->getRoles();

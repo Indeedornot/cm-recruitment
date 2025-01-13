@@ -36,9 +36,9 @@ class LoginListener
             return;
         }
 
-        if ($this->router->decide(new NullToken(), ['PUBLIC_ACCESS'], $event->getRequest())) {
-            return;
-        }
+//        if ($this->router->decide(new NullToken(), ['PUBLIC_ACCESS'], $event->getRequest())) {
+//            return;
+//        }
 
         $user = $this->security->getUser();
         if (!$user instanceof User) {
