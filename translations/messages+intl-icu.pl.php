@@ -104,11 +104,18 @@ return [
             'text' => '
                 Wypełnij formularz aplikacyjny bez zakładania konta.<br/>
                 Stworzymy dla Ciebie konto automatycznie korzystając z danych z formularza.
+
+                <b>
+                <br/></br>
+                Jeśli chcesz się zapisać na kolejne zajęcia, musisz skorzystać z opcji `Mam konto`.
+                <br/>
+                Dane do logowania otrzymałeś na mailu.
+                </b>
             ',
             'submit' => 'Aplikuj bez konta'
         ],
         'apply_with_account' => [
-            'header' => 'Masz już konto?',
+            'header' => 'Mam konto',
             'text' => '
                 Zaloguj się, aby kontynuować aplikację i korzystać z innych funkcji.
 
