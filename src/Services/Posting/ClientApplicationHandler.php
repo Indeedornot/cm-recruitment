@@ -45,6 +45,16 @@ class ClientApplicationHandler
             });
         }
 
-        return array_merge(...array_values($phases));
+        $sorted = array_merge(...array_values($phases));
+        $grouppedBySchedule = [];
+        foreach ($sorted as $item) {
+            $schedule = $item['application']->getSchedule()?->getId();
+            if (!isset($grouppedBySchedule[$schedule])) {
+                $grouppedBySchedule[$schedule] = [];
+            }
+            $grouppedBySchedule[$schedule][] = $item;
+        }
+
+        return $grouppedBySchedule;
     }
 }
