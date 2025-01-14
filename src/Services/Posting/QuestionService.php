@@ -72,7 +72,9 @@ class QuestionService
                 $this->security->getUser()->getId()
             );
             foreach ($previousAnswers as $previousAnswer) {
-                $builder->get('answer_' . $previousAnswer->getQuestion()->getId())->setData($previousAnswer->getAnswer());
+                if ($builder->has('answer_' . $previousAnswer->getQuestion()->getId())) {
+                    $builder->get('answer_' . $previousAnswer->getQuestion()->getId())->setData($previousAnswer->getAnswer());
+                }
             }
         }
     }
