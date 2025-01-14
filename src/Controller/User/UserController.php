@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/user', name: 'app_user_')]
@@ -219,5 +220,35 @@ class UserController extends BaseController
     public function privacyPolicy(): Response
     {
         return $this->render('pages/user/privacy_policy.html.twig');
+    }
+
+    #[Route("/posting/{id}/application/{applicationId}/retract", name: "posting_application_retract")]
+    public function retractApplication(Request $request, int $id, int $applicationId): Response
+    {
+        $posting = $this->postingRepository->find($id);
+        if (!$posting) {
+            throw $this->createNotFoundException();
+        }
+
+        $application = $this->applicationRepository->find($applicationId);
+        if (!$application) {
+            throw $this->createNotFoundException();
+        }
+
+        if ($application->getClient()->getId() !== $this->security->getUser()?->getId()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (!$request->getSession()->get("confirm_retract_application_$applicationId")) {
+            $request->getSession()->set("confirm_retract_application_$applicationId", true);
+            $this->addFlash('warning', 'common.are_you_sure');
+            $referer = $request->headers->get('referer');
+            return $this->redirect($referer);
+        }
+
+        $this->em->remove($application);
+        $this->em->flush();
+        $this->addFlash('success', 'user.application.retract.success');
+        return $this->redirectToRoute('app_user_index');
     }
 }

@@ -42,6 +42,36 @@
                         {% endblock %}
                     {% endembed %}
                 {% endembed %}
+
+                <div class="mt-4">
+                    {#                    <h4>{{ 'user.application.retract.header'|trans }}</h4> #}
+                    {#                    <p>{{ 'user.application.retract.description'|trans }}</p> #}
+                    {#                    <div class="col-md-12"> #}
+                    {#                        <a href="{{ path('app_user_posting_application_retract', {'applicationId': application.id, 'id': posting.id}) }}" #}
+                    {#                           class="btn btn-danger"> #}
+                    {#                            <i class="fas fa-trash-alt"></i> #}
+                    {#                            {{ 'user.application.retract.submit'|trans }} #}
+                    {#                        </a> #}
+                    {#                    </div> #}
+                    {% embed 'common/accordion.html.twig' %}
+                        {% embed 'common/accordion-item.html.twig' %}
+                            {% block buttonText %}
+                                {% do attrs.append('class', 'py-2') %}
+                                <b>{{ 'user.application.retract.header'|trans }}</b>
+                            {% endblock %}
+                            {% block body %}
+                                <p>{{ 'user.application.retract.description'|trans({posting_title: posting.title}) }}</p>
+                                <div class="col-md-12">
+                                    <a href="{{ path('app_user_posting_application_retract', {'applicationId': application.id, 'id': posting.id}) }}"
+                                       class="btn btn-danger">
+                                        <i class="fas fa-trash-alt"></i>
+                                        {{ 'user.application.retract.submit'|trans }}
+                                    </a>
+                                </div>
+                            {% endblock %}
+                        {% endembed %}
+                    {% endembed %}
+                </div>
             </div>
             <div class="card-footer">
                 {{ 'user.application.help'|trans({'email': application.posting.assignedTo.email })|raw }}
