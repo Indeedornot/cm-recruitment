@@ -24,5 +24,8 @@ return [
                 'invalid' => 'Ten numer telefonu jest nieprawidłowy',
             ]
         ],
+        'pesel' => [
+            'invalid' => 'Nieprawidłowy pesel',
+        ],
     ]
 ];

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Contract\Validator\ContainerAwareConstraint;
+use App\Contract\Validator\PeselConstraint;
+use App\Contract\Validator\PeselConstraintValidator;
 use App\Entity\Trait\Identified;
 use App\Entity\Trait\Timestampable;
 use App\Repository\GlobalConfigRepository;
@@ -37,6 +39,33 @@ class QuestionnaireAnswer
     ): void {
         $this->validateAge($context, $container);
         $this->validateBonusCriteria($context, $container);
+        $this->validatePesel($context, $container);
+    }
+
+    private function validatePesel(ExecutionContextInterface $context, ContainerInterface $container): void
+    {
+        if ($this->question->getQuestionKey() !== 'pesel') {
+            return;
+        }
+
+        if (empty($this->answer)) {
+            return;
+        }
+
+        $age = $this->application->getValueByKey('age');
+
+        $pesel = $this->answer;
+        $constraint = new PeselConstraint(options: [
+            'age' => $age,
+        ]);
+        $validator = $context->getValidator();
+        $violations = $validator->validate($pesel, $constraint);
+        if ($violations->count() > 0) {
+            foreach ($violations as $violation) {
+                $context->buildViolation($violation->getMessage())
+                    ->addViolation();
+            }
+        }
     }
 
     private function validateBonusCriteria(ExecutionContextInterface $context, ContainerInterface $container): void
