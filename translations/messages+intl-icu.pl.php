@@ -147,6 +147,12 @@ return [
                 <a href="mailto:{email}">{email}</a>',
             'questionnaire' => [
                 'header' => 'Formularz zgłoszeniowy',
+            ],
+            'retract' => [
+                'header' => 'Wycofaj zgłoszenie',
+                'description' => 'Czy na pewno chcesz wycofać swoje zgłoszenie na zajęcia "{posting_title}"?',
+                'submit' => 'Wycofaj zgłoszenie',
+                'success' => 'Zgłoszenie zostało wycofane.',
             ]
         ],
         'posting_list' => [
@@ -261,6 +267,7 @@ return [
                     'list_empty' => 'Brak jeszcze żadnych terminów zajęć. Dodaj termin, aby zobaczyć je tutaj.',
                     'limit' => 'Limit miejsc',
                     'time' => 'Termin zajęć',
+                    'no_time' => 'Brak terminu',
                 ],
                 'label' => 'Terminy zajęć',
             ],
