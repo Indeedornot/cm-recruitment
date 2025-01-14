@@ -56,7 +56,7 @@ class QuestionnaireAnswer
 
         $pesel = $this->answer;
         $constraint = new PeselConstraint(options: [
-            'age' => $age ? $age : null
+            'age' => $age ? intval($age) : null
         ]);
         $validator = $context->getValidator();
         $violations = $validator->validate($pesel, $constraint);
